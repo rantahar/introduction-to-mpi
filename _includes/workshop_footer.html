@@ -5,6 +5,7 @@
   <div class="row">
     <div class="col-md-6" align="left">
       <h4>
+        <!--
 	Copyright &copy; 2016–{{ 'now' | date: "%Y" }}
 	{% if site.carpentry == "swc" %}
 	<a href="{{ site.swc_site }}">Software Carpentry</a>
@@ -14,7 +15,12 @@
 	<a href="{{ site.lc_site }}">Library Carpentry</a>
 	{% elsif site.carpentry == "cp" %}
 	<a href="{{ site.carpentries_site }}">The Carpentries</a>
-	{% endif %}
+  {% endif %}
+        -->
+        Licensed under <a href="{{ site.cc_by_human }}">CC-BY-NC-SA 4.0</a> 2018–{{ 'now' | date: "%Y" }}
+        by Seyong Kim and <a href="{{ site.sa2c_site }}">Swansea Academy of Advanced Computing</a>      
+	      </br>
+			  Includes Materials from  <a href="{{ site.chris }}"> Christopher Woods</a>
       </h4>
     </div>
     <div class="col-md-6" align="right">

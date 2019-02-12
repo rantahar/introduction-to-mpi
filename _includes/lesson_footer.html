@@ -7,7 +7,7 @@
 <footer>
   <div class="row">
     <div class="col-md-6 copyright" align="left">
-	{% if site.carpentry == "swc" %}
+	<!-- {% if site.carpentry == "swc" %}
 	Licensed under <a href="{{ site.cc_by_human }}">CC-BY 4.0</a> 2018–{{ 'now' | date: "%Y" }}
 	by <a href="{{ site.carpentries_site }}">The Carpentries</a>
         <br>
@@ -25,8 +25,12 @@
 	{% elsif site.carpentry == "cp" %}
 	Licensed under <a href="{{ site.cc_by_human }}">CC-BY 4.0</a> 2018–{{ 'now' | date: "%Y" }}
 	by <a href="{{ site.carpentries_site }}">The Carpentries</a>
-	{% endif %}
-    </div>
+	{% endif %}-->
+	Licensed under <a href="{{ site.cc_by_human }}">CC-BY-NC-SA 4.0</a> 2018–{{ 'now' | date: "%Y" }}
+	by Seyong Kim and <a href="{{ site.sa2c_site }}">Swansea Academy of Advanced Computing</a>
+	    </br>
+			Includes Materials from  <a href="{{ site.cris_site }}"> Christopher Woods</a>
+		</div>
     <div class="col-md-6 help-links" align="right">
 	{% if page.source %}
 	{% if page.source == "Rmd" %}
