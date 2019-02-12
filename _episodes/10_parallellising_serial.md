@@ -14,7 +14,18 @@ keypoints:
 - "Connect the parallel regions with a minimal amount of communication"
 - "Continuously compare with the working serial code"
 ---
-FIXME
+
+> ## Parallel Regions, review
+>
+> Download the [C]({{ page.root }}{% link code/poisson/poisson.c %})
+> or [Fortran]({{ page.root }}{% link code/poisson/poisson.f %}) code
+> provided and read trough the code.
+> Identify any potential parallel regions.
+>
+> You may also wish to work with your own serial code. If so,
+> do this exercise with a small part of your own code.
+>
+{: .challenge}
 
 {% include links.md %}
 

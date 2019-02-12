@@ -12,7 +12,19 @@ keypoints:
 - "The Profiler needs to understand MPI. Your cluster probably has one."
 - "If a lot of time is spent in communication, maybe it can be rearranged."
 ---
-FIXME
+
+> ## Profiling
+>
+> Use a profiler to study your research code or the code provided.
+> Identify hotspots and decide how to improve the application.
+>
+{: .challenge}
+
+> ## Iterative Improvement
+>
+> Try changing the location of the call to MPI_Send. How does this affect performance?
+>
+{: .challenge}
 
 {% include links.md %}
 
