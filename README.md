@@ -2,7 +2,15 @@
 
 [![Create a Slack Account with us](https://img.shields.io/badge/Create_Slack_Account-The_Carpentries-071159.svg)](https://swc-slack-invite.herokuapp.com/)
 
-
+<!---
+Summative assesments:
+Morning session: introduction to MPI concepts and standard functions
+   Parallelise a piece of code: identify parallel region and decide on a communication
+   pattern. Write an program using mpi_send, mpi_recv and MPI_Allreduce.
+Afternoon session: best practices and tools
+    Plan the parallellisation of an serial algorithm, including testing.
+    Analyse an existing application and identify hotspots.
+-->
 
 ## Contributing
 
