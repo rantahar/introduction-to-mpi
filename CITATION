@@ -1,3 +1,12 @@
 Please cite as:
 
 Jarno Rantaharju, Seyong Kim: "Introduction to MPI" Version 0.alpha, February 2018, https://github.com/rantahar/introduction-to-mpi
+
+This course uses the Software Carpentry and Data Carpentry Template,
+Greg Wilson (ed.): "Software Carpentry: Lesson Example."  Version
+2016.06, June 2016, https://github.com/carpentries/lesson-example,
+10.5281/zenodo.58153
+
+This course includes materials from Courses by Christopher Woods,
+https://chryswoods.com/main/courses.html, (C) Christopher Woods, 2006-2015.
+
