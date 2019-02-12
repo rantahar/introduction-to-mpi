@@ -14,6 +14,8 @@ keypoints:
 - "The other main restruction is communication speed between the processes"
 ---
 
+
+
 >## Serial and Parallel regions
 >
 > Identify serial and parallel in a given code
