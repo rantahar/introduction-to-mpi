@@ -22,7 +22,12 @@ keypoints:
 
 >## Parallel loop
 >
-> Modify this code to split the loops among processes
+> Modify the following code to split the loops among processes
+>
+> ~~~
+> it may also include some code
+> ~~~
+> {: .output}
 >
 {% include links.md %}
 
