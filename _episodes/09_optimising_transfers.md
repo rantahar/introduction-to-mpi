@@ -9,7 +9,13 @@ objectives:
 keypoints:
 - "It's generally a good idea to pack data into a buffer before sending"
 ---
-FIXME
+
+> ## Packing Transfers
+>
+> In the previous example many separate messages. Can you use a buffer to send them all at once?
+>
+{: .challenge}
+
 
 {% include links.md %}
 
