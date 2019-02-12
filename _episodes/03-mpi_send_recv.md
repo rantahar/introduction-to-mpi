@@ -1,7 +1,7 @@
 ---
 title: "MPI_Send and MPI_Recv"
-teaching: 20
-exercises: 20
+teaching: 15
+exercises: 15
 questions:
 - "How do I send data from one process to another"
 objectives:

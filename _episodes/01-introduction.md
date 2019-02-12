@@ -9,10 +9,9 @@ objectives:
 - "Introducing parallel computing."
 - "Use mpicc/mpifort and mpirun."
 keypoints:
-- "A single processor can only be made so fast"
 - "Many problems can be distributed accross several processors and solved faster"
-- "Mpirun run copies of the program."
-- "The copies are numbered with an MPI rank"
+- "Mpirun runs copies of the program."
+- "The copies are separated MPI rank"
 ---
 
 
