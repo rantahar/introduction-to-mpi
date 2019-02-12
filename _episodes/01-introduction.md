@@ -15,6 +15,8 @@ keypoints:
 - "The copies are numbered with an MPI rank"
 ---
 
+
+
 > ## Hello World!
 >
 > Use the mpi library to write a "Hello World" program. Each copy of the program should print its rank.

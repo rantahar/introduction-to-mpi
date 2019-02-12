@@ -1,7 +1,7 @@
 ---
 title: "Serial and Parallel Regions"
 teaching: 20
-exercises: 20
+exercises: 10
 questions:
 - "When is parallel computing useful?"
 - "How fast can my code run?"

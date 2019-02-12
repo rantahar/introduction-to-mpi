@@ -10,10 +10,17 @@ keypoints:
 - "MPI_Send"
 - "MPI_Recv"
 - "Message tags"
-- "MPI_Recv will stop the program until it "
+- "These functions will block the program untill the message is received"
 ---
 
->## Blocking
+> ## Sending and Receiving
+>
+> Modify the Hello World code so that each process sends its
+> message to rank 0. Have rank 0 print each message.
+>
+{: .challenge}
+
+> ## Blocking
 >
 > - What happens in this code? Why?
 > - How would you change the code to fix the problem?
