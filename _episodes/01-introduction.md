@@ -14,8 +14,6 @@ keypoints:
 - "The copies are separated MPI rank"
 ---
 
-
-
 > ## Hello World!
 >
 > Use the mpi library to write a "Hello World" program. Each copy of the program should print its rank.
@@ -26,13 +24,18 @@ keypoints:
 > > #include <mpi.h>
 > > 
 > > main(int argc, char** argv) {
-> >   int node, size;
-> > 
+> >   int rank, n_ranks, numbers_per_rank;
+> >
+> >   // Firt call MPI_Init
 > >   MPI_Init(&argc, &argv);
-> >   MPI_Comm_rank(MPI_COMM_WORLD,&node);
-> >   MPI_Comm_size(MPI_COMM_WORLD,&size);
-> >   printf("Hello! World = %d\n", node);
-> >   printf("total no. of nodes = %d\n", size);
+> >   // Get my rank and the number of ranks
+> >   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+> >   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+> >
+> >   printf("Hello! World = %d\n", rank);
+> >   printf("total no. of nodes = %d\n", n_ranks);
+> >
+> >   // Call finalize at the end
 > >   MPI_Finalize();
 > > }
 > > 
@@ -59,7 +62,7 @@ keypoints:
 > > {: .output}
 > {: .solution}
 >
-{: .challenge}
+{: .challenge} 
 
 
 {% include links.md %}
