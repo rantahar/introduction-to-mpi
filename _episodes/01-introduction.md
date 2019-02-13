@@ -49,10 +49,14 @@ keypoints:
 > >      program hello
 > >
 > >      include 'mpif.h'
+> >      
+> >      integer rank, n_ranks
 > >
 > >      call MPI_INIT(ierr)
-> >      call MPI_COMM_RANK(MPI_COMM_WORLD,node,ierr)
-> >      write(6,*) 'Hello! World = ', node
+> >      call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+> >      call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
+> >      write(6,*) 'Hello! World = ', rank
+> >      write(6,*) 'total no. of nodes = ", n_ranks
 > >      call MPI_FINALIZE(ierr)
 > >
 > >      stop
