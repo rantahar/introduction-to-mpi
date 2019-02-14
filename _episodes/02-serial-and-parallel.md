@@ -1,6 +1,6 @@
 ---
 title: "Serial and Parallel Regions"
-teaching: 20
+teaching: 10
 exercises: 10
 questions:
 - "When is parallel computing useful?"
@@ -11,22 +11,166 @@ keypoints:
 - "Algorithms can have parallellisable and non-parallellisable sections"
 - "A highly parallel algorithm may be slower on a single processor"
 - "The theoretical maximum speed is determined by the serial sections"
-- "The other main restruction is communication speed between the processes"
+- "The other main restriction is communication speed between the processes"
 ---
 
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+## Serial and Parallel Execution
+
+We can often think of a serial (that is to say, not parallel) algorithm as a black box
+with an input and an output.
+![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %})
+To see where parallel processing is useful, we need to take a closer look at the algorithm.
+
+A program generally runs in successive steps, each processing some input and producing the output.
+![Input -> Task 1 -> Task 2 -> Task 3 -> Output]({{ page.root }}{% link files/serial_multi_task_flow.png %})
+If each task actually just uses the same input,
+or takes no input at all, as our example in the previous lesson,
+we can run them all in parallel.
+![Input -> Task 1 / Task 2 / Task 3 -> Output]({{ page.root }}{% link files/parallel_simple_flow.png %})
+This would run as fast as the slowest of the tasks.
+
+Life is rarely that simple, and if the tasks were actually completely separate,
+we would have written three separate programs instead of one.
+Usually some of the tasks in a program can be run in parallel and some cannot.
+These are called parallel and serial regions.
+Let's say now that the output of task 1 is needed in both task 2 and task 3.
+There are at least two ways of parallellising this algorithm.
+
+We can run task 1 on the first rank, send the result to a second rank to run task 2
+and start task 3 on the first rank.
+![Input -> Task 1 -> Task 2 / Task 3 -> Output]({{ page.root }}{% link files/parallel_complicated_flow.png %})
+The other option is to run task 1 twice.
+![Input -> ( Task 1 -> Task 2 / task1 -> Task 3 ) -> Output]({{ page.root }}{% link files/parallel_more_complicated_flow.png %})
+
+>## When to communicate
+>
+> When would the second option be better?
+>
+> > ## Solution
+> >
+> > Wether the first or the second option is better depends on
+> > * The amount of data task 2 needs from task 1 in the first option
+> > * The amount of input data task 1 needs in the second option
+> > * How fast you can transfer data
+> > * How much work task 1 is
+> > * Is the second core doing anything useful
+> >
+> > We often need to perform the same small tasks on all the ranks. This might seem wasteful,
+> > but if communicating the result takes more time, it may not be.
+> >
+> {: .solution}
+{: .discussion}
+
+Any algorithm will have parallel regions and serial regions.
+The parallel algorithm can never run faster than the sum of the serial regions.
+Fortunately, the parallel part is often much larger than the serial part.
 
 >## Serial and Parallel regions
 >
-> Identify serial and parallel in a given code
+> Identify serial and parallel regions the code below
+>
+> > ## C
+> > ~~~
+> > #include <stdio.h>
+> > 
+> > main(int argc, char** argv) {
+> >   int N = 10;
+> >   int vector_1[N], vector_2[N], vector_3[N];
+> >
+> >   vector_1[0] = 1;
+> >   vector_1[1] = 1;
+> >   for( int i=2; i<N; i++ )  {
+> >     vector_1[i] = vector_1[i-1] + vector_1[i-2];
+> >   }
+> >
+> >   for( int i=0; i<N; i++ )  {
+> >     vector_1[i] = i;
+> >   }
+> >
+> >   for( int i=0; i<N; i++ ) {
+> >     vector_3[i] = vector_2[i] + vector_1[i];
+> >     print("The sum of the vectors is.", vector_3[i]);
+> >   }
+> > }
+> > ~~~
+> > {: .output}
+> {: .prereq .foldable}
+>
+> > ## Solution in C
+> > ~~~
+> > #include <stdio.h>
+> > 
+> > main(int argc, char** argv) {
+> >   // Serial
+> >   int N = 10;
+> >   int vector_1[N], vector_2[N], vector_3[N];
+> >
+> >   // Serial: Each iteration of the loop needs data from previous iterations
+> >   vector_1[0] = 1;
+> >   vector_1[1] = 1;
+> >   for( int i=2; i<N; i++ )  {
+> >     vector_1[i] = vector_1[i-1] + vector_1[i-2];
+> >   }
+> >
+> >   // Parallel: Each iteration is independent
+> >   for( int i=0; i<N; i++ )  {
+> >     vector_1[i] = i;
+> >   }
+> >
+> >   // Parallel: Each itetration is independent
+> >   for( int i=0; i<N; i++ ) {
+> >     vector_3[i] = vector_2[i] + vector_1[i];
+> >     print("The sum of the vectors is.", vector_3[i]);
+> >   }
+> > }
+> > ~~~
+> > {: .output}
+> {: .solution}
+>
 >
 {: .challenge}
+
+## Amdahl's Law
+
+The time it takes to execute the program is roughly
+
+$$ T = T_{serial} + T_{parallel}/N_r + T_C(N_r) $$.
+
+The $$N_r$$ here is the number of ranks.
+$$T_C$$ represents the time spent communicating between the ranks.
+
+The other significant factors in the speed of a parallel program are
+communication speed, latency and of course the number of parallel processes.
+When the number of ranks is small, time spent in communication is not significant
+and the parallel regions get faster with the number of ranks.
+But if we keep increasing the number of ranks the time spent in communication grows.
 
 >## Parallel loop
 >
 > Modify the following code to split the loops among processes
 >
 > > ## C
+> > ~~~
+> > #include <stdio.h>
+> > #include <math.h>
+> > 
+> > main(int argc, char** argv) {
+> >   int numbers = 10;
+> >
+> >   for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
+> >     print("I'm printing the number %d.", i);
+> >   }
+> >
+> > }
+> > ~~~
+> > {: .output}
+> {: .prereq .foldable}
+>
+>
+>
+> > ## Solution in C
 > > ~~~
 > > #include <stdio.h>
 > > #include <math.h>
@@ -60,13 +204,9 @@ keypoints:
 > > ~~~
 > > {: .output}
 > >
-> {: .prereq .foldable}
+> {: .solution}
 > 
 >
-> > ## Fortran
-> >
-> >
-> {: .prereq .foldable}
 >
 {: .challenge }
 
