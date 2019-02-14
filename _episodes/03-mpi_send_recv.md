@@ -1,7 +1,7 @@
 ---
 title: "MPI_Send and MPI_Recv"
-teaching: 15
-exercises: 15
+teaching: 10
+exercises: 20
 questions:
 - "How do I send data from one process to another"
 objectives:
@@ -168,7 +168,12 @@ in transit.
 >
 {: .prereq .foldable}
 
-In this example program, rank 0 sends a message and rank 1 receives it.
+> ## Try It Out
+>
+> Compile and run the above code
+>
+{: .challenge}
+
 
 
 > ## Sending and Receiving
@@ -256,8 +261,6 @@ In this example program, rank 0 sends a message and rank 1 receives it.
 > >      }
 > >   }
 > >   
-> >   printf("Hello! World = %d\n", rank);
-> >
 > >   // Call finalize at the end
 > >   MPI_Finalize();
 > > }

@@ -1,7 +1,7 @@
 ---
 title: "Communication Patterns"
 teaching: 20
-exercises: 5
+exercises: 10
 questions:
 - "How do you design a parallel algorithm"
 - "How do I split the work"

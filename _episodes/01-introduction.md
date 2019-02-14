@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Parallel Computing"
 teaching: 20
-exercises: 10
+exercises: 20
 questions:
 - "What is parallel computing?"
 - "What HPC system do I have access to?"
@@ -74,7 +74,7 @@ call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
 ~~~
 {: .source}
 
-Here's a small example:
+Here's a more complete example:
 > ## C
 > ~~~
 > #include <stdio.h>
