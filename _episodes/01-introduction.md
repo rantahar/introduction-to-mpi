@@ -130,7 +130,8 @@ Usually the rank will need to know how many other ranks there are. You can find 
 
 > ## Hello World!
 >
-> Use the mpi library to write a "Hello World" program. Each copy of the program should, or rank, should print "Hello World!" followed by it's rank number.
+> Use the mpi library to write a "Hello World" program.
+> Each copy of the program, or rank, should print "Hello World!" followed by it's rank number.
 > They should also print the total number of ranks.
 >
 > > ## Solution in C
