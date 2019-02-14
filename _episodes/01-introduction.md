@@ -119,6 +119,12 @@ Here's a small example:
 > {: .output}
 {: .solution}
 
+> ## Compile
+>
+> Compile and run the above code
+>
+{: .challenge}
+
 Notice the MPI_COMM_WORLD parameter. This is an MPI communicator and was created by MPI_Init. It labels the set of cores, called ranks, we are working with. 
 
 Notice also that we are still only coding for a single copy of the program. This is always true when using MPI. Each copy runs the same code and only differs by it's rank number.
