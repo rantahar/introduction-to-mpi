@@ -392,5 +392,81 @@ in transit.
 {: .challenge}
 
 
+> ## Ping Pong
+>
+> Write a simplified simplified simulation of pingpong according to the
+> following rules:
+> * Ranks 0 and 1 participate
+> * Rank 0 starts with the ball
+> * The rank with the ball sends it to the other rank
+> * Both ranks count the number of times they get the ball
+> * After counting to 1 million, the rank gives up
+> * There are no misses or points
+>
+>
+> > ## Solution in C
+> > 
+> > ~~~
+> > #include <stdio.h>
+> > #include <mpi.h>
+> > 
+> > int main(int argc, char** argv) {
+> >    int rank, n_ranks, neighbour;
+> >    int max_count = 1000000;
+> >    int counter;
+> >    int bored;
+> >    int ball = 1; // A dummy message to simulate the ball
+> >    MPI_Status status;
+> > 
+> >    // Firt call MPI_Init
+> >    MPI_Init(&argc, &argv);
+> > 
+> >    // Get my rank and the number of ranks
+> >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+> >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+> > 
+> >    // Call the other rank the neighbour
+> >    if( rank == 0 ){
+> >        neighbour = 1;
+> >    } else {
+> >        neighbour = 0;
+> >    }
+> > 
+> >    if( rank == 0 ){
+> >       // Rank 0 starts with the ball. Send it to rank 1
+> >       MPI_Send(&ball, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+> >    }
+> > 
+> >    counter = 0;
+> >    bored = 0;
+> >    while( !bored )
+> >    {
+> >       // Receive the ball
+> >       MPI_Recv(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
+> >       
+> >       // Increment the counter
+> >       counter++;
+> > 
+> >       // Send the ball back
+> >       MPI_Send(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
+> > 
+> > 
+> >       // Check if the rank is bored
+> >       bored = counter < max_count;
+> >    }
+> >    printf("rank %d is bored and giving up \n", rank);
+> > 
+> >    // Call finalize at the end
+> >    MPI_Finalize();
+> > }
+> > ~~~
+> > {: .output}
+> {: .solution}
+>
+>
+{: .challenge}
+
+
+
 {% include links.md %}
 
