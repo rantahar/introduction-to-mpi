@@ -23,7 +23,7 @@ You probably have two or four on your laptop, and many problems can be run very 
 As a researcher, you probably have access to an HPC system with thousands or hundreds of thousands of cores.
 To use them all efficiently would be challenging in almost any field.
 
-During this course you will learn use to design parallel algorithms and write parallel programs using the MPI library.
+During this course you will learn to design parallel algorithms and write parallel programs using the MPI library.
 MPI stands for Message Passing Interface, and is a low level, extremely flexible and simple set of commands for communicating between copies of a program.
 
 > ## Running with mpirun
