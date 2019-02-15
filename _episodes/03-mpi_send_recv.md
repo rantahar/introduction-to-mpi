@@ -282,7 +282,8 @@ in transit.
 > > 
 > > int main(int argc, char** argv) {
 > >    int rank, n_ranks, neighbour;
-> >    char message[30];
+> >    int n_numbers = 1048576;
+> >    int message[n_numbers];
 > >    MPI_Status status;
 > > 
 > >    // Firt call MPI_Init
@@ -299,13 +300,17 @@ in transit.
 > >       neighbour = 0;
 > >    }
 > > 
-> >    // Receive the message from the other rank
-> >    MPI_Recv(message, 30, MPI_BYTE, neighbour, 0, MPI_COMM_WORLD, &status);
-> >    printf("%s",message);
+> >    // Generate random numbers to send
+> >    for( int i=0; i<n_numbers; i++){
+> >       message[i] = i;
+> >    }
 > > 
 > >    // Send the message to other rank
-> >    sprintf(message, "Hello World, I'm rank %d\n", rank);
-> >    MPI_Send(message, 30, MPI_BYTE, neighbour, 0, MPI_COMM_WORLD);
+> >    MPI_Send(message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
+> > 
+> >    // Receive the message from the other rank
+> >    MPI_Recv(message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
+> >    printf("Message received by rank %d \n", rank);
 > > 
 > >    // Call finalize at the end
 > >    MPI_Finalize();
@@ -318,10 +323,14 @@ in transit.
 >
 > > ## Solution in C
 > > 
-> > Since the MPI_Recv call is first, both processes will wait for a signal form
-> > the other before continuing.
-> > Calls to MPI_Recv are blocking, the message has to be received before the
-> > process can continue.
+> > MPI_Send will block execution until until the receiving process has called
+> > MPI_Recv. This prevents the sender from unintentionally modifying the message
+> > buffer before the message is actually sent.
+> > Above, both ranks call MPI_Send and just wait for the other respond.
+> > The solution is to have one of the ranks receive it's message before sending:
+> >
+> > Sometimes MPI_Send will actually make a copy of the buffer and return immediately.
+> > This generally happens only for short messages.
 > > 
 > > ~~~
 > > #include <stdio.h>
@@ -329,7 +338,8 @@ in transit.
 > > 
 > > int main(int argc, char** argv) {
 > >    int rank, n_ranks, neighbour;
-> >    char message[30];
+> >    int n_numbers = 1048576;
+> >    int message[n_numbers];
 > >    MPI_Status status;
 > > 
 > >    // Firt call MPI_Init
@@ -339,20 +349,32 @@ in transit.
 > >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 > >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 > > 
-> >    // Call the other rank the neighbour
-> >    if( rank == 0 ){
-> >       neighbour = 1;      
-> >    } else {
-> >       neighbour = 0;
+> >    // Generate random numbers to send
+> >    for( int i=0; i<n_numbers; i++){
+> >       message[i] = i;
 > >    }
 > > 
-> >    // Send the message to other rank
-> >    sprintf(message, "Hello World, I'm rank %d\n", rank);
-> >    MPI_Send(message, 30, MPI_BYTE, neighbour, 0, MPI_COMM_WORLD);
+> >    if( rank == 0 ){
+> >       // Rank 0 will send first
+> >       MPI_Send(message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD);
+> >    }
 > > 
-> >    // Receive the message from the other rank
-> >    MPI_Recv(message, 30, MPI_BYTE, neighbour, 0, MPI_COMM_WORLD, &status);
-> >    printf("%s",message);
+> >    if( rank == 1 ){
+> >       // Rank 1 will receive it's message before sending
+> >       MPI_Recv(message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+> >       printf("Message received by rank %d \n", rank);
+> >    }
+> > 
+> >    if( rank == 1 ){
+> >       // Now rank 1 is free to send
+> >       MPI_Send(message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD);
+> >    }
+> > 
+> >    if( rank == 0 ){
+> >       // And rank 0 will receive the message
+> >       MPI_Recv(message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
+> >       printf("Message received by rank %d \n", rank);
+> >    }
 > > 
 > >    // Call finalize at the end
 > >    MPI_Finalize();
