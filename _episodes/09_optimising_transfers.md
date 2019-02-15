@@ -41,6 +41,14 @@ Will I split the data between the tasks, and if I do, how should I split it?
 The way the task is distributed will determine how efficient the resulting
 program can be and how well he runtime scales with the number of ranks.
 
+### Start With a Serial Code
+It's easy to make mistakes.
+Start with a working serial code and continually compare between the
+parallel and the serial versions.
+Make changes a section at a time until the program is sufficiently
+efficient.
+Don't parallellise sections that have on effect on performance.
+
 
 ### Packed Transfers
 At a slightly lower level, it is also important to optimise the data transfers.
