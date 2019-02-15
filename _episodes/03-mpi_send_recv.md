@@ -270,6 +270,8 @@ in transit.
 >
 {: .challenge}
 
+
+
 > ## Blocking
 >
 > - Try this code and see what happens
@@ -283,7 +285,8 @@ in transit.
 > > int main(int argc, char** argv) {
 > >    int rank, n_ranks, neighbour;
 > >    int n_numbers = 1048576;
-> >    int message[n_numbers];
+> >    int send_message[n_numbers];
+> >    int recv_message[n_numbers];
 > >    MPI_Status status;
 > > 
 > >    // Firt call MPI_Init
@@ -300,16 +303,16 @@ in transit.
 > >       neighbour = 0;
 > >    }
 > > 
-> >    // Generate random numbers to send
+> >    // Generate numbers to send
 > >    for( int i=0; i<n_numbers; i++){
-> >       message[i] = i;
+> >       send_message[i] = i;
 > >    }
 > > 
 > >    // Send the message to other rank
-> >    MPI_Send(message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
+> >    MPI_Send(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
 > > 
 > >    // Receive the message from the other rank
-> >    MPI_Recv(message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
+> >    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
 > >    printf("Message received by rank %d \n", rank);
 > > 
 > >    // Call finalize at the end
@@ -331,6 +334,7 @@ in transit.
 > >
 > > Sometimes MPI_Send will actually make a copy of the buffer and return immediately.
 > > This generally happens only for short messages.
+> > Even when this happens, the actual transfer will not start before the receive is posted.
 > > 
 > > ~~~
 > > #include <stdio.h>
@@ -339,7 +343,8 @@ in transit.
 > > int main(int argc, char** argv) {
 > >    int rank, n_ranks, neighbour;
 > >    int n_numbers = 1048576;
-> >    int message[n_numbers];
+> >    int send_message[n_numbers];
+> >    int recv_message[n_numbers];
 > >    MPI_Status status;
 > > 
 > >    // Firt call MPI_Init
@@ -349,30 +354,30 @@ in transit.
 > >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 > >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 > > 
-> >    // Generate random numbers to send
+> >    // Generate numbers to send
 > >    for( int i=0; i<n_numbers; i++){
-> >       message[i] = i;
+> >       send_message[i] = i;
 > >    }
 > > 
 > >    if( rank == 0 ){
 > >       // Rank 0 will send first
-> >       MPI_Send(message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD);
+> >       MPI_Send(send_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD);
 > >    }
 > > 
 > >    if( rank == 1 ){
 > >       // Rank 1 will receive it's message before sending
-> >       MPI_Recv(message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+> >       MPI_Recv(recv_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 > >       printf("Message received by rank %d \n", rank);
 > >    }
 > > 
 > >    if( rank == 1 ){
 > >       // Now rank 1 is free to send
-> >       MPI_Send(message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD);
+> >       MPI_Send(send_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD);
 > >    }
 > > 
 > >    if( rank == 0 ){
 > >       // And rank 0 will receive the message
-> >       MPI_Recv(message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
+> >       MPI_Recv(recv_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
 > >       printf("Message received by rank %d \n", rank);
 > >    }
 > > 
