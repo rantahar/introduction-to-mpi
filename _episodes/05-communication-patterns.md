@@ -13,6 +13,8 @@ keypoints:
 - "Several standard patterns: Trivial, Queue, Master / Worker, Nearest Neighbour, All-to-All"
 ---
 
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 ## Task Parallellism
 
 Task parallellism is of the two main paradigms for splitting an algorithm.
@@ -59,16 +61,46 @@ the data between the ranks. Each rank processes it's own portion of the input da
 communicates only the portion that is necessary to the other ranks.
 Often all the ranks execute the same steps, just with a different set of data.
 
-### Nearest neighbour communication
+### Nearest Neighbour
+
+Nearest neighbour communication is a subset of data parallel algorithms.
+It applies when the data is structured in a regular way in space.
+Some good examples are simulation of atoms in a structured crystal.
+Simulating one atom in the crystal only requires information about each of it's neighbours.
+So if a rank simulates a small local volume
+it only need to communicate information about the atoms at
+the borders of the volume to it's neigbours.
+
 
 
 ### All to All
 
+In other cases, some information needs to be sent from every rank to every other rank
+in the system.
+This may still not be all the information the node has,
+the algorithms can be designed to minimize the amount of data needed.
+
+Many algorithms involve multiplying very large matrices.
+These include finite element methods for computational field theories as well as
+training and applying neural networks.
+The most common parallel algorithm for matrix multiplicitation divides
+the input matrices into smaller submatrices and composes the result from
+multiplications of the submatrices.
+
+$$ A = \begin{bmatrix} A_{11} & A_{12} \\\\ A_{21} & A_{22} \end{bmatrix}$$
+
+$$ B = \begin{bmatrix} B_{11} & B_{12} \\\\ B_{21} & B_{22} \end{bmatrix}$$
+
+$$ A\cdot B = \begin{bmatrix} A_{11}\cdot B_{11} + A_{12}\cdot B_{21} & A_{11}\cdot B_{12} + A_{12}\cdot B_{22} \\\\  A_{21}\cdot B_{11} + A_{22}\cdot B_{21} & A_{21}\cdot B_{12} + A_{22}\cdot B_{22} \end{bmatrix}$$
+
+Clearly a large parts of the submatrices, but not all of it.
+Each of the four nodes only needs to communicate with two other nodes.
+
 
 ## Trivially Parallel
 
-A problem is trivially parallel if no communication is needed between the processes at any point.
-While there are many such algorithms, parallel programmin is not needed to implement them.
+A problem is trivially parallel if no communication is needed between the processes.
+While there are many such algorithms, parallel programming is not needed to implement them.
 
 
 > ## Pattern Examples
@@ -82,8 +114,10 @@ While there are many such algorithms, parallel programmin is not needed to imple
 > ## Patterns Relevant to Your Field
 >
 > If you brought your own research code, how is it implemented?
-> What data is involved in each step of the algorithm.
-> Think about what communication patterns 
+> What data is involved in each step of the algorithm?
+> What tasks could be performed at the same time
+> Which would be more appropriate, a task parallel or a data parallel approach?
+> 
 >
 > Think of computational research problems in your field.
 > Go trough the same set of questions with a common
