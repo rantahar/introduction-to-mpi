@@ -15,6 +15,7 @@ keypoints:
 - "Continuously compare with the working serial code"
 ---
 
+The examples and exercises used 
 
 > ## Parallel Regions
 >
@@ -33,7 +34,8 @@ keypoints:
 >
 > Looking back at the Poisson solver.
 > What can you efficiently divide the problem into multiple
-> ranks? how often do you need to communicate data?
+> ranks?
+> How often do you need to communicate data?
 >
 {: .challenge}
 
@@ -54,7 +56,7 @@ keypoints:
 > Try running your program with an increasing number of ranks.
 > Does the result change? What are the limitations on scaling?
 >
-
+{: .challenge}
 
 > ## Parallel Execution
 >
