@@ -2,7 +2,9 @@
 title: Setup
 ---
 
-Make sure you can compile your a program using a C, C++ or an development environment. You will need to install the MPI (Message Passing Interface) library. Several implementations of MPI exist, but for example, OpenMPI will work.
+## Install MPI
+
+Make sure you can compile your C programs using a Fortran, C or C++ compiler or a development environment. You will need to install the MPI (Message Passing Interface) library. Several implementations of MPI exist, but for example OpenMPI will work.
 
 On Ubuntu install openmpi using
 ```
@@ -18,6 +20,11 @@ brew install open-mpi
 
 
 On Windows, you can install [Microsoft MPI](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi) for Visual studio
+
+
+## Install cmocka
+
+Cmocka is a unit testing framework for C. You can find it at the [Cmocka website](https://cmocka.org/)
 
 
 {% include links.md %}
