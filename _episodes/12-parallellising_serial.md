@@ -62,9 +62,7 @@ Can you replace the serial parts with a different, more parallel algorithm?
 >> This will lead to a data parallel implementation with the
 >> elements of the fields u and rho divided across the ranks.
 >>
->> The 
->> 
->{: .output}
+>{: .solution}
 >
 {: .challenge}
 
@@ -93,6 +91,7 @@ This is really only a problem if done in a tight loop, many times per second.
 > ranks?
 > Which ones?
 >
+>> ## Solution
 >> Only one of the loops requires data from the other ranks,
 >> and these are only nearest neighbours.
 >>
@@ -106,7 +105,7 @@ This is really only a problem if done in a tight loop, many times per second.
 >> There is also a global reduction for calculating unorm.
 >> Every node needs to know the result.
 >>
->{: .output}
+>{: .solution}
 >
 {: .challenge}
 
@@ -123,6 +122,7 @@ Use small units. Smaller units are easier to test.
 > Write a test for an individual iteration of the
 > Poisson solver
 >
+{: .challenge}
 
 ## Write a Version for One Rank
 
