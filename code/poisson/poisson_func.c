@@ -10,6 +10,14 @@
 #define IMAX 1000
 
 
+double poisson_step( 
+    float u[MAX+2][MAX+2],
+    float unew[MAX+2][MAX+2],
+    float rho[MAX+2][MAX+2],
+    float hsq
+  );
+
+
 void main(int argc, char** argv) {
 
   int i, j;
@@ -21,7 +29,7 @@ void main(int argc, char** argv) {
 
   // Read parameters from the command line
   printf("step size = \n"); 
-  scanf("%f",&h);
+  scanf("%f", &h);
   printf("step size = %f\n",h);
 
   printf("residual = \n");
@@ -54,31 +62,8 @@ void main(int argc, char** argv) {
   // Run iterations until the field reaches an equilibrium
   do {
 
-    // Calculate one timestep
-    for(j = 1;j <= MAX; j++){
-      for(i = 1;i <= MAX; i++){
-          double difference = u[i-1][j] + u[i+1][j] + u[i][j-1] + u[i][j+1];
-	        unew[i][j] =0.25*( difference - hsq*rho[i][j] );
-      }
-    }
+    unorm = poisson_step( u, unew, rho, hsq );
 
-    // Find the difference compared to the previous time step
-    unorm = 0.0;
-    for(j = 1;j <= MAX; j++){
-      for(i = 1;i <= MAX; i++){
-        double diff = unew[i][j]-u[i][j];
-        unorm +=diff*diff;
-      }
-    }
-    printf("unorm = %.8e\n",unorm);
-
-    // Overwrite u with the new field
-    for(j = 1;j <= MAX;j++){
-      for(i = 1;i <= MAX;i++){
-        u[i][j] = unew[i][j];
-      }
-    }
-    
   } while( sqrt(unorm) > sqrt(residual) );
 
   /* The run is complete. Write the fields into the result files.*/

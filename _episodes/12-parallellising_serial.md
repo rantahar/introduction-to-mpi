@@ -110,7 +110,7 @@ This is really only a problem if done in a tight loop, many times per second.
 {: .challenge}
 
 
-## Set up tests
+## Set Up Tests
 
 In a larger program individual tasks should already be
 separated into functions.
@@ -119,8 +119,104 @@ Use small units. Smaller units are easier to test.
 
 > ## Write a Test
 >
-> Write a test for an individual iteration of the
-> Poisson solver
+> Write a test for one iteration of the Poisson solver.
+> 
+>> ## Solution in C
+>>  
+>> The Poisson step fucntion could look like this:
+>> ~~~
+>>#include <stdio.h>
+>>#include <math.h>
+>>
+>>#define MAX 100
+>>#define IMAX 1000
+>>
+>>
+>>double poisson_step( 
+>>    float u[MAX+2][MAX+2],
+>>    float unew[MAX+2][MAX+2],
+>>    float rho[MAX+2][MAX+2],
+>>    float hsq
+>>  ){
+>>  double unorm;
+>>
+>>  // Calculate one timestep
+>>  for( int j=1; j <= MAX; j++){
+>>    for( int i=1; i <= MAX; i++){
+>>        float difference = u[i-1][j] + u[i+1][j] + u[i][j-1] + u[i][j+1];
+>>	    unew[i][j] =0.25*( difference - hsq*rho[i][j] );
+>>    }
+>>  }
+>>
+>>  // Find the difference compared to the previous time step
+>>  unorm = 0.0;
+>>  for( int j = 1;j <= MAX; j++){
+>>    for( int i = 1;i <= MAX; i++){
+>>      float diff = unew[i][j]-u[i][j];
+>>      unorm +=diff*diff;
+>>    }
+>>  }
+>>  printf("unorm = %.8e\n",unorm);
+>>
+>>  // Overwrite u with the new field
+>>  for( int j = 1;j <= MAX;j++){
+>>    for( int i = 1;i <= MAX;i++){
+>>      u[i][j] = unew[i][j];
+>>    }
+>>  }
+>>
+>>  return unorm;
+>>}
+>> ~~~
+>> {:.output}
+>>
+>> Assuming the above is saved to poisson_step.c, the
+>> the following wil run a simple test
+>> ~~~
+>>#include <stdarg.h>
+>>#include <stddef.h>
+>>#include <setjmp.h>
+>>#include <cmocka.h>
+>>
+>>#include "poisson_step.c"
+>>
+>>static void test_poisson_step(void **state) {
+>>   float u[MAX+2][MAX+2], unew[MAX+2][MAX+2], rho[MAX+2][MAX+2];
+>>   float h, hsq;
+>>   double unorm, residual;
+>>
+>>   /* Set variables */
+>>   h = 0.1;
+>>   hsq = h*h;
+>>
+>>   // Initialise the u and rho field to 0 
+>>   for( int j=0; j <= MAX+1; j++ ){
+>>      for( int i=0; i <= MAX+1; i++ ) {
+>>         u[i][j] = 0.0;
+>>         rho[i][j] = 0.0;
+>>      }
+>>   }
+>>
+>>   // Test a configuration with u=10 at x=1 and y=1
+>>   u[1][1] = 10;
+>>
+>>   unorm = poisson_step( u, unew, rho, hsq );
+>>
+>>   assert_true( unorm == 112.5 );
+>>}
+>>
+>>/* In the main function create the list of the tests */
+>>int main(void) {
+>>   const struct CMUnitTest tests[] = {
+>>      cmocka_unit_test(test_poisson_step),
+>>   };
+>>
+>>   // Call a library function that will run the tests
+>>   return cmocka_run_group_tests(tests, NULL, NULL);
+>>}
+>> ~~~
+>> {:.output}
+>{: .solution}
 >
 {: .challenge}
 
