@@ -94,6 +94,70 @@ and test these separately.
 >
 {: .prereq .foldable}
 
+
+> ## Unit testing in Fortran
+>
+> In the following examples and challenges we use the FRUIT unit testing framework.
+> Testing frameworks in general use similar concepts and any lessons learned here
+> can be applied to any framework.
+>
+> You will need one file from the FRUIT zip.
+> If you didnt donwload the it yet, take a look at the [setup]({{ page.root }}{% link setup.md %}) for details.
+>
+> Copy fruit.f90 from the src folder in the zip archive to your working directory.
+> Compile it with
+> ~~~
+> gfortran fruit.f90
+> ~~~
+> {: .output}
+>
+> This creates two modules, fruit.mod and fruit_util.mod, and a object file, fruit.o.
+> 
+> Tests are defined in test modules. Here is a very simple example
+> for making sure that true is true.
+>
+>~~~
+> module example_test
+>   use fruit
+>   implicit none
+> 
+> contains
+>   subroutine test_true
+>     integer:: result
+> 
+>     call assert_true( 1==1, "Boolean test")
+>   end subroutine test_true
+> end module example_test
+>~~~
+> {: .output}
+> 
+> Compile this module, too.
+> 
+> Next, we need to define a program to run. In addition to some FRUIT related calls,
+> this will contain a list of your tests.
+>
+>~~~
+> program fruit_driver
+>   use fruit
+>   use example_test
+>   call init_fruit
+>   call test_true
+>   call fruit_summary
+>   call fruit_finalize
+> end program fruit_driver
+>~~~
+> {: .output}
+>
+> Compile this, including the example_test.o and fruit.o object files
+> ~~~
+> gfortran example_driver.f90 example_test.o fruit.o
+> ~~~
+> and run the resulting binary.
+>
+> The program will run our little test and produce some statistics about the tests overall.
+>
+{: .prereq .foldable}
+
 A test suite is nothing but a program that runs your functions and checks that the output
 is correct.
 You check the output using a set of assert functions.

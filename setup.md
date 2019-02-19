@@ -22,9 +22,11 @@ brew install open-mpi
 On Windows, you can install [Microsoft MPI](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi) for Visual studio
 
 
-## Install cmocka
+## Install Cmocka (for C) or FRUIT (for Fortran)
 
-Cmocka is a unit testing framework for C. You can find it at the [Cmocka website](https://cmocka.org/)
+Cmocka is a unit testing framework for C. You can find it at the [Cmocka website](https://cmocka.org/).
+On Ubuntu, all you need to do is install 'libcmocka-dev'.
 
+FRUIT is a similar unit testing framework for Fortran. It can be downloaded from [sourcefourge](http://sourceforge.net/projects/fortranxunit/).
 
 {% include links.md %}
