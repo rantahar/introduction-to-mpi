@@ -12,6 +12,8 @@ keypoints:
 - "There are functions for global reductions. Don't write your own."
 ---
 
+## Collective Operations
+
 There are several special cases that deserve their own implementations in the MPI standard.
 The most common are:
 

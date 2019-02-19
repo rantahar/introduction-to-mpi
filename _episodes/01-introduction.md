@@ -14,6 +14,8 @@ keypoints:
 - "The copies are separated MPI rank"
 ---
 
+## Parallel Computing
+
 In many fields of science we need more computational power than a single core on a single processor can provide.
 In essence, parallel computing means simply using more than one computer or more than one core to solve a problem faster.
 Naively, using more CPU's (or cores) means that one can solve a problem much faster, in time scales that make sense for research projects or study programs.
@@ -25,6 +27,8 @@ To use them all efficiently would be challenging in almost any field.
 
 During this course you will learn to design parallel algorithms and write parallel programs using the MPI library.
 MPI stands for Message Passing Interface, and is a low level, extremely flexible and simple set of commands for communicating between copies of a program.
+
+## Using MPI
 
 > ## Running with mpirun
 >
@@ -133,6 +137,7 @@ When all ranks are doing their job, the algorithm will work correctly.
 
 Usually the rank will need to know how many other ranks there are. You can find this out using the MPI_Comm_size in C or MPI_COMM_SIZE in Fortran.
 
+## Hello World!
 > ## Hello World!
 >
 > Use the mpi library to write a "Hello World" program.

@@ -12,6 +12,7 @@ keypoints:
 - "MPI_Recv will block the program until the message is received"
 ---
 
+## Communication
 In this section we will use two MPI library functions functions for sending and receiving data.
 These are MPI_Send and MPI_Recv.
 

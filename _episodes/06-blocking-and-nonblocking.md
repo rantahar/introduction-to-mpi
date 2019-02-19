@@ -10,6 +10,8 @@ keypoints:
 - "Non-blocking functions allows interleaving communication and computation"
 ---
 
+## Non-Blocking Communication
+
 In one of the previous lessons we used the MPI_Send and MPI_Recv functions
 to communicate between the ranks.
 We saw that these functions are blocking, they will only return once the program
@@ -157,7 +159,7 @@ or call MPI_Wait to wait until the transfer is complete.
 
 
 
-> ## Non-blocking
+> ## Non-Blocking Communication
 >
 > Here is the blocking example again.
 > Fix the problem using MPI_Isend, MPI_Irecv and MPI_Wait.

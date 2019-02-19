@@ -97,7 +97,7 @@ Clearly a large parts of the submatrices, but not all of it.
 Each of the four nodes only needs to communicate with two other nodes.
 
 
-## Trivially Parallel
+### Trivially Parallel
 
 A problem is trivially parallel if no communication is needed between the processes.
 While there are many such algorithms, parallel programming is not needed to implement them.
