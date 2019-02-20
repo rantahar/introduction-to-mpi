@@ -87,25 +87,25 @@ main(int argc, char** argv) {
       MPI_Recv(recvbuf,MAX,MPI_FLOAT,nextdn,itag2,MPI_COMM_WORLD,&istatus);
       for(i=0;i < MAX;i++) u[i+1][0] = recvbuf[i];
       if ( node != (numtask-1)) {
-	for(i=0;i < MAX;i++) sendbuf[i] = unew[i+1][isub];
-	MPI_Send(sendbuf,MAX,MPI_FLOAT,nextup,itag1,MPI_COMM_WORLD);
-	MPI_Recv(recvbuf,MAX,MPI_FLOAT,nextup,itag2,MPI_COMM_WORLD,&istatus);
-	for(i=0;i < MAX;i++) u[i+1][isub+1] = recvbuf[i];
+	      for(i=0;i < MAX;i++) sendbuf[i] = unew[i+1][isub];
+	      MPI_Send(sendbuf,MAX,MPI_FLOAT,nextup,itag1,MPI_COMM_WORLD);
+	      MPI_Recv(recvbuf,MAX,MPI_FLOAT,nextup,itag2,MPI_COMM_WORLD,&istatus);
+	      for(i=0;i < MAX;i++) u[i+1][isub+1] = recvbuf[i];
       }
     }
     else {
       if (node != 0) {
-	MPI_Recv(recvbuf,MAX,MPI_FLOAT,nextdn,itag1,MPI_COMM_WORLD,&istatus);
-	for(i=0;i < MAX;i++) u[i+1][0] = recvbuf[i];
-	for(i=0;i < MAX;i++) sendbuf[i] = unew[i+1][1];
-	MPI_Send(sendbuf,MAX,MPI_FLOAT,nextdn,itag2,MPI_COMM_WORLD);
+	      MPI_Recv(recvbuf,MAX,MPI_FLOAT,nextdn,itag1,MPI_COMM_WORLD,&istatus);
+	      for(i=0;i < MAX;i++) u[i+1][0] = recvbuf[i];
+	      for(i=0;i < MAX;i++) sendbuf[i] = unew[i+1][1];
+	      MPI_Send(sendbuf,MAX,MPI_FLOAT,nextdn,itag2,MPI_COMM_WORLD);
       }
 
       if (node != (numtask-1)) {
-	MPI_Recv(recvbuf,MAX,MPI_FLOAT,nextup,itag1,MPI_COMM_WORLD,&istatus);
-	for(i=0;i < MAX;i++) u[i+1][isub+1] = recvbuf[i];
-	for(i=0;i < MAX;i++) sendbuf[i] = unew[i+1][isub];
-	MPI_Send(sendbuf,MAX,MPI_FLOAT,nextup,itag2,MPI_COMM_WORLD);
+	      MPI_Recv(recvbuf,MAX,MPI_FLOAT,nextup,itag1,MPI_COMM_WORLD,&istatus);
+	      for(i=0;i < MAX;i++) u[i+1][isub+1] = recvbuf[i];
+	      for(i=0;i < MAX;i++) sendbuf[i] = unew[i+1][isub];
+	      MPI_Send(sendbuf,MAX,MPI_FLOAT,nextup,itag2,MPI_COMM_WORLD);
       }
     }
   } 

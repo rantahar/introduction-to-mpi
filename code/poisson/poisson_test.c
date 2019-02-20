@@ -9,6 +9,7 @@ static void test_poisson_step(void **state) {
    float u[MAX+2][MAX+2], unew[MAX+2][MAX+2], rho[MAX+2][MAX+2];
    float h, hsq;
    double unorm, residual;
+   float diff;
 
    /* Set variables */
    h = 0.1;
@@ -25,9 +26,16 @@ static void test_poisson_step(void **state) {
    // Test a configuration with u=10 at x=1 and y=1
    u[1][1] = 10;
 
+   // Test one step
    unorm = poisson_step( u, unew, rho, hsq );
-
    assert_true( unorm == 112.5 );
+
+   // Test 50 steps
+   for( int iteration=0; iteration<50; iteration++ ){
+      unorm = poisson_step( u, unew, rho, hsq );
+   }
+   diff = unorm - 0.001838809444;
+   assert_true( diff*diff < 1e-16 );
 }
 
 /* In the main function create the list of the tests */

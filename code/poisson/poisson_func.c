@@ -63,6 +63,7 @@ void main(int argc, char** argv) {
   do {
 
     unorm = poisson_step( u, unew, rho, hsq );
+    printf("unorm = %.8e\n",unorm);
 
   } while( sqrt(unorm) > sqrt(residual) );
 
