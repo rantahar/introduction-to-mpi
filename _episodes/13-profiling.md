@@ -62,13 +62,28 @@ Finally, you can examine the results in the GUI
 scalasca -examine scorep_poisson_2_sum
 ~~~
 {: .output}
-or on the command line
+This will open the cubeGUI.
+![A picture of the cube GUI]({{ page.root }}{% link fig/cube.png %})
+
+The GUI has three panels, a metric view, a function View and a system view.
+In the metric view you can pick a metric being displayed.
+You can dig into the details of some of the metrics in a tree view.
+The second panels shows functions either as a call tree, displaying
+which functions have called which,
+or as a flat view.
+It also displays the metric you have chosen on a function level.
+The system view displays data on the chose function on a deeper level.
+
+Right clicking on the view and choosing info replaces the system view with an info view.
+This gives information on the chosen metric.
+
+If your running on a cluster you may wish to use the command line instead.
+To supress the gui use the -s parameter.
 ~~~
 scalasca -examine -s scorep_poisson_2_sum
 cat scorep_poisson_2_sum/scorep.score
 ~~~
 {: .output}
-
 The command line version will produce output that looks something like this:
 ~~~
 Estimated aggregate size of event trace:                   1544400 bytes

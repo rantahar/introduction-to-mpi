@@ -1,5 +1,5 @@
 ---
-title: "Communication Patterns"
+title: "Parallel Paradigms"
 teaching: 20
 exercises: 10
 questions:
@@ -15,6 +15,11 @@ keypoints:
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+## Trivially Parallel Problems
+
+A problem is trivially parallel if no communication is needed between the processes.
+While there are many such algorithms, parallel programming is not needed to implement them.
+
 ## Task Parallellism
 
 Task parallellism is of the two main paradigms for splitting an algorithm.
@@ -29,6 +34,8 @@ may depend on others being completed.
 The tasks can be very different and take different amounts of time,
 but when a rank has completed it's tasks, it will pick the next one
 from the queue.
+
+![Each rank taking one task from the top of a queue]({{ page.root }}{% link files/queue.png %})
 
 The queue approach requires the ranks to communicate what they are doing to
 all the other ranks, resulting in some communication overhead.
@@ -48,6 +55,8 @@ The master rank can perform any serial parts of the program.
 It can also optimise the order of the tasks the workers are running, making sure
 the workers don't have to wait idle and minimising the need for communication.
 
+![A master rank controlling the queue]({{ page.root }}{% link files/master.png %})
+
 Naturally the Master / Worker approach reserves a rank to be the master.
 In a large application this is usually a small cost.
 The larger cost is a bit more subtle. Because every node needs to communicate with
@@ -61,12 +70,17 @@ the data between the ranks. Each rank processes it's own portion of the input da
 communicates only the portion that is necessary to the other ranks.
 Often all the ranks execute the same steps, just with a different set of data.
 
+![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
+
 ### Domain Decomposition
 
 When the data is structured in a regular way, such as when
 simulating atoms in a crystal, it makes sense to divide the space
 into domains. Each rank will handle the simulation within it's
 own domain.
+
+![Data points divided to four ranks]({{ page.root }}{% link files/domaindecomposition.png %})
+
 
 Domain decomposition is a subset of data parallel algorithms.
 Ofter communication is limited, each rank only needs to communicate with ranks a certain distance away in space.
@@ -100,12 +114,6 @@ $$ A\cdot B = \begin{bmatrix} A_{11}\cdot B_{11} + A_{12}\cdot B_{21} & A_{11}\c
 
 Clearly a large parts of the submatrices, but not all of it.
 Each of the four nodes only needs to communicate with two other nodes.
-
-
-### Trivially Parallel
-
-A problem is trivially parallel if no communication is needed between the processes.
-While there are many such algorithms, parallel programming is not needed to implement them.
 
 
 > ## Pattern Examples
