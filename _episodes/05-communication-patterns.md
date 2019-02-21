@@ -10,7 +10,7 @@ objectives:
 - "Introducing standard communication patterns"
 - "Think about your software and decide which patterns it uses / could use"
 keypoints:
-- "Several standard patterns: Trivial, Queue, Master / Worker, Nearest Neighbour, All-to-All"
+- "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -61,16 +61,21 @@ the data between the ranks. Each rank processes it's own portion of the input da
 communicates only the portion that is necessary to the other ranks.
 Often all the ranks execute the same steps, just with a different set of data.
 
-### Nearest Neighbour
+### Domain Decomposition
 
-Nearest neighbour communication is a subset of data parallel algorithms.
-It applies when the data is structured in a regular way in space.
-Some good examples are simulation of atoms in a structured crystal.
-Simulating one atom in the crystal only requires information about each of it's neighbours.
-So if a rank simulates a small local volume
-it only need to communicate information about the atoms at
-the borders of the volume to it's neigbours.
+When the data is structured in a regular way, such as when
+simulating atoms in a crystal, it makes sense to divide the space
+into domains. Each rank will handle the simulation within it's
+own domain.
 
+Domain decomposition is a subset of data parallel algorithms.
+Ofter communication is limited, each rank only needs to communicate with ranks a certain distance away in space.
+
+Nearest neighbour communication is a common domain decomposed communication patterns.
+In the simulation of crystal lattices each atom often only needs to
+know about its immediate neighbours.
+In these cases the ranks only need to exchange a small slice on each
+boundary, known as a halo.
 
 
 ### All to All
@@ -106,7 +111,7 @@ While there are many such algorithms, parallel programming is not needed to impl
 > ## Pattern Examples
 >
 > The examples in the first four lessons are also examples of different communication
-> patterns. Can you identify one or more patterns in each example?
+> patterns. Can you identify one or more pattern in each example?
 >
 {: .challenge}
 

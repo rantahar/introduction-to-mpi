@@ -158,6 +158,54 @@ or call MPI_Wait to wait until the transfer is complete.
 {: .prereq .foldable}
 
 
+> ## Example in C
+> ~~~
+> #include <stdio.h>
+> #include <math.h>
+> #include <mpi.h>
+>
+> main(int argc, char** argv) {
+>   int rank, n_ranks, numbers_per_rank;
+>   int my_first, my_last;
+>   int numbers = 10;
+>
+>   // Firt call MPI_Init
+>   MPI_Init(&argc, &argv);
+>
+>   // Check that there are at least two ranks
+>   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
+>   if( n_ranks < 2 ){
+>     printf("This example requires at least two ranks");
+>     MPI_Finalize();
+>     return(1);
+>   }
+>   
+>   // Get my rank
+>   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+>
+>   if( rank == 0 ){
+>      char *message = "Hello, world!";
+>      // Note that MPI_BYTE is the MPI type for char
+>      MPI_ISend(message, 13, MPI_BYTE, 1, 0, MPI_COMM_WORLD);
+>   }
+>
+>   if( rank == 1 ){
+>      char message[13];
+>      int status;
+>      // Note that MPI_BYTE is the MPI type for char
+>      MPI_IRecv(message, 13, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
+>      MPI_Wait( &request, &status );
+>      printf("%s",message)
+>   }
+>   
+>   // Call finalize at the end
+>   MPI_Finalize();
+> }
+> ~~~
+>
+{: .prereq .foldable}
+
+
 
 > ## Non-Blocking Communication
 >
@@ -249,7 +297,7 @@ or call MPI_Wait to wait until the transfer is complete.
 > > 
 > >    // Receive the message from the other rank
 > >    MPI_IRecv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
-> >    MPI_Wait( &request, &status )
+> >    MPI_Wait( &request, &status );
 > >    printf("Message received by rank %d \n", rank);
 > > 
 > >    // Call finalize at the end

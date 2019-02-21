@@ -64,7 +64,6 @@ scalasca -examine scorep_poisson_2_sum
 {: .output}
 or on the command line
 ~~~
-{: .output}
 scalasca -examine -s scorep_poisson_2_sum
 cat scorep_poisson_2_sum/scorep.score
 ~~~
@@ -291,6 +290,15 @@ in your code.
 >~~~
 >{:. output}
 >
+> Adding annotations to loops can be done in a single line
+>~~~
+>SCOREP_USER_REGION( “<solver>", SCOREP_USER_REGION_TYPE_LOOP )
+>for(i = 0; i < 100; i++) {
+>  ...
+>}
+>~~~
+>{: .output}
+>
 {: .prereq .foldable}
 
 
@@ -332,6 +340,10 @@ in your code.
 > Use Scalasca to produce a call tree.
 >
 >>## Solution
+>>
+>>If you replaced region_name by norm, you should see something
+>>like this
+>>
 >>~~~
 >>Reading scorep_a_4_sum/summary.cubex... done.
 >>0.0203862       main                         /main

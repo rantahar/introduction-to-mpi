@@ -1,7 +1,7 @@
 ---
 title: "Testing a Parallel Code"
 teaching: 20
-exercises: 10
+exercises: 20
 questions:
 - "How to make sure the program works?"
 - "How parallel execution affect testing?"
@@ -158,6 +158,9 @@ and test these separately.
 >
 {: .prereq .foldable}
 
+
+## Test Suites Automate and Simplify Testing
+
 A test suite is nothing but a program that runs your functions and checks that the output
 is correct.
 You check the output using a set of assert functions.
@@ -166,7 +169,7 @@ The test suite will report a failure if one or more of the assert statements fai
 
 It is good practice to write to name the test functions according to the function it is
 testing and to give more information if there is more than one test for the function.
-Don't be afraid of using long functio names here.
+Don't be afraid of using long function names.
 When the test suite reports a failure, it will report the name of the test function.
 This way you know exactly where in your code the problem is.
 
@@ -404,9 +407,9 @@ This way you know exactly where in your code the problem is.
 > but in a longer set of tests, this can save a lot of coding
 > and allows you to change all of the tests at once.
 >
-{: .callout .foldable}
+{: .prereq .foldable}
 
-You will notice that most test cnsist of three parts.
+You will notice that most test consist of three parts.
 First they set up the inputs and the environment to mock how the function
 might be called in the actual program.
 They then run the function and finally do a set of checks on the output

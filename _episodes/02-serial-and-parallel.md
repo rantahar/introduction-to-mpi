@@ -144,74 +144,13 @@ $$ T = T_{serial} + T_{parallel}/N_r + T_C(N_r) $$.
 The $$N_r$$ here is the number of ranks.
 $$T_C$$ represents the time spent communicating between the ranks.
 
+![A figure showing the result described above for MAX=512 and MAX=2048]({{ page.root }}{% link fig/poisson_scaling_plot.png %})
+
 The other significant factors in the speed of a parallel program are
 communication speed, latency and of course the number of parallel processes.
 When the number of ranks is small, time spent in communication is not significant
 and the parallel regions get faster with the number of ranks.
 But if we keep increasing the number of ranks the time spent in communication grows.
-
->## Parallel loop
->
-> Modify the following code to split the loops among processes
->
-> > ## C
-> > ~~~
-> > #include <stdio.h>
-> > #include <math.h>
-> > 
-> > main(int argc, char** argv) {
-> >   int numbers = 10;
-> >
-> >   for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
-> >     print("I'm printing the number %d.", i);
-> >   }
-> >
-> > }
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
->
->
->
-> > ## Solution in C
-> > ~~~
-> > #include <stdio.h>
-> > #include <math.h>
-> > #include <mpi.h>
-> > 
-> > main(int argc, char** argv) {
-> >   int rank, n_ranks, numbers_per_rank;
-> >   int my_first, my_last;
-> >   int numbers = 10;
-> >
-> >   // Firt call MPI_Init
-> >   MPI_Init(&argc, &argv);
-> >   // Get my rank and the number of ranks
-> >   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
-> >   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
-> >
-> >   // Calculate the number of iterations for each rank
-> >   numbers_per_rank = ceiling(numbers/n_ranks);
-> >   my_first = rank * numbers_per_rank;
-> >   my_last = my_first + numbers_per_rank;
-> >
-> >   // Run only the part of the loop this rank needs to run
-> >   // The if statement makes sure we don't go over
-> >   for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
-> >     print("I'm printing the number %d.", i);
-> >   }
-> >
-> >   // Call finalize at the end
-> >   MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> >
-> {: .solution}
-> 
->
->
-{: .challenge }
 
 {% include links.md %}
 

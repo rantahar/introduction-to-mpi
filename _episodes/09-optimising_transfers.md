@@ -28,14 +28,14 @@ the number of new operations you are likely to use is relatively small.
 The complication arises from thinking about the ranks working together.
 The most important decisions are the once you are likely to make early.
 
-### Algorithm
+### Choose a Parallel Algorithm
 Some algorithms are fast in serial, but cannot be made parallel, or are
 inefficient in parallel.
 If the algorithm has large serial regions, there is little hope.
 A different algorithm may be less efficient in serial, but have more
 parallel regions and less need for communication.
 
-### Parallellisation Paradigm
+### Think About the Paradigm
 How will I split the work? Will different ranks work on different tasks?
 Will I split the data between the tasks, and if I do, how should I split it?
 The way the task is distributed will determine how efficient the resulting
@@ -50,14 +50,19 @@ efficient.
 Don't parallellise sections that have on effect on performance.
 
 
-### Packed Transfers
+## Choose the Right Implementation
+There are multiple implementations of the MPI standard.
+They are often optimised for a specific set of machines.
+In an HPC system, it's worth using one that's designed for that system.
+
+### Use Packed Transfers
 At a slightly lower level, it is also important to optimise the data transfers.
 Each transfer has a latency, it takes time to set up, to move the data
 between the ranks and to write it to the buffer.
 It's more efficient to pack as much data as possible into each transfer
 and reduce the number of individual transfers.
 
-### Collective Operations
+### Use MPI Collective Operations
 Using the MPI functions for collective communication is almost always more
 efficient.
 They can be implemented specifically for the machine you're running on,
@@ -75,10 +80,18 @@ what is the earliest time you can send the data and the latest time you need it
 start transfers early and do as much work as possible while the data is moving
 from one rank to another.
 
-### Prefer Blocking Functions
-Use blocking calls when it doesn't affect performance.
+### Prefer Blocking Receives
+Use blocking receives when it doesn't affect performance.
 They make it much easier to keep track of things.
 
+### Post Receives Early
+When performance really matters, post receives early.
+You can only post the send once you have the data.
+You can post a receive when ever you want.
+There is no reason for a communication to be waiting for a
+receive to be posted.
+
+Do this within reason.
 
 {% include links.md %}
 

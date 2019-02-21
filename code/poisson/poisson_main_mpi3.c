@@ -3,7 +3,7 @@
 #include <math.h>
 #include <mpi.h>
 
-#define MAX 128
+#define MAX 1024
 
 double poisson_step( 
     float **u,
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
       u[1][1] = 10;
 
    // Test one step
-   for( int iteration=0; iteration<10; iteration++ ){
+   for( int iteration=0; iteration<200; iteration++ ){
       unorm = poisson_step( u, unew, rho, hsq, my_j_max, rank, n_ranks );
    }
 

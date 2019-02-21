@@ -7,7 +7,9 @@
 #include <math.h>
 #include <mpi.h>
 
-#define MAX 128
+#include "scorep/SCOREP_User.h"
+
+#define MAX 1024
 
 
 double poisson_step( 
@@ -23,6 +25,9 @@ double poisson_step(
   float sendbuf[MAX],recvbuf[MAX];
   MPI_Status mpi_status;
 
+  /* Define the Scorep region */
+  SCOREP_USER_REGION_DEFINE( norm );
+
   // Calculate one timestep
   for( int j=1; j <= my_j_max; j++){
     for( int i=1; i <= MAX; i++){
@@ -31,6 +36,7 @@ double poisson_step(
     }
   }
 
+  SCOREP_USER_REGION_BEGIN( norm, "<norm>", SCOREP_USER_REGION_TYPE_LOOP );
   // Find the difference compared to the previous time step
   unorm = 0.0;
   for( int j = 1;j <= my_j_max; j++){
@@ -42,6 +48,8 @@ double poisson_step(
 
   // Use Allreduce to calculate the sum over ranks
   MPI_Allreduce( &unorm, &global_unorm, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+
+  SCOREP_USER_REGION_END( norm );
 
   // Overwrite u with the new field
   for( int j = 1;j <= my_j_max; j++){
