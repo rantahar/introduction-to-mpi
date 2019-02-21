@@ -1,0 +1,11 @@
+fix s(iup(i,1))+s(iup(i,2))+s(idn(i,1))+s(idn(i,2)) part.
+calculation is done twice, which is unnecessary.
+define staple = s(iup(i,1))+s(iup(i,2))+s(idn(i,1))+s(idn(i,2)) then
+reuse it.
+
+current alogrithm uses two stencil method but it may have ergocity
+problem, i.e., the alogrithm moves the system just between two configurations. 
+
+assumes Linux environment for random number routine (erand48()).
+
+for FORTRAN, ranf.c needs to be compiled and linked to FORTRAN progam.
