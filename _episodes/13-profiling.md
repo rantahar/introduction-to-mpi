@@ -241,28 +241,129 @@ scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
 ~~~
 {: .output}
 
-And rerun the application producing the full trace
+### Trace Analysis
+
+Let's now run the application with the full trace using the -t flag
 ~~~
-scalasca -analyze mpirun -n 2 poisson
+scalasca -analyze -t mpirun -n 2 poisson
+~~~
+{: .output}
+And examine the results writtent to the scorep_poisson_2_trace directory
+~~~
+scalasca -examine scorep_poisson_2_trace
 ~~~
 {: .output}
 
+There are some new measurements on the left column.
+Notably you will find a a measure of MPI_Wait states, how long the ranks spend
+waiting for data.
+In addition, you will see the number of MPI communications and time spent synchronising
+ranks.
+
+### User defined regions
+
+By default scorep only collects information about functions.
+You can also define your own regions using annotations 
+in your code.
+
+>## Scorep Annotations in C
+>
+> Include the Scorep header file
+>~~~
+> #include "scorep/SCOREP_User.h"
+> ~~~
+>{:. output}
+>
+> You need to declare the region
+>~~~
+> SCOREP_USER_REGION_DEFINE( region_name );
+>~~~
+>{:. output}
+>
+> At the beginning of the region add
+>~~~
+> SCOREP_USER_REGION_BEGIN( region_name, "<region_name>", SCOREP_USER_REGION_TYPE_LOOP );
+>~~~
+>{:. output}
+> and at the end of the region add
+>~~~
+> SCOREP_USER_REGION_END( region_name );
+>~~~
+>{:. output}
+>
+{: .prereq .foldable}
+
+
+>## Scorep Annotations in Fortran
+>
+> Using Score-P annotations requires processing the file
+> with the C preprocessor.
+> Include the Scorep header file
+>~~~
+> #include "scorep/SCOREP_User.inc"
+> ~~~
+>{:. output}
+>
+> You need to declare the region
+>~~~
+> SCOREP_USER_REGION_DEFINE( region_name )
+>~~~
+>{:. output}
+>
+> At the beginning of the region add
+>~~~
+> SCOREP_USER_REGION_BEGIN( region_name, "<region_name>", SCOREP_USER_REGION_TYPE_LOOP )
+>~~~
+>{:. output}
+> and at the end of the region add
+>~~~
+> SCOREP_USER_REGION_END( region_name )
+>~~~
+>{:. output}
+>
+{: .prereq .foldable}
+
+>## User Defined Regions
+>
+> Add a user defined region to poisson_step_mpi.c.
+> Include the calculation of unorm, both the loop and
+> the reduction.
+>
+> Use Scalasca to produce a call tree.
+>
+>>## Solution
+>>~~~
+>>Reading scorep_a_4_sum/summary.cubex... done.
+>>0.0203862       main                         /main
+>>0.136475          + mpi_init                 /main/MPI_Init
+>>8.259e-06         + mpi_comm_rank            /main/MPI_Comm_rank
+>>4.191e-06         + mpi_comm_size            /main/MPI_Comm_size
+>>20.4657           + poisson_step             /main/poisson_step
+>>7.8862            |   + <norm>               /main/poisson_step/<norm>
+>>2.69831           |   |   + mpi_allreduce    /main/poisson_step/<norm>/MPI_Allreduce
+>>0.311995          |   + mpi_recv             /main/poisson_step/MPI_Recv
+>>0.0263682         |   + mpi_send             /main/poisson_step/MPI_Send
+>>0.00338705        + mpi_finalize             /main/MPI_Finalize
+>>~~~
+>>{: .output}
+>{: .solution}
+{: .challenge}
 
 ## Optimisation Workflow
 
 The general workflow for optimising a code, whether parallel or serial
 is as follows
-3. Profile
-4. Optimise
-1. Test correctness
-2. Measure efficiency
+1. Profile
+2. Optimise
+3. Test correctness
+4. Measure efficiency
 5. Go to 1.
 
 
 
 > ## Profiling
 >
-> Use a profiler to study your research code or the code provided.
+> Use a profiler to study your research code.
 > Identify hotspots and decide how to improve the application.
 >
 {: .challenge}
