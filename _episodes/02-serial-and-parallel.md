@@ -18,8 +18,11 @@ keypoints:
 
 ## Serial and Parallel Execution
 
-We can often think of a serial (that is to say, not parallel) algorithm as a black box
-with an input and an output.
+An algorithm is a series of steps to solve a problem. Let us imagine these steps as a familiar scene in car manufacturing. Each step adds a component to an existing structure or adjusts (like tightening bolt) to form a car as the conveyor belt moves the result of each steps. As a designer of these processes, you would carefully order how you add a component so that you don't have to disassemble already constructed parts. How long does it take to build a car in this way? Well, it will be the time difference between the beginning of the steps and the ending of the steps (of course, each steps may take difference time to complete). Now, you would like to build cars faster since there are impatient customers waiting in line! What do you do? You build two lines of conveyor belts and hire twice number of people to do the work. Now two cars per the same amount of time! If you build three conveyor belts and hire thrice number of people, three cars for the same amount of time. Or you can identify steps which don't intefere with each other and can be executed at the same time (for example, the front part of the car can be constructed independent of the rear part of the car) and let two people work at the same time. If you find more steps which can be done without interfering each other, these steps can be executed at the same time. Overall time is saved. More number of cars for the same amount of time! If your problem can be solved like the first case, you are in the luck. You just need more CPU's (or cores) to do the work. This is called "Embarrasingly Parallel (EP)" problem. It is the easiest problem to parallelize. In the second case, the most important thing to consider is the indepedence of a step (that is, whether a step can be executed without interfering other steps). This independency is called "atomicity" of an operation.
+
+In the analogy with car manufacturing, the speed of conveyor belt is the "clock" of CPU, parts are "input", doing something is "operation", and the car structure on the conveyor belt is "output". 
+
+So, we can think of an algorithm as a series of black boxes with an input and an output.
 ![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %})
 To see where parallel processing is useful, we need to take a closer look at the algorithm.
 
