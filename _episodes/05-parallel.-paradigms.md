@@ -13,7 +13,6 @@ keypoints:
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 ## Trivially Parallel Problems
 
@@ -106,11 +105,10 @@ The most common parallel algorithm for matrix multiplicitation divides
 the input matrices into smaller submatrices and composes the result from
 multiplications of the submatrices.
 
-$$ A = \begin{bmatrix} A_{11} & A_{12} \\\\ A_{21} & A_{22} \end{bmatrix}$$
+![A = A_{11} & A_{12} \\ A_{21} & A_{22} ]({{ page.root }}{% link fig/parallel_mmul.png %}){:height="50%" width="50%"}
+![B = B_{11} & B_{12} \\ B_{21} & B_{22} ]({{ page.root }}{% link fig/parallel_mmul_2.png %}){:height="50%" width="50%"}
+![A . B = A_{11} . B_{11} + A_{12} . B_{21} & A_{11} . B_{12} + A_{12} . B_{22} \\  A_{21} . B_{11} + A_{22} . B_{21} & A_{21} . B_{12} + A_{22} . B_{22} ]({{ page.root }}{% link fig/parallel_mmul_3.png %}){:height="50%" width="50%"}
 
-$$ B = \begin{bmatrix} B_{11} & B_{12} \\\\ B_{21} & B_{22} \end{bmatrix}$$
-
-$$ A\cdot B = \begin{bmatrix} A_{11}\cdot B_{11} + A_{12}\cdot B_{21} & A_{11}\cdot B_{12} + A_{12}\cdot B_{22} \\\\  A_{21}\cdot B_{11} + A_{22}\cdot B_{21} & A_{21}\cdot B_{12} + A_{22}\cdot B_{22} \end{bmatrix}$$
 
 Clearly a large parts of the submatrices, but not all of it.
 Each of the four nodes only needs to communicate with two other nodes.
