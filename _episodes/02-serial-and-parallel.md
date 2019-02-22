@@ -50,27 +50,46 @@ In the analogy with car manufacturing, the speed of conveyor belt is the "clock"
 
 So, we can think of an algorithm as a series of black boxes with an input and an output.
 ![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %})
-To see where parallel processing is useful, we need to take a closer look at the algorithm.
+The algorithm itself consists of steps, operations we need to do to the data
+to arrive at a solution.
+In the car example the input are mechanical parts, the steps adding and adjusting individual
+parts and the output is a new car.
+![Input -> Step 1 -> Step 2 -> Step 3 -> Output]({{ page.root }}{% link files/serial_multi_task_flow.png %})
 
-A program generally runs in successive steps, each processing some input and producing the output.
-![Input -> Task 1 -> Task 2 -> Task 3 -> Output]({{ page.root }}{% link files/serial_multi_task_flow.png %})
-If each task actually just uses the same input,
-or takes no input at all, as our example in the previous lesson,
-we can run them all in parallel.
-![Input -> Task 1 / Task 2 / Task 3 -> Output]({{ page.root }}{% link files/parallel_simple_flow.png %})
-This would run as fast as the slowest of the tasks.
+If we want to produce a single car faster, maybe we can do some of the work in parallel.
+Let's say we can hire four workers ot attach each of the tires at the same time.
+All of these steps have the same input and they work together to create an output
+![Input -> Step 1 / Step 2 / Step 3 -> Output]({{ page.root }}{% link files/parallel_simple_flow.png %})
 
-Life is rarely that simple, and if the tasks were actually completely separate,
-we would have written three separate programs instead of one.
-Usually some of the tasks in a program can be run in parallel and some cannot.
-These are called parallel and serial regions.
-Let's say now that the output of task 1 is needed in both task 2 and task 3.
-There are at least two ways of parallellising this algorithm.
 
-We can run task 1 on the first rank, send the result to a second rank to run task 2
-and start task 3 on the first rank.
+### Data Dependency
+Another example, and a common operation in scientific computation, is calculating the sum of a set
+of numbers.
+A simple implementation might look like this:
+~~~
+sum = 0
+for number in numbers
+   sum = sum + number
+~~~
+This is a very bad parallel algorithm!
+Every step, or iteration of the for loop, uses the same sum variable.
+To execute a step, the program needs to know the sum from the previous step.
+
+A part of the program that cannot be run in parallel is called a "serial region" and
+a part that can be run in parallel is called a "parallel region".
+Any program will have some serial regions.
+In a good parallel program, most of the time is spent in parallel regions.
+
+The important factor that determines wether steps can be run in parallel is data dependencies.
+In our sum example, every step depends on data from the previous step, the value of the sum variable.
+When attaching tires to a car, attaching one tire does not depend on attaching the others, so these steps can be done at the same time.
+
+However, attaching the front tires both require that the axis is there.
+This step must be completed first, but the two tires can then be attached at the same time.
 ![Input -> Task 1 -> Task 2 / Task 3 -> Output]({{ page.root }}{% link files/parallel_complicated_flow.png %})
-The other option is to run task 1 twice.
+
+
+<!-- The other option is to run task 1 twice.
 ![Input -> ( Task 1 -> Task 2 / task1 -> Task 3 ) -> Output]({{ page.root }}{% link files/parallel_more_complicated_flow.png %})
 
 >## When to communicate
@@ -91,6 +110,7 @@ The other option is to run task 1 twice.
 > >
 > {: .solution}
 {: .discussion}
+-->
 
 Any algorithm will have parallel regions and serial regions.
 The parallel algorithm can never run faster than the sum of the serial regions.
@@ -98,66 +118,41 @@ Fortunately, the parallel part is often much larger than the serial part.
 
 >## Serial and Parallel regions
 >
-> Identify serial and parallel regions the code below
+> Identify serial and parallel regions the following algorithm
 >
-> > ## C
-> > ~~~
-> > #include <stdio.h>
-> > 
-> > main(int argc, char** argv) {
-> >   int N = 10;
-> >   int vector_1[N], vector_2[N], vector_3[N];
-> >
-> >   vector_1[0] = 1;
-> >   vector_1[1] = 1;
-> >   for( int i=2; i<N; i++ )  {
-> >     vector_1[i] = vector_1[i-1] + vector_1[i-2];
-> >   }
-> >
-> >   for( int i=0; i<N; i++ )  {
-> >     vector_1[i] = i;
-> >   }
-> >
-> >   for( int i=0; i<N; i++ ) {
-> >     vector_3[i] = vector_2[i] + vector_1[i];
-> >     print("The sum of the vectors is.", vector_3[i]);
-> >   }
-> > }
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
+> ~~~
+>  vector_0[0] = 1;
+>  vector_1[1] = 1;
+>  for i in 2 ... 1000
+>    vector_1[i] = vector_1[i-1] + vector_1[i-2];
 >
-> > ## Solution in C
-> > ~~~
-> > #include <stdio.h>
-> > 
-> > main(int argc, char** argv) {
-> >   // Serial
-> >   int N = 10;
-> >   int vector_1[N], vector_2[N], vector_3[N];
-> >
-> >   // Serial: Each iteration of the loop needs data from previous iterations
-> >   vector_1[0] = 1;
-> >   vector_1[1] = 1;
-> >   for( int i=2; i<N; i++ )  {
-> >     vector_1[i] = vector_1[i-1] + vector_1[i-2];
-> >   }
-> >
-> >   // Parallel: Each iteration is independent
-> >   for( int i=0; i<N; i++ )  {
-> >     vector_1[i] = i;
-> >   }
-> >
-> >   // Parallel: Each itetration is independent
-> >   for( int i=0; i<N; i++ ) {
-> >     vector_3[i] = vector_2[i] + vector_1[i];
-> >     print("The sum of the vectors is.", vector_3[i]);
-> >   }
-> > }
-> > ~~~
-> > {: .output}
-> {: .solution}
+>  for i in 0 ... 1000
+>    vector_2[i] = i;
 >
+>  for i in 0 ... 1000
+>    vector_3[i] = vector_2[i] + vector_1[i];
+>    print("The sum of the vectors is.", vector_3[i]);
+>~~~
+>{: .output}
+>
+> ## Solution in C
+> ~~~
+>  serial   | vector_0[0] = 1;
+>  serial   | vector_1[1] = 1;
+>  serial   | for i in 2 ... 1000
+>  serial   |   vector_1[i] = vector_1[i-1] + vector_1[i-2];
+>
+>  parallel | for i in 0 ... 1000
+>  parallel |   vector_2[i] = i;
+>
+>  parallel | for i in 0 ... 1000
+>  parallel |   vector_3[i] = vector_2[i] + vector_1[i];
+>  parallel |   print("The sum of the vectors is.", vector_3[i]);
+> ~~~
+> {: .output}
+>
+> In the first loop, every iteration depends on data from the previous two.
+> In the second two loops, nothing in a step depens on any of the other steps.
 >
 {: .challenge}
 
