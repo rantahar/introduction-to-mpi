@@ -12,6 +12,8 @@ keypoints:
 
 ## Non-Blocking Communication
 
+### Send and Receive
+
 In one of the previous lessons we used the MPI_Send and MPI_Recv functions
 to communicate between the ranks.
 We saw that these functions are blocking.
@@ -111,6 +113,10 @@ There's one new parameter here, a request.
 This is used to keep track of each separate transfer started by the program.
 You can use it to check the status of a transfer using the MPI_Test function,
 or call MPI_Wait to wait until the transfer is complete.
+The request can be created by either an MPI_Send or an MPI_Recv. In both cases MPI_Test
+allows you to check whether the buffer is free to use.
+
+### Test and Wait
 
 > ## MPI_Test and MPI_Wait in C
 >
@@ -160,8 +166,6 @@ or call MPI_Wait to wait until the transfer is complete.
 >
 {: .prereq .foldable}
 
-The request can be created by either an MPI_Send or an MPI_Recv. In both cases MPI_Test
-allows you to check whether the buffer is free to use.
 
 > ## Example in C
 > ~~~
