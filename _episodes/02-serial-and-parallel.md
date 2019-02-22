@@ -23,7 +23,8 @@ to form a car as the conveyor belt moves the result of each steps.
 As a designer of these processes, you would carefully order the way you add components
 so that you don't have to disassemble already constructed parts.
 How long does it take to build a car in this way?
-Well, it will be the time difference between the beginning of the steps and the ending of the steps (of course, each step may take a different amount of time to complete).
+Well, it will be the time it takes to do all the steps from the beginning to the end. 
+Of course, each step may take a different amount of time to complete.
 
 Now, you would like to build cars faster since there are impatient customers waiting in line!
 What do you do? You build two lines of conveyor belts and hire twice number of people to do the work.
@@ -47,21 +48,21 @@ In the second case, the most important thing to consider is the indepedence of a
 This independency is called "atomicity" of an operation.
 
 In the analogy with car manufacturing, the speed of conveyor belt is the "clock" of CPU, parts are "input", doing something is an "operation", and the car structure on the conveyor belt is "output". 
-
-So, we can think of an algorithm as a series of black boxes with an input and an output.
+The algorithm is the set of operations that constructs a car from the parts.
 ![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %})
-The algorithm itself consists of steps, operations we need to do to the data
-to arrive at a solution.
-In the car example the input are mechanical parts, the steps adding and adjusting individual
-parts and the output is a new car.
+It consists of individual steps, adding parts or adjusting them.
+These could be done one after the other by a single worker.
 ![Input -> Step 1 -> Step 2 -> Step 3 -> Output]({{ page.root }}{% link files/serial_multi_task_flow.png %})
 
-If we want to produce a single car faster, maybe we can do some of the work in parallel.
+If we want to produce a car faster, maybe we can do some of the work in parallel.
 Let's say we can hire four workers ot attach each of the tires at the same time.
 All of these steps have the same input, a car without tires,
 and they work together to create an output, a car with tires.
 ![Input -> Step 1 / Step 2 / Step 3 -> Output]({{ page.root }}{% link files/parallel_simple_flow.png %})
-
+The crucial thing that allows us to add the tires in parallel is that they are independent.
+Adding one tire does not prevent you from adding another or require that any of the other tires are added.
+The workers operate on different parts of the car.
+These are independent operations.
 
 ### Data Dependency
 Another example, and a common operation in scientific computation, is calculating the sum of a set
@@ -76,11 +77,6 @@ This is a very bad parallel algorithm!
 Every step, or iteration of the for loop, uses the same sum variable.
 To execute a step, the program needs to know the sum from the previous step.
 
-A part of the program that cannot be run in parallel is called a "serial region" and
-a part that can be run in parallel is called a "parallel region".
-Any program will have some serial regions.
-In a good parallel program, most of the time is spent in parallel regions.
-
 The important factor that determines wether steps can be run in parallel is data dependencies.
 In our sum example, every step depends on data from the previous step, the value of the sum variable.
 When attaching tires to a car, attaching one tire does not depend on attaching the others, so these steps can be done at the same time.
@@ -89,29 +85,10 @@ However, attaching the front tires both require that the axis is there.
 This step must be completed first, but the two tires can then be attached at the same time.
 ![Input -> Task 1 -> Task 2 / Task 3 -> Output]({{ page.root }}{% link files/parallel_complicated_flow.png %})
 
-
-<!-- The other option is to run task 1 twice.
-![Input -> ( Task 1 -> Task 2 / task1 -> Task 3 ) -> Output]({{ page.root }}{% link files/parallel_more_complicated_flow.png %})
-
->## When to communicate
->
-> When would the second option be better?
->
-> > ## Solution
-> >
-> > Wether the first or the second option is better depends on
-> > * The amount of data task 2 needs from task 1 in the first option
-> > * The amount of input data task 1 needs in the second option
-> > * How fast you can transfer data
-> > * How much work task 1 is
-> > * Is the second core doing anything useful
-> >
-> > We often need to perform the same small tasks on all the ranks. This might seem wasteful,
-> > but if communicating the result takes more time, it may not be.
-> >
-> {: .solution}
-{: .discussion}
--->
+A part of the program that cannot be run in parallel is called a "serial region" and
+a part that can be run in parallel is called a "parallel region".
+Any program will have some serial regions.
+In a good parallel program, most of the time is spent in parallel regions.
 
 Any algorithm will have parallel regions and serial regions.
 The program can never run faster than the sum of the serial regions.
