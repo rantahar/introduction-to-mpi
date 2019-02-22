@@ -27,7 +27,7 @@ Well, it will be the time difference between the beginning of the steps and the 
 
 Now, you would like to build cars faster since there are impatient customers waiting in line!
 What do you do? You build two lines of conveyor belts and hire twice number of people to do the work.
-Now two cars per the same amount of time!
+Now you get two cars in the same amount of time!
 If you build three conveyor belts and hire thrice the number of people,
 you get three cars for the same amount of time.
 Or you can identify the steps which don't intefere with each other and can be executed at the same time
@@ -46,7 +46,7 @@ In the second case, the most important thing to consider is the indepedence of a
 (that is, whether a step can be executed without interfering other steps).
 This independency is called "atomicity" of an operation.
 
-In the analogy with car manufacturing, the speed of conveyor belt is the "clock" of CPU, parts are "input", doing something is "operation", and the car structure on the conveyor belt is "output". 
+In the analogy with car manufacturing, the speed of conveyor belt is the "clock" of CPU, parts are "input", doing something is an "operation", and the car structure on the conveyor belt is "output". 
 
 So, we can think of an algorithm as a series of black boxes with an input and an output.
 ![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %})
@@ -58,7 +58,8 @@ parts and the output is a new car.
 
 If we want to produce a single car faster, maybe we can do some of the work in parallel.
 Let's say we can hire four workers ot attach each of the tires at the same time.
-All of these steps have the same input and they work together to create an output
+All of these steps have the same input, a car without tires,
+and they work together to create an output, a car with tires.
 ![Input -> Step 1 / Step 2 / Step 3 -> Output]({{ page.root }}{% link files/parallel_simple_flow.png %})
 
 
@@ -113,7 +114,7 @@ This step must be completed first, but the two tires can then be attached at the
 -->
 
 Any algorithm will have parallel regions and serial regions.
-The parallel algorithm can never run faster than the sum of the serial regions.
+The program can never run faster than the sum of the serial regions.
 Fortunately, the parallel part is often much larger than the serial part.
 
 >## Serial and Parallel regions

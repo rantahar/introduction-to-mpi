@@ -105,15 +105,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="349.3946"
+     inkscape:cx="192.06334"
      inkscape:cy="8.2108112"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      showborder="true"
      borderlayer="false"
-     inkscape:window-width="1286"
-     inkscape:window-height="841"
+     inkscape:window-width="1726"
+     inkscape:window-height="1000"
      inkscape:window-x="471"
      inkscape:window-y="177"
      inkscape:window-maximized="0"
@@ -129,7 +129,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -179,7 +179,7 @@
          id="tspan4524-5"
          x="21.991049"
          y="280.97546"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 1</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 1</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        d="m 15.108835,279.63169 h 4.303039"
@@ -236,7 +236,7 @@
          id="tspan4524-5-2"
          x="43.294682"
          y="280.92325"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 2</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 2</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend-4)"
        d="m 36.412465,279.57949 h 4.303039"
@@ -262,7 +262,7 @@
          id="tspan4524-5-2-4"
          x="64.529243"
          y="281.01682"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 3</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 3</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend-4-8)"
        d="m 57.647027,279.67304 h 4.303039"

@@ -150,7 +150,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="161.18526"
+     inkscape:cx="38.68526"
      inkscape:cy="69.542899"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -175,7 +175,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -225,7 +225,7 @@
          id="tspan4524-5"
          x="23.843132"
          y="273.6994"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 1</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 1</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        d="m 15.770293,278.57335 5.625956,-5.68854"
@@ -283,7 +283,7 @@
          id="tspan4524-5-2"
          x="23.578547"
          y="280.93021"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 2</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 2</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend-4)"
        d="m 15.505706,279.71875 5.493664,-0.13229"
@@ -310,7 +310,7 @@
          id="tspan4524-5-2-4"
          x="23.651117"
          y="289.08661"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 3</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 3</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend-4-8)"
        d="m 15.445985,281.12825 5.625956,6.61458"

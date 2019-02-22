@@ -16,7 +16,7 @@
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="parallel_complicated_flow.svg"
-   inkscape:export-filename="C:\Users\Jarno\lessons\introduction-to-mpi\files\parallel_simple_flow.png"
+   inkscape:export-filename="C:\Users\Jarno\lessons\introduction-to-mpi\files\parallel_complicated_flow.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
   <defs
@@ -165,7 +165,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="161.18526"
+     inkscape:cx="149.25135"
      inkscape:cy="38.8866"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -190,7 +190,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -240,7 +240,7 @@
          id="tspan4524-5"
          x="23.446259"
          y="280.97546"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 1</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 1</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        d="m 38.127585,278.44106 5.625956,-5.68854"
@@ -298,7 +298,7 @@
          id="tspan4524-5-2"
          x="46.597298"
          y="273.78644"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 2</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 2</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend-4)"
        d="m 37.862998,279.58646 5.493664,-0.13229"
@@ -320,12 +320,14 @@
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="46.802158"
        y="280.75223"
-       id="text4526-8-9-9"><tspan
+       id="text4526-8-9-9"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"><tspan
          sodipodi:role="line"
          id="tspan4524-5-2-4"
          x="46.802158"
          y="280.75223"
-         style="font-size:3.88055563px;stroke-width:0.26458332">Task 3</tspan></text>
+         style="font-size:3.88055563px;stroke-width:0.26458332">Step 3</tspan></text>
     <path
        style="fill:#1180ff;fill-opacity:1;stroke:#000000;stroke-width:0.37;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend-1-83)"
        d="m 61.241888,273.07121 4.964498,5.55625"
