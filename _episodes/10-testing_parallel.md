@@ -1,7 +1,7 @@
 ---
 title: "Testing a Parallel Code"
 teaching: 20
-exercises: 20
+exercises: 30
 questions:
 - "How to make sure the program works?"
 - "How parallel execution affect testing?"

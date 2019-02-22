@@ -49,11 +49,17 @@ Make changes a section at a time until the program is sufficiently
 efficient.
 Don't parallellise sections that have on effect on performance.
 
+### Don't Optimise Prematurely
 
-## Choose the Right Implementation
-There are multiple implementations of the MPI standard.
-They are often optimised for a specific set of machines.
-In an HPC system, it's worth using one that's designed for that system.
+You should start with straightforward, easy to read and correct code.
+Optimisation usually makes the code less readable can lead to mistakes.
+
+## Don't Optimise Unnecessarily
+Once you have a working code only optimise the important parts.
+Use a profiler to determine where the program spends its time.
+Spend you time on the same lines of code.
+Keep everything else nice, clean and readable.
+
 
 ### Use Packed Transfers
 At a slightly lower level, it is also important to optimise the data transfers.
@@ -84,6 +90,11 @@ from one rank to another.
 Use blocking receives when it doesn't affect performance.
 They make it much easier to keep track of things.
 
+## Choose the Right MPI 
+There are multiple implementations of the MPI standard.
+They are often optimised for a specific set of machines.
+In an HPC system, it's worth using one that's designed for that system.
+
 ### Post Receives Early
 When performance really matters, post receives early.
 You can only post the send once you have the data.
@@ -91,7 +102,7 @@ You can post a receive when ever you want.
 There is no reason for a communication to be waiting for a
 receive to be posted.
 
-Do this within reason.
+Do this within reason. Don't start all your transfers at the beginning of the program.
 
 {% include links.md %}
 
