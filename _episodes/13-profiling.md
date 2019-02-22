@@ -21,13 +21,13 @@ In this lesson we will use Scalasca, but many other profilers exist.
 Scalasca is specifically an MPI profiler, it will give you
 information on communication efficiency and bottlenecks.
 
-Scalasca is an open source application developed by the 
+Scalasca is an open source application developed by three German research centers. For more information check the [project website](http://scalasca.org).
 
-It is used together with the [scorep](FIXME) utility, the Cube library
+It is used together with the [scorep](https://www.vi-hps.org/projects/score-p/) utility, the Cube library
 and the Cube viewer.
 Since it is open source, you can install it on user level on any HPC cluster 
 that does not already have it.
-The process is as described in [setup](setup), but you have to add 
+The process is as described in [setup](setup), but you need to add 
 --prefix=$HOME/scalasca/ to the ./configure command to install in
 your home folder.
 
@@ -86,22 +86,22 @@ cat scorep_poisson_2_sum/scorep.score
 {: .output}
 The command line version will produce output that looks something like this:
 ~~~
-Estimated aggregate size of event trace:                   1544400 bytes
-Estimated requirements for largest trace buffer (max_tbc): 468100 bytes
+Estimated aggregate size of event trace:                   608200 bytes
+Estimated requirements for largest trace buffer (max_tbc): 304100 bytes
 (hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid intermediate flushes
  or reduce requirements using file listing names of USR regions to be filtered.)
 
 flt type         max_tbc         time      % region
-     ALL          468100         0.90  100.0 ALL
-     MPI          428080         0.36   40.0 MPI
-     COM           40020         0.54   60.0 COM
+     ALL          304100        28.53  100.0 ALL
+     MPI          264080         0.96    3.4 MPI
+     COM           40020        27.57   96.6 COM
 
-     MPI          164000         0.09    9.9 MPI_Recv
-     MPI          164000         0.02    2.4 MPI_Send
-     MPI          100000         0.11   12.5 MPI_Allreduce
-     COM           40000         0.53   59.3 poisson_step
-     COM              20         0.01    0.7 main
-     MPI              20         0.14   15.2 MPI_Init
+     MPI          100000         0.83    2.9 MPI_Allreduce
+     MPI           82000         0.06    0.2 MPI_Recv
+     MPI           82000         0.01    0.0 MPI_Send
+     COM           40000        27.56   96.6 poisson_step
+     COM              20         0.01    0.0 main
+     MPI              20         0.06    0.2 MPI_Init
      MPI              20         0.00    0.0 MPI_Finalize
      MPI              20         0.00    0.0 MPI_Comm_size
      MPI              20         0.00    0.0 MPI_Comm_rank
@@ -125,13 +125,13 @@ cube_stat -p scorep_poisson_2_sum/summary.cubex
 This outputs
 ~~~
 Routine                  time
-INCL(main)           0.895395
-  EXCL(main)         0.006292
-  MPI_Init           0.135787
-  MPI_Comm_rank      0.000008
-  MPI_Comm_size      0.000004
-  poisson_step       0.753207
-  MPI_Finalize       0.000097
+INCL(main)          28.531245
+  EXCL(main)         0.013468
+  MPI_Init           0.055302
+  MPI_Comm_rank      0.000004
+  MPI_Comm_size      0.000002
+  poisson_step      28.460277
+  MPI_Finalize       0.002192
 ~~~
 {: .output}
 
@@ -149,15 +149,15 @@ cube_calltree -m time scorep_poisson_2_sum/summary.cubex
 will print out something like this:
 ~~~
 Reading scorep_poisson_2_sum/summary.cubex... done.
-0.00629203      main
-0.135787          + MPI_Init
-7.65e-06          + MPI_Comm_rank
-4.06e-06          + MPI_Comm_size
-0.531253          + poisson_step
-0.112207          |   + MPI_Allreduce
-0.0883989         |   + MPI_Recv
-0.0213479         |   + MPI_Send
-9.6928e-05        + MPI_Finalize
+0.013468        main
+0.0553023         + MPI_Init
+3.848e-06         + MPI_Comm_rank
+1.858e-06         + MPI_Comm_size
+27.5588           + poisson_step
+0.832237          |   + MPI_Allreduce
+0.0568715         |   + MPI_Recv
+0.0123662         |   + MPI_Send
+0.00219179        + MPI_Finalize
 ~~~
 {: .output}
 
@@ -211,37 +211,38 @@ SCOREP_REGION_NAMES_END
 Save this to a file called poisson.filter.
 Running 
 ~~~
-scalasca -examine -s scorep_poisson_2_sum
-cat scorep_poisson_2_sum/scorep.score
+scalasca -examine -s -f poisson.filter scorep_poisson_2_sum
+cat scorep_poisson_2_sum/scorep.score_poisson.filter
 ~~~
 {: .output}
 will produce something like
 ~~~
-Estimated aggregate size of event trace:                   2087kB
-Estimated requirements for largest trace buffer (max_buf): 637kB
+Estimated aggregate size of event trace:                   813kB
+Estimated requirements for largest trace buffer (max_buf): 407kB
 Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
 (hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
  or reduce requirements using USR regions filters.)
 
 flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
- -       ALL    652,120 40,020    0.98   100.0          24.52  ALL
- -       MPI    604,096 32,016    0.42    43.0          13.19  MPI
- -       COM     48,024  8,004    0.56    57.0          69.84  COM
+ -       ALL    416,120 16,010   28.53   100.0        1782.09  ALL
+ -       MPI    368,096 12,008    0.96     3.4          79.86  MPI
+ -       COM     48,024  4,002   27.57    96.6        6889.62  COM
 
- *       ALL    652,096 40,016    0.97    98.7          24.21  ALL-FLT
- -       MPI    604,096 32,016    0.42    43.0          13.19  MPI-FLT
- *       COM     48,000  8,000    0.55    55.7          68.31  COM-FLT
- +       FLT         24      4    0.01     1.3        3136.88  FLT
+ *       ALL    416,096 16,008   28.52   100.0        1781.47  ALL-FLT
+ -       MPI    368,096 12,008    0.96     3.4          79.86  MPI-FLT
+ *       COM     48,000  4,000   27.56    96.6        6889.70  COM-FLT
+ +       FLT         24      2    0.01     0.0        6734.00  FLT
 
- -       MPI    236,000 12,000    0.10    10.2           8.33  MPI_Recv
- -       MPI    236,000 12,000    0.02     2.3           1.92  MPI_Send
- -       MPI    132,000  8,000    0.11    11.2          13.69  MPI_Allreduce
- -       COM     48,000  8,000    0.55    55.7          68.31  poisson_step
- +       COM         24      4    0.01     1.3        3136.88  main
- -       MPI         24      4    0.19    18.9       46346.95  MPI_Init
- -       MPI         24      4    0.00     0.4        1095.21  MPI_Finalize
- -       MPI         24      4    0.00     0.0           1.08  MPI_Comm_size
- -       MPI         24      4    0.00     0.0           2.43  MPI_Comm_rank
+ -       MPI    132,000  4,000    0.83     2.9         208.06  MPI_Allreduce
+ -       MPI    118,000  4,000    0.06     0.2          14.22  MPI_Recv
+ -       MPI    118,000  4,000    0.01     0.0           3.09  MPI_Send
+ -       COM     48,000  4,000   27.56    96.6        6889.70  poisson_step
+ +       COM         24      2    0.01     0.0        6734.00  main
+ -       MPI         24      2    0.06     0.2       27651.13  MPI_Init
+ -       MPI         24      2    0.00     0.0        1095.89  MPI_Finalize
+ -       MPI         24      2    0.00     0.0           0.93  MPI_Comm_size
+ -       MPI         24      2    0.00     0.0           1.92  MPI_Comm_rank
+
 ~~~
 {: .output}
 The + and - sign denote that are included and filtered out.
@@ -314,6 +315,12 @@ in your code.
 >~~~
 >{: .output}
 >
+>When compiling with scorep, you need to add --user,
+>~~~
+>scorep --user mpicc poisson_main_mpi.c poisson_step_mpi.c
+>~~~
+>{: .output}
+>
 {: .prereq .foldable}
 
 
@@ -343,6 +350,11 @@ in your code.
 > SCOREP_USER_REGION_END( region_name )
 >~~~
 >{:. output}
+>
+>When compiling with scorep, you need to add --user,
+>~~~
+>scorep --user mpif90 poisson_mpi.f99
+>~~~
 >
 {: .prereq .foldable}
 
@@ -376,6 +388,18 @@ in your code.
 >{: .solution}
 {: .challenge}
 
+
+>## Note on the Linux Subsystem
+>
+> The profiler will be able to track annotated regions even
+> on the linux subsystem.
+> If you don't have access to a cluster, you can still work
+> iteratively on your program by annotating all interesting
+> regions manually.
+>
+{: .callout}
+
+
 ## Optimisation Workflow
 
 The general workflow for optimising a code, whether parallel or serial
@@ -385,7 +409,6 @@ is as follows
 3. Test correctness
 4. Measure efficiency
 5. Go to 1.
-
 
 
 > ## Profiling
