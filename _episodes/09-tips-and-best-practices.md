@@ -5,7 +5,7 @@ exercises: 0
 questions:
 - "What best practices should I know before I write my program?"
 objectives:
-- "Introduce generally useful patterns"
+- "Introduce some generally useful patterns"
 keypoints:
 - "Chooce a parallel algorithm"
 - "Think about how you split the work before you start"

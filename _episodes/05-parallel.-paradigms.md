@@ -3,12 +3,9 @@ title: "Parallel Paradigms"
 teaching: 20
 exercises: 10
 questions:
-- "How do you design a parallel algorithm"
-- "How do I split the work"
-- "How should I divide the data"
+- "How do I split the work?"
 objectives:
-- "Introducing standard communication patterns"
-- "Think about your software and decide which patterns it uses / could use"
+- "Introduce standard communication and data storage patterns"
 keypoints:
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---

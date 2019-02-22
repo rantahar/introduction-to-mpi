@@ -3,10 +3,9 @@ title: "Introduction to Parallel Computing"
 teaching: 20
 exercises: 20
 questions:
-- "What is parallel computing?"
-- "What HPC system do I have access to?"
+- "How do I run a program in parallel?"
 objectives:
-- "Introducing parallel computing."
+- "Introduce parallel computing."
 - "Use mpicc/mpifort and mpirun."
 keypoints:
 - "Many problems can be distributed across several processors and solved faster"

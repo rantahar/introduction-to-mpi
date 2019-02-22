@@ -3,9 +3,9 @@ title: "Collective Operations"
 teaching:  10
 exercises: 20
 questions:
-- "How should I write a sum over all the nodes?"
+- "What other useful functions does MPI have?"
 objectives:
-- "Introduce global reductions"
+- "Introduce collective operations"
 keypoints:
 - "Use MPI_Barrier for global synchronisation"
 - "All-to-All, One-to-All and All-to_one communications have efficient implementation in the library."

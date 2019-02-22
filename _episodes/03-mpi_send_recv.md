@@ -3,7 +3,7 @@ title: "MPI_Send and MPI_Recv"
 teaching: 10
 exercises: 20
 questions:
-- "How do I send data from one process to another"
+- "How do I send data from one rank to another"
 objectives:
 - "Introduce the MPI_Send and MPI_Recv functions"
 keypoints:

@@ -3,10 +3,10 @@ title: "Serial and Parallel Regions"
 teaching: 20
 exercises: 20
 questions:
-- "When is parallel computing useful?"
-- "How fast can my code run?"
+- "What is a good parallel algorithm?"
 objectives:
-- "Understanding theoretical limitations on parallel algorithms"
+- "Introduce theoretical concepts relating to parallel algorithms"
+- "Describe theoretical limitations on parallel computation"
 keypoints:
 - "Algorithms can have parallellisable and non-parallellisable sections"
 - "A highly parallel algorithm may be slower on a single processor"
@@ -65,7 +65,7 @@ The workers operate on different parts of the car.
 These are independent operations.
 
 ### Data Dependency
-Another example, and a common operation in scientific computation, is calculating the sum of a set
+Another example, and a common operation in scientific computating, is calculating the sum of a set
 of numbers.
 A simple implementation might look like this:
 ~~~

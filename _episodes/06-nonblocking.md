@@ -3,7 +3,7 @@ title: "Non-blocking Communication"
 teaching: 10
 exercises: 10
 questions:
-- "Can I start the transfer and continue the program?"
+- "How do I interleave communication and computation?"
 objectives:
 - "Introduce MPI_Isend, MPI_Irecv, MPI_Test and MPI_Wait"
 keypoints:

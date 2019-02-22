@@ -3,11 +3,11 @@ title: "Testing a Parallel Code"
 teaching: 20
 exercises: 30
 questions:
-- "How to make sure the program works?"
+- "How do I make sure the program works?"
 - "How parallel execution affect testing?"
 objectives:
-- "Learn to build tests to verify the parallel program."
-- "Point out expected differences between parallel and serial"
+- "Learn to build test suits to verify a parallel program."
+- "Point out differences between parallel and serial algorithms"
 keypoints:
 - "It's always easy to make mistakes"
 - "Use tests to verify the parallel code against a serial code or known results"
