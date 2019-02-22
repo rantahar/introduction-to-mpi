@@ -136,24 +136,25 @@ Fortunately, the parallel part is often much larger than the serial part.
 >~~~
 >{: .output}
 >
-> ## Solution in C
-> ~~~
->  serial   | vector_0[0] = 1;
->  serial   | vector_1[1] = 1;
->  serial   | for i in 2 ... 1000
->  serial   |   vector_1[i] = vector_1[i-1] + vector_1[i-2];
->
->  parallel | for i in 0 ... 1000
->  parallel |   vector_2[i] = i;
->
->  parallel | for i in 0 ... 1000
->  parallel |   vector_3[i] = vector_2[i] + vector_1[i];
->  parallel |   print("The sum of the vectors is.", vector_3[i]);
-> ~~~
-> {: .output}
->
-> In the first loop, every iteration depends on data from the previous two.
-> In the second two loops, nothing in a step depens on any of the other steps.
+>>## Solution
+>>~~~
+>> serial   | vector_0[0] = 1;
+>>          | vector_1[1] = 1;
+>>          | for i in 2 ... 1000
+>>          |   vector_1[i] = vector_1[i-1] + vector_1[i-2];
+>>
+>> parallel | for i in 0 ... 1000
+>>          |   vector_2[i] = i;
+>>
+>> parallel | for i in 0 ... 1000
+>>          |   vector_3[i] = vector_2[i] + vector_1[i];
+>>          |   print("The sum of the vectors is.", vector_3[i]);
+>>~~~
+>>{: .output}
+>>
+>> In the first loop, every iteration depends on data from the previous two.
+>> In the second two loops, nothing in a step depens on any of the other steps.
+>{: .solution}
 >
 {: .challenge}
 
