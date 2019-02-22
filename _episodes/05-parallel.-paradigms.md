@@ -14,10 +14,11 @@ keypoints:
 ---
 
 
-## Trivially Parallel Problems
+## Embarassingly Parallel Problems
 
 A problem is trivially parallel if no communication is needed between the processes.
-While there are many such algorithms, parallel programming is not needed to implement them.
+This is the best case scenario, you don't need to desing a parallel algorithm to solve the
+problem.
 
 ## Task Parallellism
 
