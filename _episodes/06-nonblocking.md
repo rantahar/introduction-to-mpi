@@ -14,10 +14,13 @@ keypoints:
 
 In one of the previous lessons we used the MPI_Send and MPI_Recv functions
 to communicate between the ranks.
-We saw that these functions are blocking, they will only return once the program
-can safely modify the buffer.
-This is safe and usually straightforward,
-but we also saw how this can lead to problems.
+We saw that these functions are blocking.
+MPI_Send will only return when the program can safely modify the send buffer and
+MPI_Recv will only return once the data has been received and
+written to the receive buffer
+This is safe and usually straightforward, but causes the program to wait
+while the communication is happening.
+Usually there is computation that we could run while waiting for data.
 
 The MPI standard includes non-blocking versions of the send and receive functions,
 MPI_ISend and MPI_IRecv.
@@ -25,7 +28,7 @@ These function will return immediately, giving you more control of the flow
 of the program. After calling them, it is not safe to modify the sending or
 the receiving buffer, but the program is free to continue with other operations.
 When it needs the data in the buffers, it needs to make sure the process is complete
-using the MPI_Wait function.
+using the MPI_Wait and MPI_Test functions.
 
 > ## MPI_Isend and MPI_Irecv in C
 >
@@ -104,9 +107,9 @@ using the MPI_Wait function.
 >
 {: .prereq .foldable}
 
-There's one new parameter here, the request.
+There's one new parameter here, a request.
 This is used to keep track of each separate transfer started by the program.
-You can check the status of a transfer using the MPI_Test function,
+You can use it to check the status of a transfer using the MPI_Test function,
 or call MPI_Wait to wait until the transfer is complete.
 
 > ## MPI_Test and MPI_Wait in C
@@ -157,6 +160,8 @@ or call MPI_Wait to wait until the transfer is complete.
 >
 {: .prereq .foldable}
 
+The request can be created by either an MPI_Send or an MPI_Recv. In both cases MPI_Test
+allows you to check whether the buffer is free to use.
 
 > ## Example in C
 > ~~~
@@ -309,7 +314,6 @@ or call MPI_Wait to wait until the transfer is complete.
 >
 >
 {: .challenge}
-
 
 
 
