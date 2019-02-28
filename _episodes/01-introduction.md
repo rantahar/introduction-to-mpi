@@ -103,16 +103,16 @@ Here's a more complete example:
 >~~~
 >program hello
 >
->      include 'mpif.h'
+>     use mpi
+>     implicit none
 >      
->      integer rank
+>     integer rank
 >
->      call MPI_INIT(ierr)
->      call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
->      write(6,*) "My rank number is ", rank
->      call MPI_FINALIZE(ierr)
+>     call MPI_INIT(ierr)
+>     call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>     write(6,*) "My rank number is ", rank
+>     call MPI_FINALIZE(ierr)
 >
->      stop
 >end
 >~~~
 >{: .source .language-fortran}
@@ -171,7 +171,8 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >>
 >>program hello
 >>
->>      include 'mpif.h'
+>>      use mpi
+>>      implicit none
 >>      
 >>      integer rank, n_ranks
 >>
@@ -181,8 +182,6 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >>      write(6,*) "Hello World! I'm rank ", rank
 >>      write(6,*) "total no. of ranks = ", n_ranks
 >>      call MPI_FINALIZE(ierr)
->>
->>      stop
 >>end
 >>
 >> ~~~
@@ -216,14 +215,13 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> ## Fortran
 >> ~~~
 >>program printnumbers
+>>     implicit none
 >>     
 >>     parameter (numbers=10)
 >>
 >>     do number = 0, numbers - 1
 >>          write(6,*) "I'm printing the number", number
 >>     enddo 
->>
->>     stop
 >>end
 >> ~~~
 >> {: .source .language-fortran}
@@ -272,7 +270,8 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> ~~~
 >>program print_numbers
 >>
->>     include 'mpif.h'
+>>     use mpi
+>>     implicit none
 >>
 >>     parameter (numbers=10)
 >>     integer rank, n_ranks
@@ -303,8 +302,6 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >>
 >>
 >>     call MPI_FINALIZE(ierr)
->>
->>     stop
 >>end
 >> ~~~
 >>{: .source .language-fortran}
