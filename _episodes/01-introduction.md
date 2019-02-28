@@ -35,13 +35,13 @@ MPI stands for Message Passing Interface, and is a low level, extremely flexible
 > ~~~
 > echo Hello World!
 > ~~~
-> {: .source}
+>{: .language-bash}
 >
 > Now use mpirun to run the same command:
 > ~~~
 > mpirun -n 4 echo Hello World!
 > ~~~
-> {: .source}
+> {: .language-bash}
 >
 > What did mpirun do?
 >
@@ -63,22 +63,21 @@ At the end, each process should also cleanup by calling MPI_Finalize or MPI_FINA
 Between these two statements, you can find out the rank of the copy using the MPI_Comm_Rank function.
 
 In C this is called as
-~~~
+{% highlight C %}
 int rank;
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-~~~
-{: .source}
+{% endhighlight %}
 
 In Fortran it is
-~~~
+{% highlight Fortran %}
 integer rank
 call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
-~~~
-{: .source}
+{% endhighlight %}
 
 Here's a more complete example:
 > ## C
-> ~~~
+>
+>~~~
 > #include <stdio.h>
 > #include <mpi.h>
 > 
@@ -95,15 +94,14 @@ Here's a more complete example:
 >   // Call finalize at the end
 >   MPI_Finalize();
 > }
-> 
-> ~~~
-> {: .output}
-{: .solution}
+>~~~
+>{: .source .language-c}
+>
+{: .prereq .foldable}
 
 > ## Fortran
-> ~~~
->
->      program hello
+>~~~
+>program hello
 >
 >      include 'mpif.h'
 >      
@@ -111,15 +109,15 @@ Here's a more complete example:
 >
 >      call MPI_INIT(ierr)
 >      call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
->      write(6,*) 'My rank number is ", rank
+>      write(6,*) "My rank number is ", rank
 >      call MPI_FINALIZE(ierr)
 >
 >      stop
->      end
+>end
+>~~~
+>{: .source .language-fortran}
 >
-> ~~~
-> {: .output}
-{: .solution}
+{: .prereq .foldable}
 
 > ## Compile
 >
@@ -143,53 +141,53 @@ Usually the rank will need to know how many other ranks there are. You can find 
 > Each copy of the program, or rank, should print "Hello World!" followed by it's rank number.
 > They should also print the total number of ranks.
 >
-> > ## Solution in C
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > main(int argc, char** argv) {
-> >   int rank, n_ranks, numbers_per_rank;
-> >
-> >   // Firt call MPI_Init
-> >   MPI_Init(&argc, &argv);
-> >   // Get my rank and the number of ranks
-> >   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> >   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-> >
-> >   printf("Hello! World = %d\n", rank);
-> >   printf("total no. of nodes = %d\n", n_ranks);
-> >
-> >   // Call finalize at the end
-> >   MPI_Finalize();
-> > }
-> > 
-> > ~~~
-> > {: .output}
-> {: .solution}
+>> ## Solution in C
+>>
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> main(int argc, char** argv) {
+>>   int rank, n_ranks, numbers_per_rank;
+>>
+>>   // Firt call MPI_Init
+>>   MPI_Init(&argc, &argv);
+>>   // Get my rank and the number of ranks
+>>   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>
+>>   printf("Hello World! I'm rank %d\n", rank);
+>>   printf("total no. of ranks = %d\n", n_ranks);
+>>
+>>   // Call finalize at the end
+>>   MPI_Finalize();
+>> }
+>> ~~~
+>>{: .source .language-c}
+>{: .solution}
 > 
-> > ## Solution in Fortran
-> > ~~~
-> >
-> >      program hello
-> >
-> >      include 'mpif.h'
-> >      
-> >      integer rank, n_ranks
-> >
-> >      call MPI_INIT(ierr)
-> >      call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
-> >      call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
-> >      write(6,*) 'Hello! World = ', rank
-> >      write(6,*) 'total no. of nodes = ", n_ranks
-> >      call MPI_FINALIZE(ierr)
-> >
-> >      stop
-> >      end
-> >
-> > ~~~
-> > {: .output}
-> {: .solution}
+>> ## Solution in Fortran
+>> ~~~
+>>
+>>program hello
+>>
+>>      include 'mpif.h'
+>>      
+>>      integer rank, n_ranks
+>>
+>>      call MPI_INIT(ierr)
+>>      call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>>      call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
+>>      write(6,*) "Hello World! I'm rank ", rank
+>>      write(6,*) "total no. of ranks = ", n_ranks
+>>      call MPI_FINALIZE(ierr)
+>>
+>>      stop
+>>end
+>>
+>> ~~~
+>>{: .source .language-fortran}
+>{: .solution}
 >
 {: .challenge}
 
@@ -199,61 +197,119 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >
 > Modify the following code to split the loops among processes
 >
-> > ## C
-> > ~~~
-> > #include <stdio.h>
-> > #include <math.h>
-> > 
-> > main(int argc, char** argv) {
-> >   int numbers = 10;
-> >
-> >   for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
-> >     print("I'm printing the number %d.", i);
-> >   }
-> >
-> > }
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
+>> ## C
+>> ~~~
+>> #include <stdio.h>
+>> 
+>> main(int argc, char** argv) {
+>>   int numbers = 10;
+>>
+>>   for( int i=1; i<numbers; i++ ) {
+>>     print("I'm printing the number %d.", i);
+>>   }
+>>
+>> }
+>> ~~~
+>> {: .source .language-c}
+>{: .prereq .foldable}
+>
+>> ## Fortran
+>> ~~~
+>>program printnumbers
+>>     
+>>     parameter (numbers=10)
+>>
+>>     do number = 0, numbers - 1
+>>          write(6,*) "I'm printing the number", number
+>>     enddo 
+>>
+>>     stop
+>>end
+>> ~~~
+>> {: .source .language-fortran}
+>{: .prereq .foldable}
 >
 >
 >
-> > ## Solution in C
-> > ~~~
-> > #include <stdio.h>
-> > #include <math.h>
-> > #include <mpi.h>
-> > 
-> > main(int argc, char** argv) {
-> >   int rank, n_ranks, numbers_per_rank;
-> >   int my_first, my_last;
-> >   int numbers = 10;
-> >
-> >   // Firt call MPI_Init
-> >   MPI_Init(&argc, &argv);
-> >   // Get my rank and the number of ranks
-> >   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
-> >   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
-> >
-> >   // Calculate the number of iterations for each rank
-> >   numbers_per_rank = ceiling(numbers/n_ranks);
-> >   my_first = rank * numbers_per_rank;
-> >   my_last = my_first + numbers_per_rank;
-> >
-> >   // Run only the part of the loop this rank needs to run
-> >   // The if statement makes sure we don't go over
-> >   for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
-> >     print("I'm printing the number %d.", i);
-> >   }
-> >
-> >   // Call finalize at the end
-> >   MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> >
-> {: .solution}
-> 
+>> ## Solution in C
+>> ~~~
+>> #include <stdio.h>
+>> #include <math.h>
+>> #include <mpi.h>
+>> 
+>> main(int argc, char** argv) {
+>>   int rank, n_ranks, numbers_per_rank;
+>>   int my_first, my_last;
+>>   int numbers = 10;
+>>
+>>   // Firt call MPI_Init
+>>   MPI_Init(&argc, &argv);
+>>   // Get my rank and the number of ranks
+>>   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+>>   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
+>>
+>>   // Calculate the number of iterations for each rank
+>>   numbers_per_rank = ceiling(numbers/n_ranks);
+>>   my_first = rank * numbers_per_rank;
+>>   my_last = my_first + numbers_per_rank;
+>>
+>>   // Run only the part of the loop this rank needs to run
+>>   // The if statement makes sure we don't go over
+>>   for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
+>>     print("I'm printing the number %d.", i);
+>>   }
+>>
+>>   // Call finalize at the end
+>>   MPI_Finalize();
+>> }
+>> ~~~
+>> {: .source .language-c}
+>>
+>{: .solution}
+>
+>
+>> ## Solution in Fortran
+>> ~~~
+>>program print_numbers
+>>
+>>     include 'mpif.h'
+>>
+>>     parameter (numbers=10)
+>>     integer rank, n_ranks
+>>
+>>     ! Call MPI_INIT
+>>     call MPI_INIT(ierr)
+>>     ! Get my rank and the total number of ranks
+>>     call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>>     call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
+>>
+>>     ! Calculate the number of iterations for each rank
+>>     numbers_per_rank = numbers/n_ranks
+>>     if (MOD(numbers, numbers_per_rank) > 0) then
+>>          ! add 1 in case the number of ranks doesn't divide numbers
+>>          numbers_per_rank = numbers_per_rank + 1
+>>     end if
+>>
+>>     ! Figure out the first and the last iteration for this rank
+>>     my_first = rank * numbers_per_rank
+>>     my_last = my_first + numbers_per_rank
+>>
+>>     ! Run only the necessary part of the loop, making sure we don't go over
+>>     do number = my_first, my_last - 1
+>>          if (number < numbers) then
+>>               write(6,*) "I'm printing the number", number
+>>          end if
+>>     end do
+>>
+>>
+>>     call MPI_FINALIZE(ierr)
+>>
+>>     stop
+>>end
+>> ~~~
+>>{: .source .language-fortran}
+>>
+>{: .solution}
 >
 >
 {: .challenge }
