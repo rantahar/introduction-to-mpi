@@ -125,53 +125,93 @@ in transit.
 
 > ## Example in C
 > ~~~
-> #include <stdio.h>
-> #include <math.h>
-> #include <mpi.h>
+>#include <stdio.h>
+>#include <mpi.h>
 >
-> main(int argc, char** argv) {
->   int rank, n_ranks, numbers_per_rank;
->   int my_first, my_last;
->   int numbers = 10;
+>int main(int argc, char** argv) {
+>  int rank, n_ranks;
 >
->   // Firt call MPI_Init
->   MPI_Init(&argc, &argv);
+>  // First call MPI_Init
+>  MPI_Init(&argc, &argv);
 >
->   // Check that there are at least two ranks
->   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
->   if( n_ranks < 2 ){
->     printf("This example requires at least two ranks");
->     MPI_Finalize();
->     return(1);
->   }
->   
->   // Get my rank
->   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+>  // Check that there are at least two ranks
+>  MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
+>  if( n_ranks < 2 ){
+>    printf("This example requires at least two ranks");
+>    MPI_Finalize();
+>    return(1);
+>  }
+>  
+>  // Get my rank
+>  MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 >
->   if( rank == 0 ){
->      char *message = "Hello, world!";
->      // Note that MPI_BYTE is the MPI type for char
->      MPI_Send(message, 13, MPI_BYTE, 1, 0, MPI_COMM_WORLD);
->   }
+>  if( rank == 0 ){
+>     char *message = "Hello, world!";
+>     // Note that MPI_BYTE is the MPI type for char
+>     MPI_Send(message, 13, MPI_BYTE, 1, 0, MPI_COMM_WORLD);
+>  }
 >
->   if( rank == 1 ){
->      char message[13];
->      int status;
->      // Note that MPI_BYTE is the MPI type for char
->      MPI_Recv(message, 13, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
->      printf("%s",message)
->   }
->   
->   // Call finalize at the end
->   MPI_Finalize();
-> }
+>  if( rank == 1 ){
+>     char message[13];
+>     MPI_Status  status;
+>     // Note that MPI_BYTE is the MPI type for char
+>     MPI_Recv(message, 13, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
+>     printf("%s",message);
+>  }
+>  
+>  // Call finalize at the end
+>  return MPI_Finalize();
+>}
 > ~~~
+>{: .source .language-c}
+>
+{: .prereq .foldable}
+
+> ## Example in Fortran
+> ~~~
+>program hello
+>
+>     use mpi
+>     implicit none
+>     
+>     integer rank, n_ranks, ierr
+>     integer status(MPI_STATUS_SIZE)
+>     character(len=13)  message
+>
+>     ! First call MPI_INIT
+>     call MPI_INIT(ierr)
+>
+>     ! Check that there are at least two ranks
+>     call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>     if (n_ranks < 2) then
+>          write(6,*) "This example requires at least two ranks"
+>          error stop
+>     end if
+>
+>     ! Get my rank
+>     call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>
+>     if (rank == 0) then
+>          message = "Hello, world!"
+>          call MPI_SEND( message, 13, MPI_CHARACTER, 1, 0, MPI_COMM_WORLD, ierr)
+>     end if
+>
+>     if (rank == 1) then
+>          call MPI_RECV( message, 13, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, status, ierr)
+>          write(6,*) message
+>     end if
+>
+>     ! Call MPI_FINALIZE at the end
+>     call MPI_FINALIZE(ierr)
+>end
+> ~~~
+>{: .source .language-fortran}
 >
 {: .prereq .foldable}
 
 > ## Try It Out
 >
-> Compile and run the above code
+> Compile and run the above code.
 >
 {: .challenge}
 
