@@ -4,41 +4,68 @@ title: Setup
 
 ## Install MPI
 
-Make sure you can compile your C programs using a Fortran, C or C++ compiler or a development environment. You will need to install the MPI (Message Passing Interface) library. Several implementations of MPI exist, but for example OpenMPI will work.
+Make sure you can compile your C programs using a Fortran, C or C++ compiler or a development environment. You will need an implementation of the MPI (Message Passing Interface) library. Several implementations of MPI exist, but for example OpenMPI will work on Linux and OS X and Microsoft Distribution of MPICH will work on Windows.
 
-On Ubuntu install openmpi using
+To install openmpi on Ubuntu, open a terminal and run
 ```
 sudo apt install openmpi-bin openmpi-common openmpi-doc
 ```
 {: .source .language-bash}
 
-On Os X you can install openmpi for the command line using [homebrew](https://brew.sh). After installing homebrew, run
+
+On Os X you can install openmpi for the command line using [homebrew](https://brew.sh). After installing homebrew, open the Terminal in Applications/Utilities and run
 ```
 brew install open-mpi
 ```
 {: .source .language-bash}
 
 
-On Windows, you can install [Microsoft MPI](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi) for Visual studio
+On Windows, if you use Visual Studio, you can install [Microsoft MPI](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi).
+The download includes two files, msmpisetup.exe and msmpisdk.msi. Download and run both installers.
+Follow [these instructions](https://blogs.technet.microsoft.com/windowshpc/2015/02/02/how-to-compile-and-run-a-simple-ms-mpi-program/)
+to create a project with the mpi compiler and library.
 
+Other option include installing OpenMPI under [Cygwin](https://www.cygwin.com/) or
+using the linux subsystem on Windows 10.
+Under Cygwin, install the gcc, openmpi and the openmpi-devel packages.
 
-## Install Cmocka (for C) or FRUIT (for Fortran)
+## Install Cmocka or FRUIT
 
+### Cmocka
 Cmocka is a unit testing framework for C. You can find it at the [Cmocka website](https://cmocka.org/).
 On Ubuntu, all you need to do is install 'libcmocka-dev'.
 
-FRUIT is a similar unit testing framework for Fortran. It can be downloaded from [sourcefourge](http://sourceforge.net/projects/fortranxunit/).
+On OS X run
+```
+brew install clib
+clib install cmocka
+```
+{: .source .language-bash}
 
-{% include links.md %}
+On Cygwin, first install git, make and cmake using the cygwin package manager. Then run
+```
+git clone git://git.cryptomilk.org/projects/cmocka.git
+mkdir cmocka-build
+cd cmocka-build
+cmake ../cmocka
+make
+make install
+```
+{: .source .language-bash}
+
+
+### FRUIT
+FRUIT is a similar unit testing framework for Fortran. It can be downloaded from [sourcefourge](http://sourceforge.net/projects/fortranxunit/).
+For the examples in this workshop, you will need the src/fruit.f90 file from the zip archive.
 
 
 ## Installing Scalasca
 
 Scalasca is an open source application for profiling MPI programs.
 We use scalasca in one of the afternoon lessons.
+Downloading and installing at least the CubeGUI is useful.
 If you have access to a cluster and scalasca is installed, you don't
-need to install in on your laptop, but you might still consider
-installing cubeGUI and cubelib.
+need to install scalasca itself on your laptop.
 
 Scalasca consists of four parts
 * Scorep for compiling an instrumented binary
@@ -46,30 +73,37 @@ Scalasca consists of four parts
 * CubeGUI, a graphical viewer
 * The cubelib library
 
-All these packages are available as source and need to be compiled.
-The process is straightforward but takes a few minutes.
-They are supported on linux and OS X.
-On Windows you can use the subsystem linux.
-
-Start with Scorep:
+CubeGUI can be used to view profiling information produced on different platforms.
+Binary packages are provided for Windows and OS X on the [Scalasca Downloads website](http://www.scalasca.org/software/cube-4.x/download.html).
+To install it on Linux, download the Cube Bundle on the same website.
+Compile and install with
 ~~~
+tar -xf CubeBundle-2.0.tar.gz
+cd CubeBundle-2.0
+./configure
+make
+sudo make install
+cd ..
+~~~
+{: .source .language-bash}
+
+
+You may also wish to install Scalasca itself. You can use Scalasca to profile MPI programs on your local system
+
+Start with Scorep. Download it from [the scorep website](https://www.vi-hps.org/projects/score-p/) and run
+~~~
+tar -xf scorep-*.tar.gz
 cd scorep
 ./configure
 make
 sudo make install
 cd ..
 ~~~
+{: .source .language-bash}
 
-To install scalasca you need the cubelib library:
-~~~
-cd cubelib
-./configure
-make
-sudo make install
-cd ..
-~~~
 
-Finally install Scalasca itself:
+Finally install Scalasca itself. Download it from the [Scalasca Downloads page](http://www.scalasca.org/software/cube-4.x/download.html).
+Install in the same way,
 ~~~
 cd scalasca
 ./configure
@@ -77,35 +111,5 @@ make
 sudo make install
 cd ..
 ~~~
-
-### Installing cubeGUI
-
-Installing cubeGUI is not necessary but it is useful.
-If you have access to a cluster with scalasca installed and
-with a fast internet connection,
-it is possible to use X forwarding to use the GUI.
-
-
-
-The default installation path is in /opt/cubelib/.
-Add this to you PATH:
-
-~~~
-PATH=$PATH:/opt/cubelib/bin/
-~~~
-
-You also need qt5 to compile the GUI
-
-~~~
-sudo apt install qt5-default
-~~~
-
-Finally compile and install the GUI
-
-~~~
-cd cubeGUI
-./configure
-make
-sudo make install
-~~~
+{: .source .language-bash}
 
