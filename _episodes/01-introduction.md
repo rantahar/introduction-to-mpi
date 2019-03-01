@@ -100,18 +100,25 @@ Here's a more complete example:
 {: .prereq .foldable}
 
 > ## Fortran
+>
+> Fortran examples, exercises and solutions in this workshop will conform to the 
+> Fortran 2008 standard.
+> The standard can be specified to the compiler in two ways:
+> * using the .f08 file extention
+> * adding -std=f2008 on the command line.
+>
 >~~~
 >program hello
 >
->     use mpi
->     implicit none
->      
->     integer rank
+>    use mpi
+>    implicit none
+>     
+>    integer rank, ierr
 >
->     call MPI_INIT(ierr)
->     call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
->     write(6,*) "My rank number is ", rank
->     call MPI_FINALIZE(ierr)
+>    call MPI_INIT(ierr)
+>    call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>    write(6,*) "My rank number is ", rank
+>    call MPI_FINALIZE(ierr)
 >
 >end
 >~~~
@@ -168,22 +175,20 @@ Usually the rank will need to know how many other ranks there are. You can find 
 > 
 >> ## Solution in Fortran
 >> ~~~
->>
 >>program hello
 >>
->>      use mpi
->>      implicit none
->>      
->>      integer rank, n_ranks
+>>     use mpi
+>>     implicit none
+>>     
+>>     integer rank, n_ranks, ierr
 >>
->>      call MPI_INIT(ierr)
->>      call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
->>      call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
->>      write(6,*) "Hello World! I'm rank ", rank
->>      write(6,*) "total no. of ranks = ", n_ranks
->>      call MPI_FINALIZE(ierr)
+>>     call MPI_INIT(ierr)
+>>     call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>>     call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
+>>     write(6,*) "Hello World! I'm rank ", rank
+>>     write(6,*) "total no. of ranks = ", n_ranks
+>>     call MPI_FINALIZE(ierr)
 >>end
->>
 >> ~~~
 >>{: .source .language-fortran}
 >{: .solution}
@@ -215,13 +220,14 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> ## Fortran
 >> ~~~
 >>program printnumbers
->>     implicit none
->>     
->>     parameter (numbers=10)
+>>    implicit none
+>>    
+>>    integer numbers, number
+>>    numbers = 10
 >>
->>     do number = 0, numbers - 1
->>          write(6,*) "I'm printing the number", number
->>     enddo 
+>>    do number = 0, numbers - 1
+>>         write(6,*) "I'm printing the number", number
+>>    end do 
 >>end
 >> ~~~
 >> {: .source .language-fortran}
@@ -270,38 +276,41 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> ~~~
 >>program print_numbers
 >>
->>     use mpi
->>     implicit none
+>>    use mpi
+>>    implicit none
 >>
->>     parameter (numbers=10)
->>     integer rank, n_ranks
+>>    integer numbers, number
+>>    integer rank, n_ranks, ierr
+>>    integer numbers_per_rank, my_first, my_last
+>>    numbers = 10
 >>
->>     ! Call MPI_INIT
->>     call MPI_INIT(ierr)
->>     ! Get my rank and the total number of ranks
->>     call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
->>     call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
+>>    ! Call MPI_INIT
+>>    call MPI_INIT(ierr)
 >>
->>     ! Calculate the number of iterations for each rank
->>     numbers_per_rank = numbers/n_ranks
->>     if (MOD(numbers, numbers_per_rank) > 0) then
->>          ! add 1 in case the number of ranks doesn't divide numbers
->>          numbers_per_rank = numbers_per_rank + 1
->>     end if
+>>    ! Get my rank and the total number of ranks
+>>    call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>>    call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
 >>
->>     ! Figure out the first and the last iteration for this rank
->>     my_first = rank * numbers_per_rank
->>     my_last = my_first + numbers_per_rank
+>>    ! Calculate the number of iterations for each rank
+>>    numbers_per_rank = numbers/n_ranks
+>>    if (MOD(numbers, numbers_per_rank) > 0) then
+>>         ! add 1 in case the number of ranks doesn't divide numbers
+>>         numbers_per_rank = numbers_per_rank + 1
+>>    end if
 >>
->>     ! Run only the necessary part of the loop, making sure we don't go over
->>     do number = my_first, my_last - 1
->>          if (number < numbers) then
->>               write(6,*) "I'm printing the number", number
->>          end if
->>     end do
+>>    ! Figure out the first and the last iteration for this rank
+>>    my_first = rank * numbers_per_rank
+>>    my_last = my_first + numbers_per_rank
+>>
+>>    ! Run only the necessary part of the loop, making sure we don't go over
+>>    do number = my_first, my_last - 1
+>>         if (number < numbers) then
+>>              write(6,*) "I'm printing the number", number
+>>         end if
+>>    end do
 >>
 >>
->>     call MPI_FINALIZE(ierr)
+>>    call MPI_FINALIZE(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
