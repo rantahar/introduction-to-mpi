@@ -162,18 +162,31 @@ If there were more that 4 ranks, they would need to share an entire row and a co
 {: .challenge}
 
 
-> ## Patterns Relevant to Your Field
->
-> If you brought your own research code, how is it implemented?
-> What data is involved in each step of the algorithm?
-> What tasks could be performed at the same time
-> Which would be more appropriate, a task parallel or a data parallel approach?
-> 
-> Think of computational research problems in your field.
-> Go trough the same set of questions with a common
-> computational problem.
->
-{: .challenge}
+## Performance
+### Number of Transfers
+
+The number of individual transfers is also a significant factor.
+Each transfer will take some amount of time independent of the amount of data transferred.
+The minimum time taken par transfer is known as the latency.
+It depends significantly on the system.
+If the ranks run on the same chip, the transfer is almost instantaneous.
+If they run on different machines and communicate over the internet, this can be seconds.
+
+### Surface to Volume Ratio
+
+The ratio of serial regions to parallel regions is the most important factor in how well an algorithm can be parallellised.
+What other factors are there?
+
+The amount of data that needs to be transferred between the ranks is another important factor.
+This is known as the surface to volume ratio.
+The tradeoff is apparent in a domain decomposed system with nearest neighbour communication,
+where a single rank is responsible for a given volume and
+the data on the surface of that volume needs to be communicated.
+The smaller the volume, the larger the surface is compared to the volume.
+
+The time it takes to transfer a MB of data depends significantly on the network and
+the distance between the ranks.
+
 
 
 {% include links.md %}
