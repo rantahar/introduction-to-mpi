@@ -222,212 +222,378 @@ in transit.
 > Modify the Hello World code so that each rank sends its
 > message to rank 0. Have rank 0 print each message.
 >
-> > ## Hello World in C
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > main(int argc, char** argv) {
-> >   int rank, n_ranks, numbers_per_rank;
-> >
-> >   // Firt call MPI_Init
-> >   MPI_Init(&argc, &argv);
-> >   // Get my rank and the number of ranks
-> >   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> >   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-> >
-> >   printf("Hello! World = %d\n", rank);
-> >   printf("total no. of nodes = %d\n", n_ranks);
-> >
-> >   // Call finalize at the end
-> >   MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
+>> ## Hello World in C
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> main(int argc, char** argv) {
+>>   int rank;
+>>
+>>   // First call MPI_Init
+>>   MPI_Init(&argc, &argv);
+>>
+>>   // Get my rank
+>>   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>
+>>   printf("Hello World, I'm rank %d\n", rank);
+>>
+>>   // Call finalize at the end
+>>   MPI_Finalize();
+>> }
+>> ~~~
+>> {: .source .language-c}
+>{: .prereq .foldable}
 >
-> > ## Hello World in Fortran
-> > ~~~
-> >
-> >      program hello
-> >
-> >      include 'mpif.h'
-> >      
-> >      integer rank, n_ranks
-> >
-> >      call MPI_INIT(ierr)
-> >      call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
-> >      call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
-> >      write(6,*) 'Hello! World = ', rank
-> >      write(6,*) 'total no. of nodes = ", n_ranks
-> >      call MPI_FINALIZE(ierr)
-> >
-> >      stop
-> >      end
-> >
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
+>> ## Hello World in Fortran
+>> ~~~
+>>program hello
+>>
+>>    use mpi
+>>    implicit none
+>>     
+>>    integer rank, ierr
+>>
+>>    ! First call MPI_INIT
+>>    call MPI_INIT(ierr)
+>>
+>>    ! Get my rank
+>>    call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>>
+>>    write(6,*) "Hello World, I'm rank", rank
+>>
+>>    ! Call MPI_FINALIZE at the end
+>>    call MPI_FINALIZE(ierr)
+>>end
+>> ~~~
+>>{: .source .language-fortran}
+>{: .prereq .foldable}
 >
-> > ## Solution in C
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > int main(int argc, char** argv) {
-> >   int rank, n_ranks, numbers_per_rank;
-> >
-> >   // Firt call MPI_Init
-> >   MPI_Init(&argc, &argv);
-> >   // Get my rank and the number of ranks
-> >   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> >   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-> >
-> >   if( rank != 0 ){
-> >      // All ranks other than 0 should send a message
-> >
-> >      char message[20];
-> >      sprintf(message, "Hello World, I'm rank %d\n", rank);
-> >      MPI_Send(message, 20, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-> >
-> >   } else {
-> >      // Rank 0 will receive each message and print them
-> >
-> >      for( int r=1; r<n_ranks; r++ ){
-> >         char message[20];
-> >         MPI_Status status;
-> >
-> >         MPI_Recv(message, 13, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
-> >         printf("%s",message);
-> >      }
-> >   }
-> >   
-> >   // Call finalize at the end
-> >   MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> {: .solution}
+>> ## Solution in C
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> int main(int argc, char** argv) {
+>>     int rank, n_ranks, numbers_per_rank;
+>>  
+>>     // First call MPI_Init
+>>     MPI_Init(&argc, &argv);
+>>     // Get my rank and the number of ranks
+>>     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>     MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>  
+>>     if( rank != 0 ){
+>>        // All ranks other than 0 should send a message
+>>  
+>>        char message[20];
+>>        sprintf(message, "Hello World, I'm rank %d\n", rank);
+>>        MPI_Send(message, 20, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+>>  
+>>     } else {
+>>        // Rank 0 will receive each message and print them
+>>  
+>>        for( int sender=1; sender<n_ranks; r++ ){
+>>           char message[20];
+>>           MPI_Status status;
+>>  
+>>           MPI_Recv(message, 13, MPI_BYTE, sender, 0, MPI_COMM_WORLD, &status);
+>>           printf("%s",message);
+>>        }
+>>     }
+>>     
+>>     // Call finalize at the end
+>>     MPI_Finalize();
+>> }
+>> ~~~
+>>{: .source .language-c}
+>{: .solution}
 >
+>> ## Solution in Fortran
+>> ~~~
+>>program hello
+>>
+>>    use mpi
+>>    implicit none
+>>     
+>>    integer rank, n_ranks, ierr
+>>    integer sender
+>>    integer status(MPI_STATUS_SIZE)
+>>    character(len=40)  message
+>>
+>>    ! First call MPI_INIT
+>>    call MPI_INIT(ierr)
+>>
+>>    ! Get my rank and the number of ranks
+>>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>
+>>    if (rank .NE. 0) then
+>>        ! All ranks other than 0 should send a message
+>>
+>>        write(message,*) "Hello World, I'm rank", rank
+>>        call MPI_SEND( message, 40, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, ierr)
+>>
+>>    else
+>>        ! Rank 0 will receive each message and print them
+>>
+>>        do sender = 1, n_ranks-1
+>>            call MPI_RECV( message, 40, MPI_CHARACTER, sender, 0, MPI_COMM_WORLD, status, ierr)
+>>            write(6,*) message
+>>        end do
+>>
+>>    end if
+>>
+>>    ! Call MPI_FINALIZE at the end
+>>    call MPI_FINALIZE(ierr)
+>>end
+>> ~~~
+>>{: .source .language-fortran}
+>{: .solution}
 {: .challenge}
 
 
 
 > ## Blocking
 >
-> - Try this code and see what happens
-> - How would you change the code to fix the problem?
+> * Try this code and see what happens
+> * How would you change the code to fix the problem?
 >
-> > ## C
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > int main(int argc, char** argv) {
-> >    int rank, n_ranks, neighbour;
-> >    int n_numbers = 1048576;
-> >    int send_message[n_numbers];
-> >    int recv_message[n_numbers];
-> >    MPI_Status status;
-> > 
-> >    // Firt call MPI_Init
-> >    MPI_Init(&argc, &argv);
-> > 
-> >    // Get my rank and the number of ranks
-> >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-> > 
-> >    // Call the other rank the neighbour
-> >    if( rank == 0 ){
-> >       neighbour = 1;      
-> >    } else {
-> >       neighbour = 0;
-> >    }
-> > 
-> >    // Generate numbers to send
-> >    for( int i=0; i<n_numbers; i++){
-> >       send_message[i] = i;
-> >    }
-> > 
-> >    // Send the message to other rank
-> >    MPI_Send(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
-> > 
-> >    // Receive the message from the other rank
-> >    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
-> >    printf("Message received by rank %d \n", rank);
-> > 
-> >    // Call finalize at the end
-> >    MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
+>> ## C
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> int main(int argc, char** argv) {
+>>    int rank, n_ranks, neighbour;
+>>    int n_numbers = 1048576;
+>>    int send_message[n_numbers];
+>>    int recv_message[n_numbers];
+>>    MPI_Status status;
+>> 
+>>    // First call MPI_Init
+>>    MPI_Init(&argc, &argv);
+>> 
+>>    // Get my rank and the number of ranks
+>>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>
+>>    // Check that there are exactly two ranks
+>>    if( n_ranks != 2 ){
+>>         printf("This example requires exactly two ranks");
+>>         MPI_Finalize();
+>>         return(1);
+>>    }
+>> 
+>>    // Call the other rank the neighbour
+>>    if( rank == 0 ){
+>>       neighbour = 1;      
+>>    } else {
+>>       neighbour = 0;
+>>    }
+>> 
+>>    // Generate numbers to send
+>>    for( int i=0; i<n_numbers; i++){
+>>       send_message[i] = i;
+>>    }
+>> 
+>>    // Send the message to other rank
+>>    MPI_Send(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
+>> 
+>>    // Receive the message from the other rank
+>>    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
+>>    printf("Message received by rank %d \n", rank);
+>> 
+>>    // Call finalize at the end
+>>    MPI_Finalize();
+>> }
+>> ~~~
+>>{: .source .language-c}
+>{: .prereq .foldable}
 >
 >
+>> ## Fortran
+>> ~~~
+>>program hello
+>>
+>>    use mpi
+>>    implicit none
+>>     
+>>    integer, parameter :: n_numbers=1048576
+>>    integer i
+>>    integer rank, n_ranks, neighbour, ierr
+>>    integer status(MPI_STATUS_SIZE)
+>>    integer send_message(n_numbers)
+>>    integer recv_message(n_numbers)
+>>
+>>    ! First call MPI_INIT
+>>    call MPI_INIT(ierr)
+>>
+>>    ! Get my rank and the number of ranks
+>>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>
+>>    ! Check that there are exactly two ranks
+>>    if (n_ranks .NE. 2) then
+>>         write(6,*) "This example requires exactly two ranks"
+>>         error stop
+>>    end if
+>>
+>>    ! Call the other rank the neighbour
+>>    if (rank == 0) then
+>>        neighbour = 1
+>>    else
+>>        neighbour = 0
+>>    end if
+>>
+>>    ! Generate numbers to send
+>>    do i = 1, n_numbers
+>>        send_message(i) = i;
+>>    end do
+>>
+>>    ! Send the message to other rank
+>>    call MPI_SEND( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr );
+>>
+>>    ! Receive the message from the other rank
+>>    call MPI_RECV( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
+>>    write(6,*) "Message received by rank", rank
+>>
+>>    ! Call MPI_FINALIZE at the end
+>>    call MPI_FINALIZE(ierr)
+>>end
+>> ~~~
+>>{: .source .language-fortran}
+>{: .prereq .foldable}
 >
-> > ## Solution in C
-> > 
-> > MPI_Send will block execution until until the receiving process has called
-> > MPI_Recv. This prevents the sender from unintentionally modifying the message
-> > buffer before the message is actually sent.
-> > Above, both ranks call MPI_Send and just wait for the other respond.
-> > The solution is to have one of the ranks receive it's message before sending:
-> >
-> > Sometimes MPI_Send will actually make a copy of the buffer and return immediately.
-> > This generally happens only for short messages.
-> > Even when this happens, the actual transfer will not start before the receive is posted.
-> > 
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > int main(int argc, char** argv) {
-> >    int rank, n_ranks, neighbour;
-> >    int n_numbers = 1048576;
-> >    int send_message[n_numbers];
-> >    int recv_message[n_numbers];
-> >    MPI_Status status;
-> > 
-> >    // Firt call MPI_Init
-> >    MPI_Init(&argc, &argv);
-> > 
-> >    // Get my rank and the number of ranks
-> >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-> > 
-> >    // Generate numbers to send
-> >    for( int i=0; i<n_numbers; i++){
-> >       send_message[i] = i;
-> >    }
-> > 
-> >    if( rank == 0 ){
-> >       // Rank 0 will send first
-> >       MPI_Send(send_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD);
-> >    }
-> > 
-> >    if( rank == 1 ){
-> >       // Rank 1 will receive it's message before sending
-> >       MPI_Recv(recv_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-> >       printf("Message received by rank %d \n", rank);
-> >    }
-> > 
-> >    if( rank == 1 ){
-> >       // Now rank 1 is free to send
-> >       MPI_Send(send_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD);
-> >    }
-> > 
-> >    if( rank == 0 ){
-> >       // And rank 0 will receive the message
-> >       MPI_Recv(recv_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
-> >       printf("Message received by rank %d \n", rank);
-> >    }
-> > 
-> >    // Call finalize at the end
-> >    MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> {: .solution}
+>
+>> ## Solution in C
+>> 
+>> MPI_Send will block execution until until the receiving process has called
+>> MPI_Recv. This prevents the sender from unintentionally modifying the message
+>> buffer before the message is actually sent.
+>> Above, both ranks call MPI_Send and just wait for the other respond.
+>> The solution is to have one of the ranks receive it's message before sending.
+>>
+>> Sometimes MPI_Send will actually make a copy of the buffer and return immediately.
+>> This generally happens only for short messages.
+>> Even when this happens, the actual transfer will not start before the receive is posted.
+>> 
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> int main(int argc, char** argv) {
+>>    int rank, n_ranks, neighbour;
+>>    int n_numbers = 1048576;
+>>    int send_message[n_numbers];
+>>    int recv_message[n_numbers];
+>>    MPI_Status status;
+>> 
+>>    // First call MPI_Init
+>>    MPI_Init(&argc, &argv);
+>> 
+>>    // Get my rank and the number of ranks
+>>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>> 
+>>    // Generate numbers to send
+>>    for( int i=0; i<n_numbers; i++){
+>>       send_message[i] = i;
+>>    }
+>> 
+>>    if( rank == 0 ){
+>>       // Rank 0 will send first
+>>       MPI_Send(send_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD);
+>>    }
+>> 
+>>    if( rank == 1 ){
+>>       // Rank 1 will receive it's message before sending
+>>       MPI_Recv(recv_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+>>       printf("Message received by rank %d \n", rank);
+>>    }
+>> 
+>>    if( rank == 1 ){
+>>       // Now rank 1 is free to send
+>>       MPI_Send(send_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD);
+>>    }
+>> 
+>>    if( rank == 0 ){
+>>       // And rank 0 will receive the message
+>>       MPI_Recv(recv_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
+>>       printf("Message received by rank %d \n", rank);
+>>    }
+>> 
+>>    // Call finalize at the end
+>>    MPI_Finalize();
+>> }
+>> ~~~
+>>{: .source .language-c}
+>{: .solution}
+>
+>
+>> ## Solution in Fortran
+>> 
+>> MPI_Send will block execution until until the receiving process has called
+>> MPI_Recv. This prevents the sender from unintentionally modifying the message
+>> buffer before the message is actually sent.
+>> Above, both ranks call MPI_Send and just wait for the other respond.
+>> The solution is to have one of the ranks receive it's message before sending.
+>>
+>> Sometimes MPI_Send will actually make a copy of the buffer and return immediately.
+>> This generally happens only for short messages.
+>> Even when this happens, the actual transfer will not start before the receive is posted.
+>> 
+>> ~~~
+>>program hello
+>>
+>>    use mpi
+>>    implicit none
+>>     
+>>    integer, parameter :: n_numbers=1048576
+>>    integer i
+>>    integer rank, n_ranks, neighbour, ierr
+>>    integer status(MPI_STATUS_SIZE)
+>>    integer send_message(n_numbers)
+>>    integer recv_message(n_numbers)
+>>
+>>    ! First call MPI_INIT
+>>    call MPI_INIT(ierr)
+>>
+>>    ! Get my rank and the number of ranks
+>>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>
+>>    ! Check that there are exactly two ranks
+>>    if (n_ranks .NE. 2) then
+>>         write(6,*) "This example requires exactly two ranks"
+>>         error stop
+>>    end if
+>>
+>>    ! Call the other rank the neighbour
+>>    if (rank == 0) then
+>>        neighbour = 1
+>>    else
+>>        neighbour = 0
+>>    end if
+>>
+>>    ! Generate numbers to send
+>>    do i = 1, n_numbers
+>>        send_message(i) = i;
+>>    end do
+>>
+>>    ! Send the message to other rank
+>>    call MPI_SEND( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr );
+>>
+>>    ! Receive the message from the other rank
+>>    call MPI_RECV( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
+>>    write(6,*) "Message received by rank", rank
+>>
+>>    ! Call MPI_FINALIZE at the end
+>>    call MPI_FINALIZE(ierr)
+>>end
+>> ~~~
+>>{: .source .language-fortran}
+>{: .solution}
 >
 >
 {: .challenge}
@@ -445,63 +611,118 @@ in transit.
 > * There are no misses or points
 >
 >
-> > ## Solution in C
-> > 
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > int main(int argc, char** argv) {
-> >    int rank, n_ranks, neighbour;
-> >    int max_count = 1000000;
-> >    int counter;
-> >    int bored;
-> >    int ball = 1; // A dummy message to simulate the ball
-> >    MPI_Status status;
-> > 
-> >    // Firt call MPI_Init
-> >    MPI_Init(&argc, &argv);
-> > 
-> >    // Get my rank and the number of ranks
-> >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-> > 
-> >    // Call the other rank the neighbour
-> >    if( rank == 0 ){
-> >        neighbour = 1;
-> >    } else {
-> >        neighbour = 0;
-> >    }
-> > 
-> >    if( rank == 0 ){
-> >       // Rank 0 starts with the ball. Send it to rank 1
-> >       MPI_Send(&ball, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
-> >    }
-> > 
-> >    counter = 0;
-> >    bored = 0;
-> >    while( !bored )
-> >    {
-> >       // Receive the ball
-> >       MPI_Recv(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
-> >       
-> >       // Increment the counter
-> >       counter++;
-> > 
-> >       // Send the ball back
-> >       MPI_Send(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
-> > 
-> > 
-> >       // Check if the rank is bored
-> >       bored = counter < max_count;
-> >    }
-> >    printf("rank %d is bored and giving up \n", rank);
-> > 
-> >    // Call finalize at the end
-> >    MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
+>> ## Solution in C
+>> 
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> int main(int argc, char** argv) {
+>>    int rank, neighbour;
+>>    int max_count = 1000000;
+>>    int counter;
+>>    int bored;
+>>    int ball = 1; // A dummy message to simulate the ball
+>>    MPI_Status status;
+>> 
+>>    // First call MPI_Init
+>>    MPI_Init(&argc, &argv);
+>> 
+>>    // Get my rank
+>>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>> 
+>>    // Call the other rank the neighbour
+>>    if( rank == 0 ){
+>>        neighbour = 1;
+>>    } else {
+>>        neighbour = 0;
+>>    }
+>> 
+>>    if( rank == 0 ){
+>>       // Rank 0 starts with the ball. Send it to rank 1
+>>       MPI_Send(&ball, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+>>    }
+>> 
+>>    // Now run a send and receive in a loop untill someone gets bored
+>>    counter = 0;
+>>    bored = 0;
+>>    while( !bored )
+>>    {
+>>       // Receive the ball
+>>       MPI_Recv(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
+>>       
+>>       // Increment the counter and send the ball back
+>>       MPI_Send(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
+>> 
+>>       // Check if the rank is bored
+>>       bored = counter < max_count;
+>>    }
+>>    printf("rank %d is bored and giving up \n", rank);
+>> 
+>>    // Call finalize at the end
+>>    MPI_Finalize();
+>> }
+>> ~~~
+>>{: .source .language-c}
+> {: .solution}
+>
+>
+>> ## Solution in Fortran
+>> 
+>> ~~~
+>>program pingpong
+>>
+>>    use mpi
+>>    implicit none
+>>     
+>>    integer ball, max_count, counter
+>>    logical bored
+>>    integer rank, neighbour, ierr
+>>    integer status(MPI_STATUS_SIZE)
+>>
+>>    ball = 1 ! A dummy message to simulate the ball
+>>    max_count = 1000000
+>>
+>>    ! First call MPI_INIT
+>>    call MPI_INIT(ierr)
+>>
+>>    ! Get my rank
+>>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>
+>>    ! Call the other rank the neighbour
+>>    if (rank == 0) then
+>>        neighbour = 1
+>>    else
+>>        neighbour = 0
+>>    end if
+>>
+>>    ! Rank 0 starts with the ball. Send it to rank 1.
+>>    if ( rank == 0 ) then
+>>        call MPI_SEND( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
+>>    end if
+>>
+>>    ! Now run send and receive in a loop until someone gets bored
+>>    counter = 0
+>>    bored = .false.
+>>    do while ( .NOT. bored )
+>>        ! Receive the ball
+>>        call MPI_RECV( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
+>>
+>>        ! Increment the counter and send the ball back
+>>        counter = counter + 1
+>>        call MPI_SEND( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
+>>
+>>        ! Check if the rank is bored
+>>        bored = counter < max_count
+>>    end do
+>>
+>>    write(6, *) "Rank ", rank, "is bored and giving up"
+>>
+>>    ! Call MPI_FINALIZE at the end
+>>    call MPI_FINALIZE(ierr)
+>>end
+>> ~~~
+>>{: .source .language-fortran}
 > {: .solution}
 >
 >
