@@ -84,7 +84,7 @@ Here's a more complete example:
 > main(int argc, char** argv) {
 >   int rank, n_ranks, numbers_per_rank;
 >
->   // Firt call MPI_Init
+>   // First call MPI_Init
 >   MPI_Init(&argc, &argv);
 >   // Get my rank and the number of ranks
 >   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -160,7 +160,7 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> main(int argc, char** argv) {
 >>   int rank, n_ranks, numbers_per_rank;
 >>
->>   // Firt call MPI_Init
+>>   // First call MPI_Init
 >>   MPI_Init(&argc, &argv);
 >>   // Get my rank and the number of ranks
 >>   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -249,7 +249,7 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >>   int my_first, my_last;
 >>   int numbers = 10;
 >>
->>   // Firt call MPI_Init
+>>   // First call MPI_Init
 >>   MPI_Init(&argc, &argv);
 >>   // Get my rank and the number of ranks
 >>   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
