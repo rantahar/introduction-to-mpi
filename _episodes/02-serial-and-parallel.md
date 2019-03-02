@@ -139,7 +139,7 @@ Fortunately, the parallel part is often much larger than the serial part.
 
 ### Amdahl's Law
 
-N CPU's (or cores) doesn't result in the N times speed-up. There is a limit in what parallelization can achieve and it is encapsulted in "Amdahl's Law".
+N CPU's (or cores) doesn't result in the N times speed-up. There is a theoretical limit in what parallelization can achieve and it is encapsulted in "Amdahl's Law".
 
 The time it takes to execute the program is roughly
 ![T = T_{serial} + T_{parallel}/N_ranks + T_communication(N_ranks)]({{ page.root }}{% link fig/amdahl_equation.png %}){:height="50%" width="50%"}
