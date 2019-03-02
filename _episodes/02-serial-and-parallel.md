@@ -135,7 +135,11 @@ Fortunately, the parallel part is often much larger than the serial part.
 >
 {: .challenge}
 
+Factors to consider for parallel algorithm
+
 ## Amdahl's Law
+
+N CPU's (or cores) doesn't result in the N times speed-up. There is a limit in what parallelization can achieve and it is encapsulted in "Amdahl's Law".
 
 The time it takes to execute the program is roughly
 ![T = T_{serial} + T_{parallel}/N_ranks + T_communication(N_ranks)]({{ page.root }}{% link fig/amdahl_equation.png %}){:height="50%" width="50%"}
@@ -153,3 +157,8 @@ But if we keep increasing the number of ranks the time spent in communication gr
 
 {% include links.md %}
 
+## L. Lamport's Sequential Consistency
+
+Parallelization necessarily involves execution of several computing elements (CPU's or cores).
+
+## Surface-to Volume Ratio
