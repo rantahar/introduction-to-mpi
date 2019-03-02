@@ -162,3 +162,7 @@ But if we keep increasing the number of ranks the time spent in communication gr
 Parallelization necessarily involves execution of several computing elements (CPU's or cores).
 
 ### Surface-to Volume Ratio
+
+In a parallel algorithm, the data which is handled by a CPU (or a core) can be considered in two parts: the one which needs the data that other CPU's (or cores) controls for computation and the other which a given CPU or core controls and can compute. The whole data which a CPU or a core compute is the sum of the two. The data under the control of the other CPU's (or cores) is called "surface" and the whole data is called "volume".
+
+The surface data requires communications.
