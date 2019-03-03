@@ -159,7 +159,7 @@ But if we keep increasing the number of ranks the time spent in communication gr
 
 ### L. Lamport's Sequential Consistency
 
-Parallelization necessarily involves execution of several computing elements (CPU's or cores).
+Message Passing based parallelization necessarily involves several "distributed" computing elements (CPU's or cores) which may operate on independent clocks. This can give wrong result 
 
 ### Surface-to Volume Ratio
 
