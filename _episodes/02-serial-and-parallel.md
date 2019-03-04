@@ -161,6 +161,15 @@ But if we keep increasing the number of ranks the time spent in communication gr
 
 Message Passing based parallelization necessarily involves several "distributed" computing elements (CPU's or cores) which may operate on independent clocks. This can give wrong result since the order of execution of an algorithm may not be the same as the corresponding serial execution performed by one CPU (or a core). Using car manufacturing analogy, speeds of conveyor belts may be different.
 
+The speed of a conveyor belt would depend on many factors, including
+the speed of the workers,
+the type of the conveyor belt,
+when the belt was last maintained,
+the temperature and so on.
+The problem could be solved by having the faster conveyr belts periodically wait for the slower ones.
+This is obviously wasteful and it would be better to design a manufacturing process
+that produces a working car even if some of the build steps happen in a different order.
+
 ### Surface-to Volume Ratio
 
 In a parallel algorithm, the data which is handled by a CPU (or a core) can be considered in two parts: the one which needs the data that other CPU's (or cores) controls for computation and the other which a given CPU or core controls and can compute. The whole data which a CPU or a core compute is the sum of the two. The data under the control of the other CPU's (or cores) is called "surface" and the whole data is called "volume".
