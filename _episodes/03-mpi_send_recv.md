@@ -319,7 +319,7 @@ in transit.
 >>    integer rank, n_ranks, ierr
 >>    integer sender
 >>    integer status(MPI_STATUS_SIZE)
->>    character(len=40)  message
+>>    character(len=40) message
 >>
 >>    ! First call MPI_INIT
 >>    call MPI_INIT(ierr)
@@ -452,7 +452,7 @@ in transit.
 >>    end do
 >>
 >>    ! Send the message to other rank
->>    call MPI_SEND( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr );
+>>    call MPI_SEND( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
 >>
 >>    ! Receive the message from the other rank
 >>    call MPI_RECV( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )

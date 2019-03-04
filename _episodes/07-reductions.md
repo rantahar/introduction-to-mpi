@@ -44,6 +44,14 @@ The most common are:
 >
 {: .prereq .foldable}
 
+> ## Barrier in Fortran
+>
+>~~~
+> MPI_Barrier(COMM)
+>    INTEGER    COMM
+>~~~
+{: .prereq .foldable}
+
 Just wait until all ranks have reached this line.
 
 ### Broadcast
@@ -56,6 +64,15 @@ Just wait until all ranks have reached this line.
 >     MPI_Datatype datatype,
 >     int root,
 >     MPI_Comm communicator)
+> ~~~
+>
+{: .prereq .foldable}
+
+> ## Broadcast in Fortran
+>~~~
+>MPI_BCAST(BUFFER, COUNT, DATATYPE, ROOT, COMM, IERROR)
+>    <type>    BUFFER(*)
+>    INTEGER    COUNT, DATATYPE, ROOT, COMM, IERROR
 > ~~~
 >
 {: .prereq .foldable}
@@ -77,6 +94,17 @@ making it a kind of a barrier.
 >     MPI_Datatype receive-datatype,
 >     int root,
 >     MPI_Comm communicator)
+> ~~~
+>
+{: .prereq .foldable}
+
+> ## Scatter in Fortran
+>~~~
+>MPI_SCATTER(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
+>        RECVTYPE, ROOT, COMM, IERROR)
+>    <type>    SENDBUF(*), RECVBUF(*)
+>    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
+>    INTEGER    COMM, IERROR
 > ~~~
 >
 {: .prereq .foldable}
@@ -103,6 +131,17 @@ needed by the root.
 >
 {: .prereq .foldable}
 
+> ## Gather in Fortran
+>~~~
+>MPI_GATHER(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
+>        RECVTYPE, ROOT, COMM, IERROR)
+>    <type>    SENDBUF(*), RECVBUF(*)
+>    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
+>    INTEGER    COMM, IERROR
+> ~~~
+>
+{: .prereq .foldable}
+
 Each rank sends the data in the send-buffer to the root.
 The root collect the data into the receive-buffer in order of the rank
 numbers.
@@ -114,46 +153,79 @@ numbers.
 > sends a message to rank 0.
 > Write this using a gather instead of send and receive.
 >
-> > ## Solution in C
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > int main(int argc, char** argv) {
-> >   int rank, n_ranks, numbers_per_rank;
-> >
-> >   // Firt call MPI_Init
-> >   MPI_Init(&argc, &argv);
-> >   // Get my rank and the number of ranks
-> >   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> >   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-> >
-> >   if( rank != 0 ){
-> >      // All ranks other than 0 should send a message
-> >
-> >      char message[20];
-> >      sprintf(message, "Hello World, I'm rank %d\n", rank);
-> >      MPI_Send(message, 20, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-> >
-> >   } else {
-> >      // Rank 0 will receive each message and print them
-> >
-> >      for( int r=1; r<n_ranks; r++ ){
-> >         char message[20];
-> >         MPI_Status status;
-> >
-> >         MPI_Recv(message, 13, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
-> >         printf("%s",message);
-> >      }
-> >   }
-> >   
-> >   // Call finalize at the end
-> >   MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
+>> ## Solution in C
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> int main(int argc, char** argv) {
+>>   int rank, n_ranks, numbers_per_rank;
+>>   char send_message[20], *receive_message;
+>>
+>>   // First call MPI_Init
+>>   MPI_Init(&argc, &argv);
+>>   // Get my rank and the number of ranks
+>>   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>
+>>   // Allocate space for all received messages in receive_message
+>>   receive_message = malloc( n_ranks*20*sizeof(char) );
+>>
+>>   //Use gather to send all messages to rank 0
+>>   sprintf(message, "Hello World, I'm rank %d\n", rank);
+>>   MPI_Gather( send_message, 20, MPI_BYTE, receive_message, 20, MPI_BYTE, 0, MPI_COMM_WORLD, ierr )
+>>   
+>>   if(rank == 0){
+>>      printf("%s", receive_message);
+>>   }
+>>   
+>>   // Free memory and finalise
+>>   free( receive_message );
+>>   MPI_Finalize();
+>> }
+>> ~~~
+>>{: .source .language-c}
+>{: .prereq .foldable}
 >
+>
+>> ## Solution in Fortran
+>> ~~~
+>>program hello
+>>
+>>    use mpi
+>>    implicit none
+>>     
+>>    integer n_ranks, rank, sender, ierr
+>>    character(len=40) send_message
+>>    character, dimension(:), allocatable :: receive_message
+>>
+>>    ! First call MPI_INIT
+>>    call MPI_INIT(ierr)
+>>
+>>    ! Get my rank and the number of ranks
+>>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>
+>>    ! Allocate space for all received messages in receive_message
+>>    allocate ( receive_message(n_ranks*40) )
+>>
+>>    ! Use gather to send all messages to rank 0
+>>    write(send_message,*) "Hello World, I'm rank", rank
+>>    call MPI_Gather( send_message, 40, MPI_CHARACTER, receive_message, 40, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr )
+>>    
+>>    if (rank == 0) then
+>>        do sender = 1, n_ranks-1
+>>            write(6,*) receive_message(40*sender: 40*(sender+1))
+>>        end do
+>>    end if
+>>
+>>    ! Free memory and finalise
+>>    deallocate( receive_message )
+>>    call MPI_FINALIZE(ierr)
+>>end
+>> ~~~
+>>{: .source .language-fortran}
+>{: .prereq .foldable}
 >
 >
 {: .challenge}
@@ -171,6 +243,16 @@ numbers.
 >     MPI_Op operation,
 >     int root,
 >     MPI_Comm communicator)
+> ~~~
+>
+{: .prereq .foldable}
+
+> ## Reduce in Fortran
+>~~~
+>MPI_REDUCE(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, ROOT, COMM,
+>        IERROR)
+>    <type>    SENDBUF(*), RECVBUF(*)
+>    INTEGER    COUNT, DATATYPE, OP, ROOT, COMM, IERROR
 > ~~~
 >
 {: .prereq .foldable}
@@ -210,118 +292,180 @@ of the ranks to do the calculation.
 >
 {: .prereq .foldable}
 
+> ## Allreduce in Fortran
+>~~~
+>MPI_ALLREDUCE(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, COMM, IERROR)
+>    <type>    SENDBUF(*), RECVBUF(*)
+>    INTEGER    COUNT, DATATYPE, OP, COMM, IERROR
+> ~~~
+>
+{: .prereq .foldable}
+
+
 MPI_Allreduce is performs essentially the same operations as MPI_Reduce,
 but the result is sent to all the ranks.
 
 
 > ## Reductions
 >
-> Replace all three for-loops in the example code using MPI_Reduce or
-> MPI_Allreduce.
+> Modify the find_sum and find_max functions to work correctly in parallel
+> using MPI_Reduce or MPI_Allreduce
 >
-> > ## C
-> > ~~~
-> > #include <stdio.h>
-> > #include <mpi.h>
-> > 
-> > // Calculate the sum of numbers in a vector
-> > double find_sum( double * vector, int N ){
-> >    double sum = 0;
-> >    for( int i=0; i<N; i++){
-> >       sum += vector[i];
-> >    }
-> >    return sum;
-> > }
-> > 
-> > // Find the maximum of numbers in a vector
-> > double find_maximum( double * vector, int N ){
-> >    double max = 0;
-> >    for( int i=0; i<N; i++){
-> >       if( vector[i] > max ){
-> >          max = vector[i];
-> >       }
-> >    }
-> >    return max;
-> > }
-> > 
-> > 
-> > int main(int argc, char** argv) {
-> >    int n_numbers = 1024;
-> >    int rank;
-> >    double vector[n_numbers];
-> >    double sum, max;
-> >    double my_first_number;
-> > 
-> >    // Firt call MPI_Init
-> >    MPI_Init(&argc, &argv);
-> > 
-> >    // Get my rank and the number of ranks
-> >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-> > 
-> >    // Each rank will have n_numbers numbers,
-> >    // starting from where the previous left
-> >    my_first_number = n_numbers*rank;
-> > 
-> >    // Generate a vector
-> >    for( int i=0; i<n_numbers; i++){
-> >       vector[i] = my_first_number + i;
-> >    }
-> > 
-> >    //Find the sum and print
-> >    sum = find_sum( vector, n_numbers );
-> >    printf("The sum of the numbers is %f\n", sum);
-> > 
-> >    //Find the maximum and print
-> >    max = find_maximum( vector, n_numbers );
-> >    printf("The largest number is %f\n", max);
-> > 
-> >    // Call finalize at the end
-> >    MPI_Finalize();
-> > }
-> > ~~~
-> > {: .output}
-> {: .prereq .foldable}
+>> ## C
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> // Calculate the sum of numbers in a vector
+>> double find_sum( double * vector, int N ){
+>>    double sum = 0;
+>>    for( int i=0; i<N; i++){
+>>       sum += vector[i];
+>>    }
+>>    return sum;
+>> }
+>> 
+>> // Find the maximum of numbers in a vector
+>> double find_maximum( double * vector, int N ){
+>>    double max = 0;
+>>    for( int i=0; i<N; i++){
+>>       if( vector[i] > max ){
+>>          max = vector[i];
+>>       }
+>>    }
+>>    return max;
+>> }
+>> 
+>> 
+>> int main(int argc, char** argv) {
+>>    int n_numbers = 1024;
+>>    int rank;
+>>    double vector[n_numbers];
+>>    double sum, max;
+>>    double my_first_number;
+>> 
+>>    // First call MPI_Init
+>>    MPI_Init(&argc, &argv);
+>> 
+>>    // Get my rank and the number of ranks
+>>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>> 
+>>    // Each rank will have n_numbers numbers,
+>>    // starting from where the previous left
+>>    my_first_number = n_numbers*rank;
+>> 
+>>    // Generate a vector
+>>    for( int i=0; i<n_numbers; i++){
+>>       vector[i] = my_first_number + i;
+>>    }
+>> 
+>>    //Find the sum and print
+>>    sum = find_sum( vector, n_numbers );
+>>    printf("The sum of the numbers is %f\n", sum);
+>> 
+>>    //Find the maximum and print
+>>    max = find_maximum( vector, n_numbers );
+>>    printf("The largest number is %f\n", max);
+>> 
+>>    // Call finalize at the end
+>>    MPI_Finalize();
+>> }
+>> ~~~
+>>{: .source .language-c}
+>{: .prereq .foldable}
 >
 >
-> > ## Solution in C
-> > 
-> > ~~~
-> > // Calculate the sum of numbers in a vector
-> > double find_sum( double * vector, int N ){
-> >    double sum = 0;
-> >    double global_sum;
-> > 
-> >    // Calculate the sum on this rank as befor
-> >    for( int i=0; i<N; i++){
-> >       sum += vector[i];
-> >    }
-> > 
-> >    // Call MPI_Allreduce to find the full sum
-> >    MPI_Allreduce( &sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
-> > 
-> >    return global_sum;
-> > }
-> > 
-> > // Find the maximum of numbers in a vector
-> > double find_maximum( double * vector, int N ){
-> >    double max = 0;
-> >    double global_max;
-> > 
-> >    // Calculate the sum on this rank as before
-> >    for( int i=0; i<N; i++){
-> >       if( vector[i] > max ){
-> >          max = vector[i];
-> >       }
-> >    }
-> > 
-> >    // Call MPI_Allreduce to find the maximum over all the ranks
-> >    MPI_Allreduce( &max, &global_max, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
-> > 
-> >    return global_max;
-> > }
-> > ~~~
-> > {: .output}
-> {: .solution}
+>> ## Fortran
+>> 
+>> ~~~
+>>program sum_and_max
+>>    implicit none
+>>    integer, parameter :: N=10
+>>    real vector(N)
+>>    real sum, max
+>>    integer i
+>>    
+>>    ! Set the vector
+>>    do i = 1, N
+>>      vector(i) = i
+>>    end do
+>>
+>>    ! Calculate the sum of numbers in a vector
+>>    subroutine find_sum( vector, N, sum )
+>>      real, intent(in) :: vector(:)
+>>      real, intent(inout) :: sum
+>>      integer, intent(in) :: N
+>>      integer i
+>>      
+>>      sum = 0
+>>      do i = 1, N
+>>        sum = sum + vector(i)
+>>      end do
+>>
+>>    end subroutine find_sum
+>>
+>>
+>>    ! Find the maximum of numbers in a vector
+>>    subroutine find_max( vector, N, max )
+>>      real, intent(in) :: vector(:)
+>>      real, intent(inout) :: max
+>>      integer, intent(in) :: N
+>>      integer i
+>>      
+>>      max = 0
+>>      do i = 1, N
+>>        if (max < vector(i)) then
+>>          max = vector(i)
+>>        end if
+>>      end do
+>>
+>>    end subroutine find_max
+>>end
+>>~~~
+>>{: .source .language-fortran}
+>{: .prereq .foldable}
+>
+>
+>
+>> ## Solution in C
+>> 
+>> ~~~
+>> // Calculate the sum of numbers in a vector
+>> double find_sum( double * vector, int N ){
+>>    double sum = 0;
+>>    double global_sum;
+>> 
+>>    // Calculate the sum on this rank as befor
+>>    for( int i=0; i<N; i++){
+>>       sum += vector[i];
+>>    }
+>> 
+>>    // Call MPI_Allreduce to find the full sum
+>>    MPI_Allreduce( &sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+>> 
+>>    return global_sum;
+>> }
+>> 
+>> // Find the maximum of numbers in a vector
+>> double find_maximum( double * vector, int N ){
+>>    double max = 0;
+>>    double global_max;
+>> 
+>>    // Calculate the sum on this rank as before
+>>    for( int i=0; i<N; i++){
+>>       if( vector[i] > max ){
+>>          max = vector[i];
+>>       }
+>>    }
+>> 
+>>    // Call MPI_Allreduce to find the maximum over all the ranks
+>>    MPI_Allreduce( &max, &global_max, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
+>> 
+>>    return global_max;
+>> }
+>> ~~~
+>> {: .output}
+>{: .solution}
 >
 {: .challenge}
 

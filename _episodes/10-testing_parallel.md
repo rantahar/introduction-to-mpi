@@ -84,12 +84,13 @@ and test these separately.
 >   return cmocka_run_group_tests(tests, NULL, NULL);
 >}
 >~~~
-> {: .output}
+> {: .source .language-c}
 >
 > Try compiling this using
 > ~~~
 > gcc file_name.c -lcmocka
 > ~~~
+>{: .language-bash}
 > and running the resulting binary.
 >
 {: .prereq .foldable}
@@ -107,14 +108,14 @@ and test these separately.
 > Copy fruit.f90 from the src folder in the zip archive to your working directory.
 > Compile it with
 > ~~~
-> gfortran fruit.f90
+> gfortran -c fruit.f90
 > ~~~
-> {: .output}
+>{: .language-bash}
 >
 > This creates two modules, fruit.mod and fruit_util.mod, and a object file, fruit.o.
 > 
 > Tests are defined in test modules. Here is a very simple example
-> for making sure that true is true.
+> for making sure that 1 is 1.
 >
 >~~~
 > module example_test
@@ -125,16 +126,14 @@ and test these separately.
 >   subroutine test_true
 >     integer:: result
 > 
->     call assert_true( 1==1, "Boolean test")
+>     call assert_true( 1==1, "1 is 1")
 >   end subroutine test_true
 > end module example_test
 >~~~
-> {: .output}
+>{: .source .language-fortran}
 > 
-> Compile this module, too.
-> 
-> Next, we need to define a program to run. In addition to some FRUIT related calls,
-> this will contain a list of your tests.
+> We also need to define a program to run, called a driver.
+> In addition to some FRUIT related calls, this will contain calls to all your tests.
 >
 >~~~
 > program fruit_driver
@@ -146,12 +145,13 @@ and test these separately.
 >   call fruit_finalize
 > end program fruit_driver
 >~~~
-> {: .output}
+>{: .source .language-fortran}
 >
-> Compile this, including the example_test.o and fruit.o object files
+> Compile this and the test module, here in example_test.f08, and the fruit.o object file
 > ~~~
-> gfortran example_driver.f90 example_test.o fruit.o
+> gfortran example_driver.f08 example_test.f08 fruit.o
 > ~~~
+>{: .language-bash}
 > and run the resulting binary.
 >
 > The program will run our little test and produce some statistics about the tests overall.
@@ -159,7 +159,7 @@ and test these separately.
 {: .prereq .foldable}
 
 
-## Test Suites Automate and Simplify Testing
+## Test suites automate and simplify testing
 
 A test suite is nothing but a program that runs your functions and checks that the output
 is correct.
@@ -177,7 +177,7 @@ This way you know exactly where in your code the problem is.
 >
 > This example code tests the find_sum function from a previous example.
 >
->> ## Example in C
+>> ## C
 >>~~~
 >>#include <stdarg.h>
 >>#include <stddef.h>
@@ -230,8 +230,84 @@ This way you know exactly where in your code the problem is.
 >>   return cmocka_run_group_tests(tests, NULL, NULL);
 >>} 
 >>~~~
->>{: .output}
+>>{: .source .language-c}
 >{: .prereq .foldable}
+>
+>
+>>## Fortran
+>>
+>> Test module:
+>>~~~
+>>module example_test
+>>  use fruit
+>>  implicit none
+>>
+>>  contains
+>>
+>>    subroutine find_sum( vector, N, sum )
+>>      real, intent(in) :: vector(:)
+>>      real, intent(inout) :: sum
+>>      integer, intent(in) :: N
+>>      integer i
+>>      
+>>      sum = 0
+>>      do i = 1, N
+>>        sum = sum + vector(i)
+>>      end do
+>>
+>>    end subroutine find_sum
+>>
+>>
+>>    subroutine find_max( vector, N, max )
+>>      real, intent(in) :: vector(:)
+>>      real, intent(inout) :: max
+>>      integer, intent(in) :: N
+>>      integer i
+>>      
+>>      max = 0
+>>      do i = 1, N
+>>        if (max < vector(i)) then
+>>          max = vector(i)
+>>        end if
+>>      end do
+>>
+>>    end subroutine find_max
+>>
+>>
+>>    subroutine test_sum
+>>      integer, parameter :: N=10
+>>      integer i
+>>      real vector(N)
+>>      real sum
+>>
+>>      do i = 1, N
+>>        vector(i) = i
+>>      end do
+>>  
+>>      call find_sum( vector, N, sum )
+>>
+>>      call assert_true( sum == 55, "Test Sum")
+>>    end subroutine test_sum
+>>
+>>end module example_test
+>>~~~
+>>{: .source .language-fortran}
+>>
+>>Driver Program:
+>>~~~
+>>program fruit_driver
+>>  use fruit
+>>  use example_test
+>>  call init_fruit
+>>  call test_sum
+>>  call fruit_summary
+>>  call fruit_finalize
+>>end program fruit_driver
+>>~~~
+>>{: .source .language-fortran}
+>{: .prereq .foldable}
+>
+>
 >
 > Write a test for the find_maximum function as well and run both tests.
 >
@@ -305,10 +381,59 @@ This way you know exactly where in your code the problem is.
 >>   return cmocka_run_group_tests(tests, NULL, NULL);
 >>}
 >>~~~
->>{: .output}
+>>{: .source .language-c}
+>{: .solution}
+>
+>
+>> ## Solution in Fortran
+>>
+>> Add a second test subroutine to the test module
+>>~~~
+>>    subroutine test_max
+>>      integer, parameter :: N=10
+>>      integer i
+>>      real vector(N)
+>>      real max
+>>
+>>      do i = 1, N
+>>        vector(i) = i
+>>      end do
+>>  
+>>      call find_max( vector, N, max )
+>>
+>>      call assert_true( max == 10, "Test Max")
+>>    end subroutine test_max
+>>~~~
+>>{: .source .language-fortran}
+>>
+>> And add the subroutine call to the driver program
+>>~~~
+>>program fruit_driver
+>>  use fruit
+>>  use example_test
+>>  call init_fruit
+>>  call test_sum
+>>  call test_max
+>>  call fruit_summary
+>>  call fruit_finalize
+>>end program fruit_driver
+>>~~~
+>>{: .source .language-fortran}
 >{: .solution}
 >
 {: .challenge}
+
+
+### Setup and teardown
+
+Above we had to create a vector separately for both tests.
+In a larger program, writing a test can recuire a large amount of setup.
+The environment and the parameters need to mimick the way the fuction is
+called in the code.
+
+Doing these separately in each test results in a lot of repeated code.
+This can be avoided using setup and teardown routines, run before and after
+each test.
 
 >## Setup and Teardown in Cmocka
 >
@@ -316,8 +441,8 @@ This way you know exactly where in your code the problem is.
 > or environments.
 > In solution to the exercise we added both tests to the same group and
 > used cmocka_run_group_tests to run both tests.
-> The tests share some setup, resulting in repeated code.
-> Using a Setup and a Teardown function the solution would be
+> 
+> Test groups also share setup and teardown functions.
 >
 >~~~
 >#include <stdarg.h>
@@ -406,6 +531,93 @@ This way you know exactly where in your code the problem is.
 > We probably added a couple of lines instead of saving any,
 > but in a longer set of tests, this can save a lot of coding
 > and allows you to change all of the tests at once.
+>
+{: .prereq .foldable}
+
+>## Setup and Teardown in FRUIT
+>
+> Since FRUIT allows us to call the test functions directly, calling
+> a setup and a teardown function is simple.
+> First, let's add them to the test module and update the tests
+> accordingly
+>
+>~~~
+>    subroutine setup( vector, N )
+>      real, intent(out) :: vector(:)
+>      integer, intent(in) :: N
+>      integer i
+>
+>      ! Set the vector
+>      do i = 1, N
+>        vector(i) = i
+>      end do
+>    end subroutine setup
+>
+>    subroutine teardown()
+>      ! Nothing to do here
+>    end subroutine teardown
+>
+>
+>    subroutine test_sum(vector, N)
+>      real, intent(in) :: vector(:)
+>      integer, intent(in) :: N
+>      integer i
+>      real sum
+>
+>      call find_sum( vector, N, sum )
+>
+>      call assert_true( sum == 55, "Test Sum")
+>    end subroutine test_sum
+>
+>
+>    subroutine test_max(vector, N)
+>      real, intent(in) :: vector(:)
+>      integer, intent(in) :: N
+>      integer i
+>      real max
+>
+>      call find_max( vector, N, max )
+>
+>      call assert_true( max == 10, "Test Max")
+>    end subroutine test_max
+>~~~
+>{: .source .language-fortran}
+>
+> We can then call them in the driver
+>~~~
+>program fruit_driver
+>  use fruit
+>  use example_test
+>  implicit none
+>
+>  integer, parameter :: N=10
+>  real vector(N)
+>  call init_fruit
+>
+>  call setup(vector, N)
+>  call test_sum(vector, N)
+>  call teardown()
+>
+>  call setup(vector, N)
+>  call test_max(vector, N)
+>  call teardown()
+>
+>  call fruit_summary
+>  call fruit_finalize
+>end program fruit_driver
+>~~~
+>{: .source .language-fortran}
+>
+> In this case the tests do not change the vector, so there is no real need
+> to rerun setup,
+> but we might want to change this later, so it's good to be careful.
+> In general, we don't want previous test to be able affect the current one.
+>
+> FRUIT also contains methods for automatically creating test groups called
+> baskets and generating the driver to run them.
+> These features use ruby, which you need to install separately.
+> It's well worth looking into the features of this tool if you plan to
+> develop in Fortran.
 >
 {: .prereq .foldable}
 
@@ -530,7 +742,7 @@ These will be run even if the test fails.
 >    return cmocka_return_code;
 > }
 > ~~~
-> {: .output}
+>{: .source .language-c}
 {: .callout .foldable}
 
 > ## Testing MPI
@@ -539,7 +751,7 @@ These will be run even if the test fails.
 >
 {: .challenge}
 
-Since all processes are running the tests, you will see multiple compies of the each of the
+Since all processes are running the tests, you will see multiple copies of the each of the
 lines printed in the terminal.
 The test suite is not really aware of MPI, it's just running multiple copies of the tests.
 This is not necessarily a problem.
