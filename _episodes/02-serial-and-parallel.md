@@ -135,7 +135,11 @@ Fortunately, the parallel part is often much larger than the serial part.
 >
 {: .challenge}
 
-## Amdahl's Law
+## Factors to consider for parallel algorithm
+
+### Amdahl's Law
+
+N CPU's (or cores) doesn't result in the N times speed-up. There is a theoretical limit in what parallelization can achieve and it is encapsulted in "Amdahl's Law".
 
 The time it takes to execute the program is roughly
 ![T = T_{serial} + T_{parallel}/N_ranks + T_communication(N_ranks)]({{ page.root }}{% link fig/amdahl_equation.png %}){:height="50%" width="50%"}
@@ -153,3 +157,12 @@ But if we keep increasing the number of ranks the time spent in communication gr
 
 {% include links.md %}
 
+### L. Lamport's Sequential Consistency
+
+Message Passing based parallelization necessarily involves several "distributed" computing elements (CPU's or cores) which may operate on independent clocks. This can give wrong result since the order of execution of an algorithm may not be the same as the corresponding serial execution performed by one CPU (or a core). Using car manufacturing analogy, speeds of conveyor belts may be different.
+
+### Surface-to Volume Ratio
+
+In a parallel algorithm, the data which is handled by a CPU (or a core) can be considered in two parts: the one which needs the data that other CPU's (or cores) controls for computation and the other which a given CPU or core controls and can compute. The whole data which a CPU or a core compute is the sum of the two. The data under the control of the other CPU's (or cores) is called "surface" and the whole data is called "volume".
+
+The surface data requires communications. The more surface is, the more communications among CPU's (cores) are and the longer the wall clock time of a program takes to finish.
