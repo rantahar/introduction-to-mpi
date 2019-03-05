@@ -634,10 +634,9 @@ The main differences are that you need to set up the MPI environment and
 mock the data and the environment for each rank.
 
 It's not good practice to include MPI_Init or MPI_Finalize in the test function itself.
-If an assert is triggered, it may not be run, which could in turn ruin
+If an assert is triggered, MPI_Finalize may not be run, which could in turn ruin
 the rest of the tests.
-Instead we add MPI_Init and MPI_Finalize to the setup and teardown functions.
-These will be run even if the test fails.
+Instead call them either in the setup and teardown functions or in the main program.
 
 > ## Example in C
 > ~~~
@@ -689,10 +688,14 @@ These will be run even if the test fails.
 >    double * vector = state[0];
 >    int n_numbers = vector[0];
 >    double max;
->    
+>    int n_ranks;
+>
 >    //Find the sum and check it's correct
 >    max = find_maximum( vector+1, n_numbers );
->    assert_true( max == 1023 );
+>
+>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>
+>    assert_true( max == n_ranks*n_numbers - 1 );
 > }
 > 
 > 
@@ -745,10 +748,231 @@ These will be run even if the test fails.
 >{: .source .language-c}
 {: .callout .foldable}
 
+
+> ## Example in Fortran
+>
+> Test module:
+> ~~~
+>module example_test
+>  use fruit
+>  use mpi
+>  implicit none
+>
+>contains
+>
+>  subroutine find_sum( vector, N, global_sum )
+>    real, intent(in) :: vector(:)
+>    real, intent(inout) :: global_sum
+>    real sum
+>    integer, intent(in) :: N
+>    integer i, ierr
+>     
+>    sum = 0
+>    do i = 1, N
+>      sum = sum + vector(i)
+>    end do
+>
+>    ! Call MPI_Allreduce to find the full sum
+>    call MPI_Allreduce( sum, global_sum, 1, MPI_REAL, MPI_SUM, MPI_COMM_WORLD, ierr )
+>
+>  end subroutine find_sum
+>
+>  ! Find the maximum of numbers in a vector
+>  subroutine find_max( vector, N, global_max )
+>    real, intent(in) :: vector(:)
+>    real, intent(inout) :: global_max
+>    real max
+>    integer, intent(in) :: N
+>    integer i, ierr
+>     
+>    max = 0
+>    do i = 1, N
+>       if (max < vector(i)) then
+>          max = vector(i)
+>       end if
+>    end do
+>
+>    ! Call MPI_Allreduce to find the full sum
+>    call MPI_Allreduce( max, global_max, 1, MPI_REAL, MPI_MAX, MPI_COMM_WORLD, ierr )
+>
+>  end subroutine find_max
+>
+>
+>  ! Setup routine: call MPI_Init and create the vector
+>  subroutine setup( vector, n_numbers )
+>    real, intent(inout) :: vector(:)
+>    integer, intent(in) :: n_numbers
+>   
+>    integer rank, ierr
+>    real my_first_number
+>    integer i
+>
+>    ! Get my rank
+>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>
+>    ! Each rank will have n_numbers numbers,
+>    ! starting from where the previous left off
+>    my_first_number = n_numbers*rank;
+>
+>    ! Set the vector
+>    do i = 1, n_numbers
+>      vector(i) = my_first_number + i
+>    end do
+>  end subroutine setup
+>
+>  subroutine teardown()
+>    ! Nothing to do here
+>  end subroutine teardown
+>
+>
+>  subroutine test_max(vector, N)
+>    real, intent(in) :: vector(:)
+>    integer, intent(in) :: N
+>    integer i, n_ranks, ierr
+>    real max
+>
+>    call find_max( vector, N, max )
+>
+>    ! Find the correct value using a simple serial method
+>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>
+>    call assert_true( max == n_ranks*N, "Test Max")
+>  end subroutine test_max
+>
+>end module example_test
+> ~~~
+>{: .source .language-fortran}
+>
+>Driver Program:
+>~~~
+>program fruit_driver
+>  use fruit
+>  use example_test
+>  implicit none
+>
+>  integer, parameter :: N=10
+>  integer ierr
+>  real vector(N)
+>
+>  call init_fruit
+>
+>  ! Start with MPI_Init
+>  call MPI_INIT(ierr)
+>
+>  call setup(vector, N)
+>  call test_max(vector, N)
+>  call teardown()
+>
+>  ! Call MPI_Finalize at the end
+>  call MPI_FINALIZE(ierr)
+>
+>  call fruit_summary
+>  call fruit_finalize
+>end program fruit_driver
+>~~~
+>{: .source .language-fortran}
+{: .callout .foldable}
+
 > ## Testing MPI
 >
 > Implement a test of the find_sum function in the above example
 >
+>
+>> ## Solution in C
+>> The test function:
+>> ~~~
+>> /* Test the find_sum_ function */
+>> static void test_find_sum(void **state) {
+>>    double * vector = state[0];
+>>    int n_numbers = vector[0];
+>>    double sum, correct sum;
+>>    int n_ranks;
+>>
+>>    //Find the sum
+>>    sum = find_sum( vector+1, n_numbers );
+>>    
+>>    //Find the correct value using a simple serial method
+>>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>    correct_sum = 0;
+>>    for( int i=0; i<n_ranks*n_numbers; i++){
+>>      correct_sum += i;
+>>    }
+>>    
+>>    assert_true( sum == correct_sum );
+>> }
+>>~~~
+>>{: .source .language-c}
+>> 
+>> Add the test to the list in the main function
+>> ~~~
+>> int main(int argc, char** argv) {
+>>    int cmocka_return_code;
+>> 
+>>    const struct CMUnitTest tests[] = {
+>>       cmocka_unit_test(test_find_maximum, test_find_sum),
+>>    };
+>>    
+>>    cmocka_return_code = cmocka_run_group_tests(tests, setup, teardown);
+>> 
+>>    return cmocka_return_code;
+>> }
+>> ~~~
+>>{: .source .language-c}
+>{: .solution}
+>
+>
+>> ## Solution in Fortran
+>>
+>>Add the test function to the test module
+>>~~~
+>>  subroutine test_max(vector, N)
+>>    real, intent(in) :: vector(:)
+>>    integer, intent(in) :: N
+>>    integer i
+>>    real max
+>>
+>>    call find_max( vector, N, max )
+>>
+>>    write(6,*) "Maximum = ", max
+>>
+>>    call assert_true( max == 20, "Test Max")
+>>  end subroutine test_max
+>>~~~
+>>{: .source .language-fortran}
+>>
+>>Driver Program:
+>>~~~
+>>program fruit_driver
+>>  use fruit
+>>  use example_test
+>>  implicit none
+>>
+>>  integer, parameter :: N=10
+>>  integer ierr
+>>  real vector(N)
+>>
+>>  call init_fruit
+>>
+>>  ! Start with MPI_Init
+>>  call MPI_INIT(ierr)
+>>
+>>  call setup(vector, N)
+>>  call test_max(vector, N)
+>>  call teardown()
+>>
+>>  call setup(vector, N)
+>>  call test_sum(vector, N)
+>>  call teardown()
+>>
+>>  ! Call MPI_Finalize at the end
+>>  call MPI_FINALIZE(ierr)
+>>
+>>  call fruit_summary
+>>  call fruit_finalize
+>>end program fruit_driver
+>>~~~
+>>{: .source .language-fortran}
+>{: .solution}
 {: .challenge}
 
 Since all processes are running the tests, you will see multiple copies of the each of the
@@ -776,7 +1000,11 @@ This does not necessarily mean that the implementation is incorrect.
 
 > ## Floating Point Ordering
 >
-> Add a test for the product function in the example code.
+> Increase the number of ranks in the above test keeping the vector lenght at 1024.
+> At some point test of the find_sum function will start to fail.
+> * Why does it fail? What is the difference between the serial and the MPI versions?
+> * Is this a problem? How would you fix it?
+> * Let's say we don't care about the small difference. Change the test to only report differences larger than 0.0001.
 >
 {: .challenge}
 
