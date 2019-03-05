@@ -379,47 +379,77 @@ but the result is sent to all the ranks.
 >> 
 >> ~~~
 >>program sum_and_max
->>    implicit none
->>    integer, parameter :: N=10
->>    real vector(N)
->>    real sum, max
->>    integer i
->>    
->>    ! Set the vector
->>    do i = 1, N
->>      vector(i) = i
->>    end do
 >>
->>    ! Calculate the sum of numbers in a vector
->>    subroutine find_sum( vector, N, sum )
+>>   use mpi
+>>   implicit none
+>>
+>>   integer rank, n_ranks, ierr
+>>   
+>>   integer, parameter :: n_numbers=10
+>>   real vector(n_numbers)
+>>   real sum, max, my_first_number
+>>   integer i
+>>
+>>   ! First call MPI_INIT
+>>   call MPI_INIT(ierr)
+>>
+>>   ! Get my rank and the number of ranks
+>>   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>
+>>   ! Each rank will have n_numbers numbers,
+>>   ! starting from where the previous left
+>>   my_first_number = n_numbers*rank;
+>>
+>>   ! Set the vector
+>>   do i = 1, n_numbers
+>>      vector(i) = my_first_number + i
+>>   end do
+>>
+>>
+>>   ! Find the sum and print
+>>   call find_sum( vector, n_numbers, sum )
+>>   write(6,*) "Sum = ", sum
+>>
+>>   ! Find the maximum and print
+>>   call find_max( vector, n_numbers, max )
+>>   write(6,*) "Maximum = ", max
+>>
+>>
+>>   ! Call MPI_FINALIZE at the end
+>>   call MPI_FINALIZE(ierr)
+>>
+>>contains
+>>
+>>   ! Calculate the sum of numbers in a vector
+>>   subroutine find_sum( vector, N, sum )
 >>      real, intent(in) :: vector(:)
 >>      real, intent(inout) :: sum
 >>      integer, intent(in) :: N
 >>      integer i
->>      
+>>     
 >>      sum = 0
 >>      do i = 1, N
->>        sum = sum + vector(i)
+>>         sum = sum + vector(i)
 >>      end do
 >>
->>    end subroutine find_sum
+>>   end subroutine find_sum
 >>
 >>
->>    ! Find the maximum of numbers in a vector
->>    subroutine find_max( vector, N, max )
+>>   ! Find the maximum of numbers in a vector
+>>   subroutine find_max( vector, N, max )
 >>      real, intent(in) :: vector(:)
 >>      real, intent(inout) :: max
 >>      integer, intent(in) :: N
 >>      integer i
->>      
+>>     
 >>      max = 0
 >>      do i = 1, N
->>        if (max < vector(i)) then
->>          max = vector(i)
->>        end if
+>>         if (max < vector(i)) then
+>>            max = vector(i)
+>>         end if
 >>      end do
 >>
->>    end subroutine find_max
+>>   end subroutine find_max
 >>end
 >>~~~
 >>{: .source .language-fortran}
@@ -435,7 +465,7 @@ but the result is sent to all the ranks.
 >>    double sum = 0;
 >>    double global_sum;
 >> 
->>    // Calculate the sum on this rank as befor
+>>    // Calculate the sum on this rank as before
 >>    for( int i=0; i<N; i++){
 >>       sum += vector[i];
 >>    }
@@ -464,8 +494,62 @@ but the result is sent to all the ranks.
 >>    return global_max;
 >> }
 >> ~~~
->> {: .output}
+>> {: .source .language-c}
 >{: .solution}
+>
+>
+>> ## Fortran
+>> 
+>> ~~~
+>>contains
+>>
+>>   ! Calculate the sum of numbers in a vector
+>>   subroutine find_sum( vector, N, global_sum )
+>>      use mpi
+>>
+>>      real, intent(in) :: vector(:)
+>>      real, intent(inout) :: global_sum
+>>      real sum
+>>      integer, intent(in) :: N
+>>      integer i, ierr
+>>     
+>>      sum = 0
+>>      do i = 1, N
+>>         sum = sum + vector(i)
+>>      end do
+>>
+>>      ! Call MPI_Allreduce to find the full sum
+>>      call MPI_Allreduce( sum, global_sum, 1, MPI_REAL, MPI_SUM, MPI_COMM_WORLD, ierr )
+>>
+>>   end subroutine find_sum
+>>
+>>
+>>   ! Find the maximum of numbers in a vector
+>>   subroutine find_max( vector, N, global_max )
+>>      use mpi
+>>
+>>      real, intent(in) :: vector(:)
+>>      real, intent(inout) :: global_max
+>>      real max
+>>      integer, intent(in) :: N
+>>      integer i, ierr
+>>     
+>>      max = 0
+>>      do i = 1, N
+>>         if (max < vector(i)) then
+>>            max = vector(i)
+>>         end if
+>>      end do
+>>
+>>      ! Call MPI_Allreduce to find the full sum
+>>      call MPI_Allreduce( max, global_max, 1, MPI_REAL, MPI_MAX, MPI_COMM_WORLD, ierr )
+>>
+>>   end subroutine find_max
+>>end
+>>~~~
+>>{: .source .language-fortran}
+>{: .solution}
+>
 >
 {: .challenge}
 
