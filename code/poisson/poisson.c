@@ -90,7 +90,7 @@ void main(int argc, char** argv) {
   for(i = 0;i <= MAX+1; i++)
     fprintf(fp14,"%f\n", u[10+1][i]);
 
-  /* Write the whole u field */
+  // Write the whole u field
   for(j = 0;j <= MAX+1; j++){
     for(i = 0;i <= MAX+1; i++){
       fprintf(fp10,"%f\n",u[i][j]);
