@@ -154,7 +154,6 @@ Use small units. Smaller units are easier to test.
 >>      unorm +=diff*diff;
 >>    }
 >>  }
->>  printf("unorm = %.8e\n",unorm);
 >>
 >>  // Overwrite u with the new field
 >>  for( int j = 1;j <= MAX;j++){
@@ -216,12 +215,112 @@ Use small units. Smaller units are easier to test.
 >> {:.source .language-c}
 >{: .solution}
 >
+>> ## solution in Fortran
+>> Here we create a module for the poisson solver, including only the
+>> subroutine for performing a single step.
+>>~~~
+>>module poisson_solver
+>>
+>>  implicit none
+>>
+>>contains
+>>
+>>   subroutine poisson_step(u, unew, rho, MAX, hsq, unorm)
+>>      integer, intent(in) :: MAX
+>>      real, intent(inout), dimension (0:(MAX+1),0:(MAX+1)) :: u, unew
+>>      real, intent(in), dimension (0:(MAX+1),0:(MAX+1)) :: rho
+>>      real hsq
+>>      double precision, intent(out) :: unorm
+>>      integer i, j
+>>
+>>      ! Calculate one timestep
+>>      do j = 1, MAX
+>>         do i = 1, MAX
+>>            unew(i,j) = 0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1) - hsq*rho(i,j))
+>>         enddo
+>>      enddo
+>>
+>>      ! Find the difference compared to the previous time step
+>>      unorm = 0.0
+>>      do j = 1, MAX
+>>         do i = 1, MAX
+>>            unorm = unorm + (unew(i,j)-u(i,j))*(unew(i,j)-u(i,j))
+>>         enddo
+>>      enddo
+>>
+>>      ! Overwrite u with the new field
+>>      do j = 1, MAX
+>>         do i = 1, MAX
+>>            u(i,j) = unew(i,j)
+>>         enddo
+>>      enddo
+>>
+>>   end subroutine poisson_step
+>>
+>>end module
+>>~~~
+>>{: .source .language-fortran}
+>>
+>> The following defines a simple test.
+>>~~~
+>>module poisson_test
+>>  use fruit
+>>  use poisson_solver
+>>  implicit none
+>>
+>>contains
+>>
+>>   subroutine test_poisson_step
+>>      integer, parameter :: MAX=100
+>>
+>>      real u(0:(MAX+1),0:(MAX+1)), unew(0:(MAX+1),0:(MAX+1))
+>>      real rho(0:(MAX+1),0:(MAX+1))
+>>      real h, hsq, difference
+>>      double precision unorm, residual
+>>      integer i, j
+>>   
+>>      ! Run setup
+>>      hsq = h*h
+>>
+>>      ! Initialise the u and rho field to 0 
+>>      do j = 0, MAX+1
+>>         do i = 0, MAX+1
+>>            u(i,j) = 0.0
+>>            rho(i,j) = 0.0
+>>         enddo
+>>      enddo
+>>
+>>      ! Test a configuration with u=10 at x=1 and y=1
+>>      u(1,1) = 10
+>>
+>>      ! Run a single iteration of the poisson solver
+>>      call poisson_step( u, unew, rho, MAX, hsq, unorm )
+>>      call assert_true( unorm == 112.5, "Test One Step")
+>>
+>>      ! Run a single iteration of the poisson solver
+>>      do i = 1, 50
+>>         call poisson_step( u, unew, rho, MAX, hsq, unorm )
+>>      end do
+>>
+>>      difference = unorm - 0.0018388170223
+>>      call assert_true( difference*difference < 1e-16, "Test 50 Steps")
+>>
+>>   end subroutine test_poisson_step
+>>
+>>end module poisson_test
+>>~~~
+>>{: .source .language-fortran}
+>{: .solution}
+>
 {: .challenge}
 
-### Write a Version for One Rank
+### Write a Single Rank Version
 
-Now write a version of the code that performs the
-tasks of one node.
+In the message passing framework, all ranks execute the same code.
+The most straightforward way of approaching writing a parallel implementation
+is to think about a single rank at a time.
+What does this rank need to to and what infromation does it need to do it?
+
 Communicate data in the simplest possible way,
 probably just after it's created or just before it's needed.
 Use blocking or non-blocking communication,
@@ -234,13 +333,19 @@ You can optimise later.
 > 
 > Let's parallellise split the outer loop across 
 > the ranks.
-> Write a program that permorms the iterations from
+> Write a program that performs the iterations from
 > j=rank*(MAX/n_ranks) to j=(rank+1)*(MAX/n_ranks).
-> 
-> Make sure the test works in parallel.
 >
-> It should not be necessary to do the nearest neighbour communication.
+> First, just implement a single step.
+> For this, you should not need to communicate the field u.
 > You will need a reduction.
+> 
+> Make sure the test also works correctly in parallel.
+> Each rank needs to create the part of the fields u, unew and rho
+> it needs for it's own part of the loop.
+>
+> After this step the first step should succeed and the second test
+> should fail.
 >
 >> ## Solution in C
 >>
@@ -251,7 +356,6 @@ You can optimise later.
 >> #include <mpi.h>
 >> 
 >> #define MAX 20
->> #define IMAX 1000
 >> 
 >> 
 >> double poisson_step( 
@@ -293,7 +397,7 @@ You can optimise later.
 >>  return global_unorm;
 >>}
 >>~~~
->>{: .output}
+>>{: .source .language-c}
 >>
 >> The test file: 
 >>~~~
@@ -368,7 +472,131 @@ You can optimise later.
 >>   return cmocka_return_value;
 >>}
 >>~~~
->>{: .output}
+>>{: .source .language-c}
+>{: .solution}
+>
+>
+>> ## Solution in Fortran
+>> Run the j-loop over a smaller slice. Here we have called the
+>> size of the j-slice my_j_max.
+>>
+>> The calculation of unorm is a sum over all ranks.
+>> Use MPI_Allreduce to get it right.
+>>~~~
+>>module poisson_solver
+>>
+>>   use mpi
+>>   implicit none
+>>
+>>contains
+>>
+>>   subroutine poisson_step(u, unew, rho, MAX, hsq, unorm)
+>>      integer, intent(in) :: MAX
+>>      real, intent(inout), dimension (0:(MAX+1),0:(MAX+1)) :: u, unew
+>>      real, intent(in), dimension (0:(MAX+1),0:(MAX+1)) :: rho
+>>      real, intent(in) :: hsq
+>>      double precision local_unorm
+>>      double precision, intent(out) :: unorm
+>>      integer my_j_max, n_ranks
+>>      integer ierr, i, j
+>>      
+>>      ! Find the number of x-slices calculated by each rank
+>>      ! The simple calculation here assumes that MAX is divisible by n_ranks
+>>      call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>      my_j_max = MAX/n_ranks
+>>
+>>      ! Calculate one timestep
+>>      do j = 1, my_j_max
+>>         do i = 1, MAX
+>>            unew(i,j) = 0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1) - hsq*rho(i,j))
+>>         enddo
+>>      enddo
+>>
+>>      ! Find the difference compared to the previous time step
+>>      local_unorm = 0.0
+>>      do j = 1, my_j_max
+>>         do i = 1, MAX
+>>            local_unorm = local_unorm + (unew(i,j)-u(i,j))*(unew(i,j)-u>>(i,j))
+>>         enddo
+>>      enddo
+>>
+>>      call MPI_Allreduce( local_unorm, unorm, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD, ierr )
+>>
+>>      ! Overwrite u with the new field
+>>      do j = 1, my_j_max
+>>         do i = 1, MAX
+>>            u(i,j) = unew(i,j)
+>>         enddo
+>>      enddo
+>>
+>>   end subroutine poisson_step
+>>
+>>end module
+>>~~~
+>>{: .source .language-fortran}
+>>
+>> In the test function, we need create a fields, from 0 to my_j_max.
+>>~~~
+>>module poisson_test
+>>  use fruit
+>>  use poisson_solver
+>>  use mpi
+>>  implicit none
+>>
+>>contains
+>>
+>>   subroutine test_poisson_step
+>>      integer, parameter :: MAX=20
+>>
+>>      real u(0:(MAX+1),0:(MAX+1)), unew(0:(MAX+1),0:(MAX+1))
+>>      real rho(0:(MAX+1),0:(MAX+1))
+>>      real h, hsq, difference
+>>      double precision unorm, residual
+>>      integer i, j, rank, n_ranks, ierr
+>>      integer my_j_max
+>>
+>>      ! Get my rank and the number of ranks
+>>      call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>      call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>   
+>>      ! Find the number of x-slices calculated by each rank
+>>      ! The simple calculation here assumes that MAX is divisible by n_ranks
+>>      my_j_max = MAX/n_ranks;
+>>
+>>      ! Run setup
+>>      hsq = h*h
+>>
+>>      ! Initialise the u and rho field to 0 
+>>      do j = 0, my_j_max+1
+>>         do i = 0, MAX+1
+>>            u(i,j) = 0.0
+>>            rho(i,j) = 0.0
+>>         enddo
+>>      enddo
+>>
+>>      ! Test a configuration with u=10 at x=1 and y=1
+>>      ! The coordinate x=1, y=1 is always in rank 0
+>>      if (rank == 0) then
+>>         u(1,1) = 10
+>>      end if
+>>
+>>      ! Run a single iteration of the poisson solver
+>>      call poisson_step( u, unew, rho, MAX, hsq, unorm )
+>>      call assert_true( unorm == 112.5, "Test One Step")
+>>
+>>      ! Run a single iteration of the poisson solver
+>>      do i = 1, 50
+>>         call poisson_step( u, unew, rho, MAX, hsq, unorm )
+>>      end do
+>>
+>>      difference = unorm - 0.0018388170223
+>>      call assert_true( difference*difference < 1e-16, "Test 50 Steps")
+>>
+>>   end subroutine test_poisson_step
+>>
+>>end module poisson_test
+>>~~~
+>>{: .source .language-fortran}
 >{: .solution}
 >
 {: .challenge}
@@ -446,11 +674,11 @@ You can optimise later.
 >>      
 >>      if ( rank != (n_ranks-1)) {
 >>        // Send data up to rank+1 (if I'm not the last rank)
->>	      for( int i=0;i < MAX;i++) sendbuf[i] = unew[i+1][my_j_max];
->>	      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD);
->>	      // Receive data from rank+1
+>>        for( int i=0;i < MAX;i++) sendbuf[i] = unew[i+1][my_j_max];
+>>        MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD);
+>>        // Receive data from rank+1
 >>        MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank+1,2,MPI_COMM_WORLD,&mpi_status);
->>	      for( int i=0;i < MAX;i++) u[i+1][my_j_max+1] = recvbuf[i];
+>>        for( int i=0;i < MAX;i++) u[i+1][my_j_max+1] = recvbuf[i];
 >>      }
 >>   
 >>    } else {
@@ -458,34 +686,126 @@ You can optimise later.
 >>
 >>      if (rank != 0) {
 >>        // Receive data from rank-1 (if I'm not the first rank)
->>	      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank-1,1,MPI_COMM_WORLD,&mpi_status);
->>	      for( int i=0;i < MAX;i++) u[i+1][0] = recvbuf[i];
+>>        MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank-1,1,MPI_COMM_WORLD,&mpi_status);
+>>        for( int i=0;i < MAX;i++) u[i+1][0] = recvbuf[i];
 >>	      
 >>        // Send data down to rank-1
 >>        for( int i=0;i < MAX;i++) sendbuf[i] = unew[i+1][1];
->>	      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank-1,2,MPI_COMM_WORLD);
+>>        MPI_Send(sendbuf,MAX,MPI_FLOAT,rank-1,2,MPI_COMM_WORLD);
 >>      }
 >>
 >>      if (rank != (n_ranks-1)) {
 >>        // Receive data from rank+1 (if I'm not the last rank)
->>	      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD,&mpi_status);
->>	      for( int i=0;i < MAX;i++) u[i+1][my_j_max+1] = recvbuf[i];
+>>        MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD,&mpi_status);
+>>        for( int i=0;i < MAX;i++) u[i+1][my_j_max+1] = recvbuf[i];
 >>
 >>        // Send data up to rank+1
->>	      for( int i=0;i < MAX;i++) sendbuf[i] = unew[i+1][my_j_max];
->>	      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,2,MPI_COMM_WORLD);
+>>        for( int i=0;i < MAX;i++) sendbuf[i] = unew[i+1][my_j_max];
+>>        MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,2,MPI_COMM_WORLD);
 >>      }
 >>    }
 >>
 >>  return global_unorm;
 >>}
 >>~~~
->>
+>>{: .source .language-c}
 >> You also need to add rank and n_ranks to the function call in the test.
+>{: .solution}
+>
+>> ## Solution in Fortran
+>> Most rank needs to send its u[0] down to it's neighbour at rank-1 and
+>> its u[my_j_max] up to rank+1.
+>> There needs to be and exection for the rank 0 and the last rank.
 >>
->>{: .output}
+>>~~~
+>>module poisson_solver
+>>
+>>   use mpi
+>>   implicit none
+>>
+>>contains
+>>
+>>   subroutine poisson_step(u, unew, rho, MAX, hsq, unorm)
+>>      integer, intent(in) :: MAX
+>>      real, intent(inout), dimension (0:(MAX+1),0:(MAX+1)) :: u, unew
+>>      real, intent(in), dimension (0:(MAX+1),0:(MAX+1)) :: rho
+>>      real, intent(in) :: hsq
+>>      double precision local_unorm
+>>      double precision, intent(out) :: unorm
+>>      integer status(MPI_STATUS_SIZE)
+>>      integer my_j_max, n_ranks, rank
+>>      integer ierr, i, j
+>>      
+>>      ! Find the number of x-slices calculated by each rank
+>>      ! The simple calculation here assumes that MAX is divisible by n_ranks
+>>      call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>      my_j_max = MAX/n_ranks
+>>
+>>      ! We need the rank number for the nearest neighbour communication
+>>      call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>
+>>      ! Calculate one timestep
+>>      do j = 1, my_j_max
+>>         do i = 1, MAX
+>>            unew(i,j) = 0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1) - hsq*rho(i,j))
+>>         enddo
+>>      enddo
+>>
+>>      ! Find the difference compared to the previous time step
+>>      local_unorm = 0.0
+>>      do j = 1, my_j_max
+>>         do i = 1, MAX
+>>            local_unorm = local_unorm + (unew(i,j)-u(i,j))*(unew(i,j)-u(i,j))
+>>         enddo
+>>      enddo
+>>
+>>      call MPI_Allreduce( local_unorm, unorm, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD, ierr )
+>>
+>>      ! Overwrite u with the new field
+>>      do j = 1, my_j_max
+>>         do i = 1, MAX
+>>            u(i,j) = unew(i,j)
+>>         enddo
+>>      enddo
+>>
+>>      ! The u field has been changed, communicate it to neighbours
+>>      ! With blocking communication, half the ranks should send first
+>>      ! and the other half should receive first
+>>      if (mod(rank,2) == 1) then
+>>         ! Ranks with odd number send first
+>>
+>>         ! Send data down from rank to rank-1
+>>         call MPI_SEND( unew(1,1), MAX, MPI_REAL, rank-1, 1, MPI_COMM_WORLD, ierr)
+>>         ! Receive dat from rank-1
+>>         call MPI_RECV( u(1,0), MAX, MPI_REAL, rank-1, 2, MPI_COMM_WORLD, status, ierr)
+>>
+>>         if (rank < (n_ranks-1)) then
+>>            call MPI_SEND( unew(1,my_j_max), MAX, MPI_REAL, rank+1, 1, MPI_COMM_WORLD, ierr)
+>>            call MPI_RECV( u(1,my_j_max+1), MAX, MPI_REAL, rank+1, 2, MPI_COMM_WORLD, status, ierr)
+>>         endif
+>>
+>>      else
+>>         ! Ranks with even number receive first
+>>
+>>         if (rank > 0) then
+>>            call MPI_RECV( u(1,0), MAX, MPI_REAL, rank-1, 1, MPI_COMM_WORLD, status, ierr)
+>>            call MPI_SEND( unew(1,1), MAX, MPI_REAL, rank-1, 2, MPI_COMM_WORLD, ierr)
+>>         endif
+>>
+>>         if (rank < (n_ranks-1)) then
+>>            call MPI_RECV( u(1,my_j_max+1), MAX, MPI_REAL, rank+1, 1, MPI_COMM_WORLD, status, ierr)
+>>            call MPI_SEND( unew(1,my_j_max), MAX, MPI_REAL, rank+1, 2, MPI_COMM_WORLD, ierr)
+>>         endif
+>>      endif
+>>
+>>   end subroutine poisson_step
+>>
+>>end module
+>>~~~
+>>{: .source .language-fortran}
 >>
 >{: .solution}
+>
 {: .challenge}
 
 ### Optimisation
