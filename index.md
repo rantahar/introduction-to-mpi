@@ -29,7 +29,7 @@ the most important functions of the Message Passing Interface.
 
 > ## Prerequisites
 >
-> This course assumes you are familiar with C, C++ or Fortran. It is useful to bring your own code, either a serial code you wish to make parallel or a parallel code you wish to understand better.
+> This course assumes you are familiar with C, or Fortran. It is useful to bring your own code, either a serial code you wish to make parallel or a parallel code you wish to understand better.
 {: .prereq}
 
 {% include links.md %}
