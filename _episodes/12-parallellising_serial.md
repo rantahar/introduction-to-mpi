@@ -23,10 +23,10 @@ parallel a couple of steps.
 First, download the serial code for solving the Poisson equation in
 [C]({{ page.root }}{% link code/poisson/poisson.c %})
 or in
-[Fortran]({{ page.root }}{% link code/poisson/poisson.f %})
+[Fortran]({{ page.root }}{% link code/poisson/poisson.f08 %})
 and familiarise yourself with what how it works.
 
-If you have your own serial code, it's advisable to choos a small
+If you have your own serial code, it's advisable to choose a small
 section of the code and go trough the same steps.
 
 ### Parallel regions
@@ -123,7 +123,7 @@ Use small units. Smaller units are easier to test.
 > 
 >> ## Solution in C
 >>  
->> The Poisson step fucntion could look like this:
+>> The Poisson step function could look like this:
 >> ~~~
 >>#include <stdio.h>
 >>#include <math.h>
@@ -166,7 +166,7 @@ Use small units. Smaller units are easier to test.
 >>  return unorm;
 >>}
 >> ~~~
->> {:.output}
+>> {:.source .language-c}
 >>
 >> Assuming the above is saved to poisson_step.c, the
 >> the following wil run a simple test
@@ -213,7 +213,7 @@ Use small units. Smaller units are easier to test.
 >>   return cmocka_run_group_tests(tests, NULL, NULL);
 >>}
 >> ~~~
->> {:.output}
+>> {:.source .language-c}
 >{: .solution}
 >
 {: .challenge}
