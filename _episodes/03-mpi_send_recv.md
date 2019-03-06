@@ -135,10 +135,10 @@ in transit.
 >  // First call MPI_Init
 >  MPI_Init(&argc, &argv);
 >
->  // Check that there are at least two ranks
+>  // Check that there are two ranks
 >  MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
->  if( n_ranks == 2 ){
->    printf("This example requires at least two ranks");
+>  if( n_ranks != 2 ){
+>    printf("This example requires two ranks");
 >    MPI_Finalize();
 >    return(1);
 >  }
@@ -182,10 +182,10 @@ in transit.
 >     ! First call MPI_INIT
 >     call MPI_INIT(ierr)
 >
->     ! Check that there are at least two ranks
+>     ! Check that there are two ranks
 >     call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
->     if (n_ranks == 2) then
->          write(6,*) "This example requires at least two ranks"
+>     if (n_ranks .ne. 2) then
+>          write(6,*) "This example requires two ranks"
 >          error stop
 >     end if
 >
