@@ -7,7 +7,6 @@
 #include <math.h>
 
 #define MAX 100
-#define IMAX 1000
 
 
 void main(int argc, char** argv) {
@@ -40,15 +39,15 @@ void main(int argc, char** argv) {
   // Initialise the u and rho field to 0 
   for(j=0; j <= MAX+1; j++){
     for(i=0; i <= MAX+1; i++) {
-      u[i][j] = 0.0;
-      rho[i][j] = 0.0;
+      u[j][i] = 0.0;
+      rho[j][i] = 0.0;
     }
   }
   
   // Create a start configuration with the field
   // u=10 at x=0
   for(j = 0;j <= MAX+1; j++)
-    u[0][j] = 10.0;
+    u[j][0] = 10.0;
 
 
   // Run iterations until the field reaches an equilibrium
@@ -57,8 +56,8 @@ void main(int argc, char** argv) {
     // Calculate one timestep
     for(j = 1;j <= MAX; j++){
       for(i = 1;i <= MAX; i++){
-          double difference = u[i-1][j] + u[i+1][j] + u[i][j-1] + u[i][j+1];
-	        unew[i][j] =0.25*( difference - hsq*rho[i][j] );
+          double difference = u[j][i-1] + u[j][i+1] + u[j-1][i] + u[j+1][i];
+	        unew[j][i] =0.25*( difference - hsq*rho[j][i] );
       }
     }
 
@@ -66,7 +65,7 @@ void main(int argc, char** argv) {
     unorm = 0.0;
     for(j = 1;j <= MAX; j++){
       for(i = 1;i <= MAX; i++){
-        double diff = unew[i][j]-u[i][j];
+        double diff = unew[j][i]-u[j][i];
         unorm +=diff*diff;
       }
     }
@@ -75,7 +74,7 @@ void main(int argc, char** argv) {
     // Overwrite u with the new field
     for(j = 1;j <= MAX;j++){
       for(i = 1;i <= MAX;i++){
-        u[i][j] = unew[i][j];
+        u[j][i] = unew[j][i];
       }
     }
     
@@ -84,7 +83,7 @@ void main(int argc, char** argv) {
   /* The run is complete. Write the fields into the result files.*/
   // Write the field in the middle in the y direction
   for(i = 0;i <= MAX+1; i++)
-    fprintf(fp12,"%f\n", u[i][MAX/2+1]);
+    fprintf(fp12,"%f\n", u[MAX/2+1][i]);
 
   // Write the field at x=10
   for(i = 0;i <= MAX+1; i++)
@@ -93,7 +92,7 @@ void main(int argc, char** argv) {
   // Write the whole u field
   for(j = 0;j <= MAX+1; j++){
     for(i = 0;i <= MAX+1; i++){
-      fprintf(fp10,"%f\n",u[i][j]);
+      fprintf(fp10,"%f\n",u[j][i]);
     }
   }
 }
