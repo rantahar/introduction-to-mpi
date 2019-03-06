@@ -5,10 +5,16 @@ exercises: 10
 questions:
 - "How do I split the work?"
 objectives:
+- "Introduce Message Passing and Shared Memory"
+- "Introduce Data Parallel and Task Parallel"
 - "Introduce standard communication and data storage patterns"
 keypoints:
+- "Two major paradigms, message passing and shared memory."
+- "MPI implements the Message Passing paradigm"
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
+
+## Message Passing and Shared Memory
 
 How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
 
@@ -129,6 +135,22 @@ For example, in a simulation of atomic crystals, updating a single atom usually 
 of a couple of it's nearest neighbours.
 
 
+### Reduction
+
+Reductions are another common pattern you will certainly run into.
+A reduction happens when one rank processes a large amount of data into only a few numbers
+and only communicates these to the other ranks.
+The algorithm for calculating a sum of numbers above performs a reduction.
+However a reduction could be much more complicated. For example, in the simulation of a
+galaxy, the exact positions of far away stars may not matter.
+Instead it can be sufficient to communicate the center of mass of all the objects on a
+given rank.
+
+Since simple reductions such as sums are common in almost any parallel algorithm, they have
+their own implementations in MPI libraries.
+These implementations tend to be very efficient and can be specifically tuned to the processors
+and the communication devices on a given system.
+
 ### All to All
 
 In other cases, some information needs to be sent from every rank to every other rank
@@ -162,31 +184,6 @@ If there were more that 4 ranks, they would need to share an entire row and a co
 >
 {: .challenge}
 
-
-## Performance
-### Number of Transfers
-
-The number of individual transfers is also a significant factor.
-Each transfer will take some amount of time independent of the amount of data transferred.
-The minimum time taken par transfer is known as the latency.
-It depends significantly on the system.
-If the ranks run on the same chip, the transfer is almost instantaneous.
-If they run on different machines and communicate over the internet, this can be seconds.
-
-### Surface to Volume Ratio
-
-The ratio of serial regions to parallel regions is the most important factor in how well an algorithm can be parallellised.
-What other factors are there?
-
-The amount of data that needs to be transferred between the ranks is another important factor.
-This is known as the surface to volume ratio.
-The tradeoff is apparent in a domain decomposed system with nearest neighbour communication,
-where a single rank is responsible for a given volume and
-the data on the surface of that volume needs to be communicated.
-The smaller the volume, the larger the surface is compared to the volume.
-
-The time it takes to transfer a MB of data depends significantly on the network and
-the distance between the ranks.
 
 
 
