@@ -10,13 +10,13 @@ keypoints:
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
 
-How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and an operation (an instruction in assembly language speaking) is performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on.
+How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
 
 ## Embarassingly Parallel Problems
 
 Coming back to the examples of building a car out of a set of parts on a manufacturing line.
 We can increase the number of cars produced in a given amount of time by building more assemply
-line and hiring more workers. The problem can be solved faster by running more independent
+lines and hiring more workers. The problem can be solved faster by running more independent
 copies of the problem at once.
 
 This known as an embarassingly parallel problem. No communication is needed between the processes.
@@ -26,8 +26,7 @@ problem.
 ### Queue
 
 A task queue is a simple implementation of task parallellism.
-Each worker will get tasks from a predefined queue, some of which
-may depend on others being completed.
+Each worker will get tasks from a predefined queue.
 The tasks can be very different and take different amounts of time,
 but when a worker has completed it's tasks, it will pick the next one
 from the queue.
