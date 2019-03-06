@@ -18,16 +18,13 @@ keypoints:
 
 How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
 
-### Embarassingly Parallel Problems
+### Shared Memory
 
-Coming back to the examples of building a car out of a set of parts on a manufacturing line.
-We can increase the number of cars produced in a given amount of time by building more assembly
-lines and hiring more workers. The problem can be solved faster by running more independent
-copies of the problem at once.
-
-This known as an embarassingly parallel problem. No communication is needed between the processes.
-This is the best case scenario, you don't need to design a parallel algorithm to solve the
-problem.
+If our problem is constructing a single car as quickly as possible, and not building many
+cars quickly, we need to split the work in some way.
+If we hire a large number of workers and buy tools for each of them,
+we can identify different tasks that can be performed in parallel,
+and give them out to the workers when they are free.
 
 
 ### Message Passing
@@ -87,13 +84,6 @@ at the end.
 
 ## Algorithm Design
 
-### Shared Memory
-
-If our problem is constructing a single car as quickly as possible, and not building many
-cars quickly, we need to split the work in some way.
-If we hire a large number of workers and buy tools for each of them,
-we can identify different tasks that can be performed in parallel,
-and give them out to the workers when they are free.
 
 #### Queue
 
