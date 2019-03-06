@@ -60,7 +60,7 @@ This usually also requires knowing the total number of tasks running at the same
 
 To achieve this, the program needs to call the 
 MPI_Init function in C, or the MPI_INIT function in Fortran.
-This will setup the environment for MPI and assing a number, called rank, to each process.
+This will setup the environment for MPI and assigning a number, called rank, to each process.
 At the end, each process should also cleanup by calling MPI_Finalize or MPI_FINALIZE.
 
 Between these two statements, you can find out the rank of the copy using the MPI_Comm_Rank function.
