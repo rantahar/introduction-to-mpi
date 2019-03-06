@@ -10,33 +10,18 @@ keypoints:
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
 
+How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and an operation (an instruction in assembly language speaking) is performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on.
 
 ## Embarassingly Parallel Problems
 
 Coming back to the examples of building a car out of a set of parts on a manufacturing line.
-We can increase the number of cars produced in an amount of time by building more assemply
+We can increase the number of cars produced in a given amount of time by building more assemply
 line and hiring more workers. The problem can be solved faster by running more independent
 copies of the problem at once.
 
 This known as an embarassingly parallel problem. No communication is needed between the processes.
-This is the best case scenario, you don't need to desing a parallel algorithm to solve the
+This is the best case scenario, you don't need to design a parallel algorithm to solve the
 problem.
-
-## Task Parallellism
-
-Task parallellism is of the two main paradigms of parallel algorithms.
-It refers to separating the process into small individual tasks and distributing
-them accross the ranks.
-
-If our problem is constructing a single car as quickly as possible, and not building many
-cars quickly, we need to split the work in some way.
-If we hire a large number of workers and buy tools for each of them,
-we can identify different tasks that can be performed in parallel,
-and give them out to the workers when they are free.
-
-In MPI, we write the program by giving instructions for a single worker.
-We need to make sure that the worker can find a task to execute and that
-no other worker will try to do the same task.
 
 ### Queue
 
@@ -65,9 +50,9 @@ The master can also perform any serial parts of the program.
 
 ![A master rank controlling the queue]({{ page.root }}{% link files/master.png %})
 
-In an MPI implementation, main function will usually contain an if
-statement that determines if the rank is the master or a worker.
-The master will usually execute a completely different code from the workers.
+In an MPI implementation, main function will usually contain an "if"
+statement that determines whether the rank is the master or a worker.
+The master usually executes a completely different code from the workers.
 
 Naturally the Master / Worker approach reserves a rank to be the master.
 In a large application this is usually a small cost.
@@ -108,6 +93,23 @@ The sums over the sublists are independent of each other and can be done in para
 This algorithm is data parallel. We can have each rank perform the sum over its own sublist.
 Each rank only needs it's own sublist and only needs to communicate it's subsum to the others
 at the end.
+
+## Message Passing
+
+Task parallellism is of the two main paradigms of parallel algorithms.
+It refers to separating the process into small individual tasks and distributing
+them accross the ranks.
+
+If our problem is constructing a single car as quickly as possible, and not building many
+cars quickly, we need to split the work in some way.
+If we hire a large number of workers and buy tools for each of them,
+we can identify different tasks that can be performed in parallel,
+and give them out to the workers when they are free.
+
+In MPI, we write the program by giving instructions for a single worker.
+We need to make sure that the worker can find a task to execute and that
+no other worker will try to do the same task.
+
 
 ### Domain Decomposition
 
