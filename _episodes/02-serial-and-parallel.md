@@ -164,8 +164,11 @@ Message Passing based parallelization necessarily involves several "distributed"
 Consider a part of a program such as
 
   y = 0;
+  
   x = 1;
+  
   y = 2;
+  
   if(y < x) then stop;
   otherwise continue;
   
