@@ -85,14 +85,14 @@ in C.
 
 Other than changing the number of loops from N to m, the code is exactly the same. But the parallelization by message passing is not complete yet. In message passing paradigm, each CPU (or core) is independent from the other CPU's (or cores). We must make sure that each CPU (or core) has correct data to compute and writes out the result in correct order. This part depends on the computer system. Let's assume that the system is a cluster computer. In a cluster computer, sometimes only one CPU (or core) has an access to the file system. In this case, this particular CPU reads in the whole data and sends the correct data to each CPU (or core) (including itself). MPI communications! After the computation, each CPU (or core) send the result to that particular CPU (or core). This particular CPU writes out the received data in a file in correct order. If the cluster computer supports a parallel file system, each CPU (or core) reads the correct data from one file, computes and writes out the result to one file in correct order.
 
-Both data parallel and message passing achieves the following logically.
+Both data parallel and message passing achieves the following, logically.
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
 ## Algorithm Design
 
 
-#### Queue
+### Queue
 
 A task queue is a simple implementation of "Embarassingly Parallel (EP)" problem.
 Each worker will get tasks from a predefined queue.
