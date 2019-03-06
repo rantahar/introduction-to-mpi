@@ -89,6 +89,8 @@ Both data parallel and message passing achieves the following, logically.
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
+
+
 ## Algorithm Design
 
 
@@ -195,16 +197,35 @@ They have efficient implementations in the MPI libraries.
 
 ### Halo Exchange
 
+![Halo Exchange]({{ page.root }}{% link files/haloexchange.png %}){:height="200px"}
+
 A common feature of domain decomposed algorithms is that communications is limited to a small number
 of other ranks that work on a domain a short distance away.
 For example, in a simulation of atomic crystals, updating a single atom usually requires information 
 of a couple of it's nearest neighbours.
 
+In such a case each rank only needs a thin slice of data from it's neighbouring rank
+and send the same slice from it's own data to the neighbour.
+The data received from neighbours forms a "halo" around the the ranks data.
+
+
 ### Reduction
 
-A reduction happens when one rank processes a large amount of data into only a few numbers
-and only communicates these to the other ranks.
-The algorithm for calculating a sum of numbers above performs a reduction.
+![Reduction]({{ page.root }}{% link files/reduction.png %}){:height="150px"}
+
+A reduction is an operation that reduces a large amount of data, a vector or a matrix,
+to a single number.
+The sum examble above is a reduction.
+Since data is needed from all ranks, this tends to be a time consuming operation, similar to
+a gather operation.
+Usually each rank first performs the reduction locally, arriving at a single number.
+They then perform steps of collecting data from some of the ranks and performing the reduction
+on that data, until all the data has been collected.
+The most efficient implementation depends several technical features of the system.
+Fortunately many common reductions are implemented in the MPI library and are often
+optimised for a specific system.
+
+
 
 ### All to All
 
