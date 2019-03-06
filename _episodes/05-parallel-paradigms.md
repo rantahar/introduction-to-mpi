@@ -1,15 +1,15 @@
 ---
-title: "Parallel Paradigms and Algorithms"
+title: "Parallel Paradigms and Parallel Algorithms"
 teaching: 20
 exercises: 10
 questions:
 - "How do I split the work?"
 objectives:
-- "Introduce Message Passing and Shared Memory"
-- "Introduce Data Parallel and Task Parallel"
+- "Introduce Message Passing and Data Parallel"
+- "Introduce Parallel Algorithm"
 - "Introduce standard communication and data storage patterns"
 keypoints:
-- "Two major paradigms, message passing and shared memory."
+- "Two major paradigms, message passing and data parallel."
 - "MPI implements the Message Passing paradigm"
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
@@ -18,69 +18,74 @@ keypoints:
 
 How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
 
-### Shared Memory
+Consider a simple loop which can be sped up if we have many CPU's (or cores).
 
-If our problem is constructing a single car as quickly as possible, and not building many
-cars quickly, we need to split the work in some way.
-If we hire a large number of workers and buy tools for each of them,
-we can identify different tasks that can be performed in parallel,
-and give them out to the workers when they are free.
+do i=1,N
 
+  a(i) = b(i) + c(i)
+  
+enddo
+
+in Fortran, and
+
+for(i=0;i<N;i++) {
+
+  a[i] = b[i] + c[i]
+    
+}
+
+in C. If we have N CPU's (or cores), each element of the loop can be computed in just one step (factor N speed-up).
+
+### Data Parallel
+
+A kind of standard method for programming in data parallel fashion is "openMP". To understand what data parallel means, let's consider the following bit of openMP code which parallelize the above loop.
+
+!$omp parallel do
+
+do i=1,N
+
+  a(i) = b(i) + c(i)
+  
+enddo
+
+in Fortran, and
+
+#pragma omp parallel for
+
+for(i=0;i<N;i++) {
+
+  a[i] = b[i] + c[i]
+    
+}
+
+in C.
+
+In both languages, parallelization is achieved by just one additional line which is handled by preprocessor (!$ in Fortran and # in C) in the compile stage. This is possible since the computer system architecture supports "openMP" and all the complicated mechanism for parallelization is hidden. Actually, this means that the system architecture has a shared memory view of variables and each CPU (or core) can access to all the memory address. So, the compiler "calculates" the address off-set for each CPU (or core) and let each CPU (or core) compute on a part of the whole data. Here, the catch word is shared memory which allows all CPU's (or cores) to access.
 
 ### Message Passing
 
-In the message passing paradigm, each processor runs it's own program and works on it's own data.
-To work on the same problem in parallel, they communicate by sending messages to each other.
+In the message passing paradigm, each processor runs its own program and works on its own data.
+To work on the same problem in parallel, they communicate by sending messages to each other. Again using the above example, each CPU (or core) runs just
 
-Imagine we hire workers to build a car as before, but instead of having them work in the same room
-on the same car, we put them in separate room and have them work on different parts.
-Worker 1 will build the back part of the car, worker 2 will build the middle part and
-worker 3 will build the front.
-At the end, workers 2 and 3 will load their finished producs onto a conveyer belt that delivers them
-to worker 1, who will weld them together.
+do i=1,m
 
-This may be an inefficient way to build a car, but is often a closer analogy to the way different 
-processors work in a computer or a cluster.
-Each processor, or a core, will have it's own cache, a small amount of memory it does not share
-with the others.
-Cores on the same chip will share some memory on the chip, analogous to the workers sharing a storeroom
-they can take parts from.
-Clusters have many chips connected with a fast network connection.
-Compared to the speed at which a core can do computation, this is analogous to going to a different
-building at the other side of the town.
+  a(i) = b(i) + c(i)
+  
+enddo
 
-In Shared Memory, if one rank modifies a piece of data, all the other ranks will see the change.
-In Message passing this is not the case. Each rank has it's own data and modifying it will only
-modify the data for that rank.
+in Fortran, and
+
+for(i=0;i<m;i++) {
+
+  a[i] = b[i] + c[i];
+
+}
+
+in C.
+
+Other than changing the number of loops from N to m, the code is exactly the same. But the parallelization by message passing is not complete yet. In message passing paradigm, each CPU (or core) is independent from the other CPU's (or cores). We must make sure that each CPU (or core) has correct data to compute and writes out the result in correct order. This part depends on the computer system. Let's assume that the system is a cluster computer. In a cluster computer, sometimes only one CPU (or core) has an access to the file system. In this case, this particular CPU reads in the whole data and sends the correct data to each CPU (or core) (including itself). MPI communications! After the computation, each CPU (or core) send the result to that particular CPU (or core). This particular CPU writes out the received data in a file in correct order. If the cluster computer supports a parallel file system, each CPU (or core) reads the correct data from one file, computes and writes out the result to one file in correct order.
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
-
-Let's say we need to calculate the sum of a large set of numbers.
-Here is a simple parallel version of the algorithm.
-
-~~~
-sum = 0
-split numbers into sublists
-
-for sublist in sublists
-   subsum = 0
-   for number in sublist
-      subsum = subsum + number
-   sum = sum + subsum
-~~~
-{: .output}
-
-We split the list of numbers into sublists and calculate the sum in the sublists separately.
-At the and we calculate the sum of these sublists.
-The sums over the sublists are independent of each other and can be done in parallel.
-
-This algorithm is data parallel. We can have each rank perform the sum over its own sublist.
-Each rank only needs it's own sublist and only needs to communicate it's subsum to the others
-at the end.
-
-
-
-
 
 ## Algorithm Design
 
