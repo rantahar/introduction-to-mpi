@@ -16,9 +16,9 @@ keypoints:
 
 ## Parallel Paradigms
 
-How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
+How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and the same operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
 
-Consider a simple loop which can be sped up if we have many CPU's (or cores).
+Consider a simple loop which can be sped up if we have many CPU's (or cores) for the illustration.
 
 do i=1,N
 
@@ -85,6 +85,8 @@ in C.
 
 Other than changing the number of loops from N to m, the code is exactly the same. But the parallelization by message passing is not complete yet. In message passing paradigm, each CPU (or core) is independent from the other CPU's (or cores). We must make sure that each CPU (or core) has correct data to compute and writes out the result in correct order. This part depends on the computer system. Let's assume that the system is a cluster computer. In a cluster computer, sometimes only one CPU (or core) has an access to the file system. In this case, this particular CPU reads in the whole data and sends the correct data to each CPU (or core) (including itself). MPI communications! After the computation, each CPU (or core) send the result to that particular CPU (or core). This particular CPU writes out the received data in a file in correct order. If the cluster computer supports a parallel file system, each CPU (or core) reads the correct data from one file, computes and writes out the result to one file in correct order.
 
+Both data parallel and message passing achieves the following logically.
+
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
 ## Algorithm Design
@@ -92,10 +94,10 @@ Other than changing the number of loops from N to m, the code is exactly the sam
 
 #### Queue
 
-A task queue is a simple implementation of task parallellism.
+A task queue is a simple implementation of "Embarassingly Parallel (EP)" problem.
 Each worker will get tasks from a predefined queue.
 The tasks can be very different and take different amounts of time,
-but when a worker has completed it's tasks, it will pick the next one
+but when a worker has completed its tasks, it will pick the next one
 from the queue.
 
 ![Each rank taking one task from the top of a queue]({{ page.root }}{% link files/queue.png %})
@@ -135,7 +137,7 @@ One worker might, for example, only always attach the left front tire.
 Once this step is done, the car moves forward on the conveyor belt.
 
 In a pipeline, each rank performs a single step in a process with many steps.
-Data flows trough the pipeline and get's modified along the way.
+Data flows trough the pipeline and gets modified along the way.
 Naturally a pipeline is only efficient if there is a large amount of data
 to feed into it.
 The different stages cannot work on the same piece of data at the same time.
