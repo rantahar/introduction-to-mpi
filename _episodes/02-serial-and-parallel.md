@@ -150,10 +150,10 @@ T<sub>communication</sub> represents the time spent communicating between the ra
 ![A figure showing the result described above for MAX=512 and MAX=2048]({{ page.root }}{% link fig/poisson_scaling_plot.png %})
 
 The other significant factors in the speed of a parallel program are
-communication speed, latency and of course the number of parallel processes.
-When the number of ranks is small, time spent in communication is not significant
-and the parallel regions get faster with the number of ranks.
-But if we keep increasing the number of ranks the time spent in communication grows.
+communication speed, latency and of course the number of parallel processes. In turn, the communication speed is determined by the amount of data one needs to send/receive and the bandwidth of the underlying hardware for the communication. The latecy consists of the software latency (how long time the computer operating system needs in order to prepare for a communication) and the hardware latency (how long the hardware takes to send/receive even small bit of data).
+For the same size problem, the time spent in communication is not significant when the number of ranks is small
+and the execution of parallel regions get faster with the number of ranks.
+But if we keep increasing the number of ranks, the time spent in communication grows when multiple CPU's (or cores) are involved with communication (technically, this is called "global communication").
 
 {% include links.md %}
 
