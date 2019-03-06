@@ -21,10 +21,11 @@ from one rank to another.
 They are the basic building blocks for essentially all of the more
 specialized MPI commands described later.
 They are also the basic communication tools in your MPI application.
+Since MPI_Send and MPI_Recv involve two ranks, they are called "point-to-point" communication (unlike "global" communication mentioned in lesson 2).
 
 The process of communicating data follows a standard pattern.
 Rank A decides to send data to rank B.
-If first packs the data into a buffer.
+It first packs the data into a buffer.
 This avoids sending multiple messages, which would take more time.
 Rank A then calls MPI_Send to create a message for rank B.
 The communication device is then given the responsibility of routing
