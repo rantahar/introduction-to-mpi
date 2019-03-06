@@ -172,7 +172,7 @@ Consider a part of a program such as
   if(y < x) then stop;
   otherwise continue;
   
-In one CPU situation, there is no problem executing this part of program and the program runs without stopping since the "if" statement is always false. Now, what if there are multi CPU's (or cores) and the variable "x" and "y" are shared among these multi CPU's (or cores)? If "if" statement happens before "y=2" in one of CPU's (since "x" and "y" is shared, when one CPU updates "y", the other CPU can't touch it and just proceed to the next step), that CPU will stop running the program since it thinks "y=0" and "x=1" and "if" statement is true for that CPU. So, sharing data among CPU's (or cores) in parallelization should be "sequentially consistent".
+In one CPU situation, there is no problem executing this part of program and the program runs without stopping since the "if" statement is always false. Now, what if there are multi CPU's (or cores) and the variable "x" and "y" are shared among these multi CPU's (or cores)? If "if" statement happens before "y=2" in one of CPU's (since "x" and "y" is shared, when one CPU updates "y", the other CPU can't touch it and just proceed to the next step), the second CPU will stop running the program since it thinks "y=0" and "x=1" and "if" statement is true for that CPU. So, sharing data among CPU's (or cores) in parallelization should be "sequentially consistent".
 
 ### Surface-to Volume Ratio
 
