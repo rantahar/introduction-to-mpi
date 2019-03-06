@@ -137,7 +137,7 @@ in transit.
 >
 >  // Check that there are at least two ranks
 >  MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
->  if( n_ranks < 2 ){
+>  if( n_ranks == 2 ){
 >    printf("This example requires at least two ranks");
 >    MPI_Finalize();
 >    return(1);
@@ -147,16 +147,16 @@ in transit.
 >  MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 >
 >  if( rank == 0 ){
->     char *message = "Hello, world!";
+>     char *message = "Hello, world!\n";
 >     // Note that MPI_BYTE is the MPI type for char
 >     MPI_Send(message, 13, MPI_BYTE, 1, 0, MPI_COMM_WORLD);
 >  }
 >
 >  if( rank == 1 ){
->     char message[13];
+>     char message[14];
 >     MPI_Status  status;
 >     // Note that MPI_BYTE is the MPI type for char
->     MPI_Recv(message, 13, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
+>     MPI_Recv(message, 14, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
 >     printf("%s",message);
 >  }
 >  
@@ -184,7 +184,7 @@ in transit.
 >
 >     ! Check that there are at least two ranks
 >     call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
->     if (n_ranks < 2) then
+>     if (n_ranks == 2) then
 >          write(6,*) "This example requires at least two ranks"
 >          error stop
 >     end if
@@ -217,8 +217,112 @@ in transit.
 {: .challenge}
 
 
+> ## Many Ranks
+>
+> Change the above example so that it works with any number of ranks.
+> Pair even ranks with odd ranks and have each even rank send a message
+> to the corresponding odd rank.
+>
+>> ## Solution in C
+>> ~~~
+>>#include <stdio.h>
+>>#include <mpi.h>
+>>
+>>int main(int argc, char** argv) {
+>>   int rank, n_ranks, my_pair;
+>>   
+>>   // First call MPI_Init
+>>   MPI_Init(&argc, &argv);
+>>   
+>>   // Get the number of ranks
+>>   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
+>>
+>>   // Get my rank
+>>   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+>>
+>>   // Figure out my pair
+>>   if( rank%2 ==1 ){
+>>      my_pair = rank-1;
+>>   } else {
+>>      my_pair = rank+1;
+>>   }
+>>
+>>   // Run only if my pair exists
+>>   if( my_pair < n_ranks ){
+>>
+>>      if( rank%2 == 0 ){
+>>         char *message = "Hello, world!\n";
+>>         // Note that MPI_BYTE is the MPI type for char
+>>         MPI_Send(message, 14, MPI_BYTE, my_pair, 0, MPI_COMM_WORLD);
+>>      }
+>>   
+>>      if( rank%2 == 1 ){
+>>         char message[14];
+>>         MPI_Status  status;
+>>         // Note that MPI_BYTE is the MPI type for char
+>>         MPI_Recv(message, 14, MPI_BYTE, my_pair, 0, MPI_COMM_WORLD, &status);
+>>         printf("%s",message);
+>>      }
+>>   }
+>>
+>>   // Call finalize at the end
+>>   return MPI_Finalize();
+>>}
+>> ~~~
+>>{: .source .language-c}
+>{: .solution}
+>
+>> ## Solution in Fortran
+>> ~~~
+>>program hello
+>>
+>>     use mpi
+>>     implicit none
+>>     
+>>     integer rank, n_ranks, my_pair, ierr
+>>     integer status(MPI_STATUS_SIZE)
+>>     character(len=13)  message
+>>
+>>     ! First call MPI_INIT
+>>     call MPI_INIT(ierr)
+>>
+>>     ! Find the number of ranks
+>>     call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>
+>>     ! Get my rank
+>>     call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>
+>>     ! Figure out my pair
+>>     if ( MOD(rank,2) == 1 ) then
+>>        my_pair = rank-1;
+>>     else
+>>        my_pair = rank+1;
+>>     end if
+>>
+>>     ! Run only if my pair exists
+>>     if( my_pair < n_ranks ) then
+>>
+>>          if ( MOD(rank,2) == 0 ) then
+>>               message = "Hello, world!"
+>>               call MPI_SEND( message, 13, MPI_CHARACTER, my_pair, 0, MPI_COMM_WORLD, ierr)
+>>          end if
+>>
+>>          if ( MOD(rank,2) == 1 ) then
+>>               call MPI_RECV( message, 13, MPI_CHARACTER, my_pair, 0, MPI_COMM_WORLD, status, ierr)
+>>               write(6,*) message
+>>          end if
+>>     end if
+>>
+>>     ! Call MPI_FINALIZE at the end
+>>     call MPI_FINALIZE(ierr)
+>>end
+>> ~~~
+>>{: .source .language-fortran}
+>{: .solution}
+>
+{: .challenge}
 
-> ## Sending and Receiving
+> ## Hello Again, World!
 >
 > Modify the Hello World code so that each rank sends its
 > message to rank 0. Have rank 0 print each message.
