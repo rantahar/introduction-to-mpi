@@ -16,30 +16,50 @@ keypoints:
 
 ## Parallel Paradigms
 
-How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and the same operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
+How to achieve a parallel computation is roughly divided into two camps: one is "data parallel"
+and the other is "message passing". MPI (Message Passing Interface, the parallelization method
+we use in our lessons) obviously belongs to the second camp. "OpenMP" belongs to the first.
+In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is
+achieved by receiving data which it doesn't have and sending data which it has. In data
+parallel paradigm, there are many different data and the same operations (instructions in
+assembly language speaking) are performed on these data at the same time. Parallelism is
+achieved by how many different data a single operation can act on. This division is mainly
+due to historical development of parallel architectures: one follows from shared memory
+architecture like SMP (Shared Memory Processor) and the other from distributed computer
+architecture. A familiar example of the shared memory architecture is GPU (or multi-core
+sCPU) architecture and a familiar example of the distributed computing architecture is cluster
+computer. Which architecture is more useful depends on what kind of problems you have.
+Sometimes, one has to use both!
 
-Consider a simple loop which can be sped up if we have many CPU's (or cores) for the illustration.
+Consider a simple loop which can be sped up if we have many CPUs (or cores) for the illustration.
 
+{% highlight Fortran %}
 do i=1,N
 
   a(i) = b(i) + c(i)
   
 enddo
+{% endhighlight %}
 
 in Fortran, and
 
-for(i=0;i<N;i++) {
+{% highlight C %}
+for(i=0; i<N; i++) {
 
-  a[i] = b[i] + c[i]
+  a[i] = b[i] + c[i];
     
 }
+{% endhighlight %}
 
-in C. If we have N CPU's (or cores), each element of the loop can be computed in just one step (factor N speed-up).
+in C. If we have $N$ CPUs (or cores), each element of the loop can be computed in just one step
+(for a factor of $N$ speed-up).
 
 ### Data Parallel
 
-A kind of standard method for programming in data parallel fashion is "openMP". To understand what data parallel means, let's consider the following bit of openMP code which parallelize the above loop.
+One standard method for programming in data parallel fashion is called "OpenMP" (for "Open MultiProcessing").
+To understand what data parallel means, let's consider the following bit of OpenMP code which parallelize the above loop.
 
+{% highlight Fortran %}
 !$omp parallel do
 
 do i=1,N
@@ -47,43 +67,67 @@ do i=1,N
   a(i) = b(i) + c(i)
   
 enddo
+{% endhighlight %}
 
 in Fortran, and
 
+{% highlight C %}
 #pragma omp parallel for
 
-for(i=0;i<N;i++) {
+for(i=0; i<N; i++) {
 
-  a[i] = b[i] + c[i]
+  a[i] = b[i] + c[i];
     
 }
+{% endhighlight %}
 
 in C.
 
-In both languages, parallelization is achieved by just one additional line which is handled by preprocessor (!$ in Fortran and # in C) in the compile stage. This is possible since the computer system architecture supports "openMP" and all the complicated mechanism for parallelization is hidden. Actually, this means that the system architecture has a shared memory view of variables and each CPU (or core) can access to all the memory address. So, the compiler "calculates" the address off-set for each CPU (or core) and let each CPU (or core) compute on a part of the whole data. Here, the catch word is shared memory which allows all CPU's (or cores) to access all the address space.
+In both languages, parallelization is achieved by just one additional line which is handled by the preprocessor
+(`!$` in Fortran and `#` in C) in the compile stage. This is possible since the computer system architecture
+supports OpenMP and all the complicated mechanism for parallelization is hidden. Actually, this means that
+the system architecture has a shared memory view of variables and each CPU (or core) can access to all the
+memory address. So, the compiler "calculates" the address off-set for each CPU (or core) and let each one
+compute on a part of the whole data. Here, the catch word is shared memory which allows all CPUs (or cores)
+to access all the address space.
 
 ### Message Passing
 
 In the message passing paradigm, each processor runs its own program and works on its own data.
-To work on the same problem in parallel, they communicate by sending messages to each other. Again using the above example, each CPU (or core) runs just
+To work on the same problem in parallel, they communicate by sending messages to each other. 
+Again using the above example, each CPU (or core) runs the same program over a portion of the data, as
 
+{% highlight Fortran %}
 do i=1,m
 
   a(i) = b(i) + c(i)
   
 enddo
+{% endhighlight %}
 
 in Fortran, and
 
-for(i=0;i<m;i++) {
+{% highlight C %}
+for(i=0; i<m; i++) {
 
   a[i] = b[i] + c[i];
 
 }
+{% endhighlight %}
 
 in C.
 
-Other than changing the number of loops from N to m, the code is exactly the same. But the parallelization by message passing is not complete yet. In message passing paradigm, each CPU (or core) is independent from the other CPU's (or cores). We must make sure that each CPU (or core) has correct data to compute and writes out the result in correct order. This part depends on the computer system. Let's assume that the system is a cluster computer. In a cluster computer, sometimes only one CPU (or core) has an access to the file system. In this case, this particular CPU reads in the whole data and sends the correct data to each CPU (or core) (including itself). MPI communications! After the computation, each CPU (or core) send the result to that particular CPU (or core). This particular CPU writes out the received data in a file in correct order. If the cluster computer supports a parallel file system, each CPU (or core) reads the correct data from one file, computes and writes out the result to one file in correct order.
+Other than changing the number of loops from `N` to `m`, the code is exactly the same.
+But the parallelization by message passing is not complete yet. In the message passing paradigm,
+each CPU (or core) is independent from the other CPUs (or cores). We must make sure that each CPU
+(or core) has correct data to compute and writes out the result in correct order. This part depends
+on the computer system. Let's assume that the system is a cluster computer. In a cluster computer,
+sometimes only one CPU (or core) has an access to the file system. In this case, this particular CPU
+reads in the whole data and sends the correct data to each CPU (or core) (including itself). MPI
+communications! After the computation, each CPU (or core) send the result to that particular CPU (or
+core). This particular CPU writes out the received data in a file in correct order. If the cluster
+computer supports a parallel file system, each CPU (or core) reads the correct data from one file,
+computes and writes out the result to one file in correct order.
 
 Both data parallel and message passing achieves the following, logically.
 
@@ -110,24 +154,24 @@ all the other ranks, resulting in some communication overhead.
 If several ranks are using the same data, communicating it can also create
 some overhead.
 
-### Master / Worker
+### Manager / Worker
 
-The master / worker approach is a more flexible version of the queue method.
+The manager / worker approach is a more flexible version of the queue method.
 We hire a manager to distribute tasks to the workers.
-The master can run some complicated logic to decide wich tasks to give to a
+The manager can run some complicated logic to decide wich tasks to give to a
 worker.
-The master can also perform any serial parts of the program.
+The manager can also perform any serial parts of the program.
 
-![A master rank controlling the queue]({{ page.root }}{% link files/master.png %})
+![A manager rank controlling the queue]({{ page.root }}{% link files/manager.png %})
 
-In an MPI implementation, main function will usually contain an "if"
-statement that determines whether the rank is the master or a worker.
-The master usually executes a completely different code from the workers.
+In an MPI implementation, main function will usually contain an `if`
+statement that determines whether the rank is the manager or a worker.
+The manager usually executes a completely different code from the workers.
 
-Naturally the Master / Worker approach reserves a rank to be the master.
+Naturally the Manager / Worker approach reserves a rank to be the manager.
 In a large application this is usually a small cost.
 The larger cost is a bit more subtle. Because every node needs to communicate with
-the master, the bandwidth of the master rank can become bottleneck.
+the manager, the bandwidth of the manager rank can become a bottleneck.
 
 ### Pipeline
 
@@ -139,7 +183,7 @@ One worker might, for example, only always attach the left front tire.
 Once this step is done, the car moves forward on the conveyor belt.
 
 In a pipeline, each rank performs a single step in a process with many steps.
-Data flows trough the pipeline and gets modified along the way.
+Data flows through the pipeline and gets modified along the way.
 Naturally a pipeline is only efficient if there is a large amount of data
 to feed into it.
 The different stages cannot work on the same piece of data at the same time.
@@ -153,7 +197,7 @@ It's important to balance the steps to minimize the wait time.
 
 When the data is structured in a regular way, such as when
 simulating atoms in a crystal, it makes sense to divide the space
-into domains. Each rank will handle the simulation within it's
+into domains. Each rank will handle the simulation within its
 own domain.
 
 ![Data points divided to four ranks]({{ page.root }}{% link files/domaindecomposition.png %})
@@ -162,14 +206,16 @@ own domain.
 Many algorithms involve multiplying very large matrices.
 These include finite element methods for computational field theories as well as
 training and applying neural networks.
-The most common parallel algorithm for matrix multiplicitation divides
+The most common parallel algorithm for matrix multiplication divides
 the input matrices into smaller submatrices and composes the result from
 multiplications of the submatrices.
 If there are four ranks, the matrix is divided into four submatrices.
 
-![A = A_{11} & A_{12} \\ A_{21} & A_{22} ]({{ page.root }}{% link fig/parallel_mmul.png %}){:height="100px"}
-![B = B_{11} & B_{12} \\ B_{21} & B_{22} ]({{ page.root }}{% link fig/parallel_mmul_2.png %}){:height="100px"}
-![A . B = A_{11} . B_{11} + A_{12} . B_{21} & A_{11} . B_{12} + A_{12} . B_{22} \\  A_{21} . B_{11} + A_{22} . B_{21} & A_{21} . B_{12} + A_{22} . B_{22} ]({{ page.root }}{% link fig/parallel_mmul_3.png %}){:height="100px"}
+$$ A = \left[ \begin{array}{cc}A_{11} & A_{12} \\ A_{21} & A_{22}\end{array} \right] $$
+
+$$ B = \left[ \begin{array}{cc}B_{11} & B_{12} \\ B_{21} & B_{22}\end{array} \right] $$
+
+$$ A \cdot B = \left[ \begin{array}{cc}A_{11} \cdot B_{11} + A_{12} \cdot B_{21} & A_{11} \cdot B_{12} + A_{12} \cdot B_{22} \\ A_{21} \cdot B_{11} + A_{22} \cdot B_{21} & A_{21} \cdot B_{12} + A_{22} \cdot B_{22}\end{array} \right] $$
 
 The ranks don't actually need all the data, but they do need a large amount.
 Assuming that each rank holds one submatrix of A and B at the beginning, they need
@@ -191,7 +237,7 @@ Similarly, in a scatter communication, one rank one rank sends a piece of data t
 Scatters are useful for communicating parameters to all the ranks doing the computation.
 The parameter could be read from disk but it could also be produced by a previous computation.
 
-Gather and Scatter operations require more communication as the number of ranks increases and don't
+Gather and scatter operations require more communication as the number of ranks increases, but don't
 tend to get slower when the number of ranks is large.
 They have efficient implementations in the MPI libraries.
 
@@ -202,7 +248,7 @@ They have efficient implementations in the MPI libraries.
 A common feature of domain decomposed algorithms is that communications is limited to a small number
 of other ranks that work on a domain a short distance away.
 For example, in a simulation of atomic crystals, updating a single atom usually requires information 
-of a couple of it's nearest neighbours.
+of a couple of its nearest neighbours.
 
 In such a case each rank only needs a thin slice of data from it's neighbouring rank
 and send the same slice from it's own data to the neighbour.
@@ -231,7 +277,7 @@ optimised for a specific system.
 
 In other cases, some information needs to be sent from every rank to every other rank
 in the system.
-This is the most problematic scenario, the large amount of communication required reduces the
+This is the most problematic scenario; the large amount of communication required reduces the
 potential gain from designing a parallel algorithm.
 Nevertheless the perfomance gain may be worth the effort if it is necessary to solve the
 problem quickly.
@@ -240,7 +286,7 @@ problem quickly.
 
 > ## Pattern Examples
 >
-> The examples in the first four lessons are also examples of different communication
+> The examples in the three episodes so far are also examples of different communication
 > patterns. Can you identify one or more pattern in each example?
 >
 {: .challenge}
