@@ -22,7 +22,7 @@ Naively, using more CPUs (or cores) means that one can solve a problem much fast
 However, how efficiently a problem can be solved in parallel depends on how the problem is divided among each CPUs (or cores) and the data and memory needs of the algorithm. This determines how much the cores need to communicate with each other while working together.
 The number of cores we can efficiently use also depends on the problem.
 You probably have two or four on your laptop, and many problems can be run very efficiently on all of those cores.
-As a researcher, you probably have access to an HPC system with thousands or hundreds of thousands of cores.
+As a researcher, you probably have access to a High-Performance Computing (HPC) system with thousands or hundreds of thousands of cores.
 To use them all efficiently would be challenging in almost any field.
 
 Also, if not careful, sometimes running in parallel can give a wrong result. Consider the sum, 1 - 1 + 1 - 1 + 1 ... Depending on how this summing is performed on multiple CPUs (or cores), the final answer is different. In practice, since there are always round-off errors in numerical calculations and the order of numerical calculations in parallel computing can be different, the result from running on a serial program on one CPU can be different from the result from running a parallel program on multple CPUs.
@@ -50,6 +50,16 @@ MPI stands for Message Passing Interface, and is a low level, extremely flexible
 >
 {: .challenge}
 
+> ## MPI on HPC
+>
+> HPC clusters typically have more than one version of MPI available, so you may need
+> to tell it which one you want to use before it will give you access to it.
+>
+> Typically, a command like `module load mpi` will give you access to an MPI library,
+> but ask a helper or consult your HPC facility's documentation if you're not sure how
+> to use MPI on a particular cluster.
+{: .callout}
+
 Just running a program with `mpirun` starts several copies of it.
 The number of copies is decided by the `-n` parameter.
 In the example above, the program does not know it was started by mpirun
@@ -63,7 +73,7 @@ To achieve this, the program needs to call the
 This will setup the environment for MPI and assigning a number, called rank, to each process.
 At the end, each process should also cleanup by calling `MPI_Finalize` or `MPI_FINALIZE`.
 
-Between these two statements, you can find out the rank of the copy using the `MPI_Comm_Rank` function.
+Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function.
 
 In C this is called as
 {% highlight C %}
@@ -132,9 +142,19 @@ Here's a more complete example:
 >
 {: .prereq .foldable}
 
+If you try to compile these examples with your usual C or Fortran compiler, then you
+will receive an error, since these do not link to the MPI libraries that provide the
+new functions that we have introduced. Since the set of compiler flags that would be
+necessary for this tends to be quite long, MPI libraries such as OpenMPI provide
+compiler wrappers, which set up the correct environment before invoking your compiler
+of choice. The wrapper for C compilers is usually called `mpicc`, while the wrapper
+for Fortran is usually called `mpif90`. These can be called in exactly the same way
+as your usual C compiler, e.g. `gcc` and `gfortran`, respectively. Any options not
+recognised by the MPI wrapper are passed through to the non-MPI compiler.
+
 > ## Compile
 >
-> Compile and run the above code
+> Compile the above code with `mpicc` or `mpif90`, and run it with `mpirun`.
 >
 {: .challenge}
 
