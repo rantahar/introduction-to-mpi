@@ -50,8 +50,8 @@ MPI stands for Message Passing Interface, and is a low level, extremely flexible
 >
 {: .challenge}
 
-Just running a program with mpirun starts several copies of it.
-The number of copies is decided by the -n parameter.
+Just running a program with `mpirun` starts several copies of it.
+The number of copies is decided by the `-n` parameter.
 In the example above, the program does not know it was started by mpirun
 and each copy just works as if they were the only one.
 
@@ -59,11 +59,11 @@ For the copies to work together, they need to know about their role in the compu
 This usually also requires knowing the total number of tasks running at the same time.
 
 To achieve this, the program needs to call the 
-MPI_Init function in C, or the MPI_INIT function in Fortran.
+`MPI_Init` function in C, or the `MPI_INIT` function in Fortran.
 This will setup the environment for MPI and assigning a number, called rank, to each process.
-At the end, each process should also cleanup by calling MPI_Finalize or MPI_FINALIZE.
+At the end, each process should also cleanup by calling `MPI_Finalize` or `MPI_FINALIZE`.
 
-Between these two statements, you can find out the rank of the copy using the MPI_Comm_Rank function.
+Between these two statements, you can find out the rank of the copy using the `MPI_Comm_Rank` function.
 
 In C this is called as
 {% highlight C %}
@@ -138,20 +138,20 @@ Here's a more complete example:
 >
 {: .challenge}
 
-Notice the MPI_COMM_WORLD parameter. This is an MPI communicator and was created by MPI_Init. It labels the set of cores, called ranks, we are working with. 
+Notice the `MPI_COMM_WORLD` parameter. This is an MPI communicator and was created by `MPI_Init`. It labels the set of cores, called ranks, we are working with.
 
-Notice also that we are still only coding for a single copy of the program. This is always true when using MPI. Each copy runs the same code and only differs by it's rank number.
+Notice also that we are still only coding for a single copy of the program. This is always true when using MPI. Each copy runs the same code and only differs by its rank number.
 The best way to think about writing MPI code is to focus on what a single rank
 needs to be doing.
 When all ranks are doing their job, the algorithm will work correctly.
 
-Usually the rank will need to know how many other ranks there are. You can find this out using the MPI_Comm_size in C or MPI_COMM_SIZE in Fortran.
+Usually the rank will need to know how many other ranks there are. You can find this out using the `MPI_Comm_size` in C or `MPI_COMM_SIZE` in Fortran.
 
 ## Hello World!
 > ## Hello World!
 >
 > Use the mpi library to write a "Hello World" program.
-> Each copy of the program, or rank, should print "Hello World!" followed by it's rank number.
+> Each copy of the program, or rank, should print "Hello World!" followed by its rank number.
 > They should also print the total number of ranks.
 >
 >> ## Solution in C
@@ -326,7 +326,8 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >
 {: .challenge }
 
-In lesson 3 you will learn how to communicate between the ranks. From there, you can in principle write general parallel programs. The trick is in designing a working, fast and efficient parallel algorithm for you problem.
+In lesson 3 you will learn how to communicate between the ranks. From there, you can in principle write general parallel programs.
+The trick is in designing a working, fast and efficient parallel algorithm for you problem.
 
 
 {% include links.md %}
