@@ -14,9 +14,9 @@
    viewBox="0 0 46.061416 38.052441"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="master.svg"
-   inkscape:export-filename="C:\Users\Jarno\lessons\introduction-to-mpi\files\master.png"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   sodipodi:docname="manager.svg"
+   inkscape:export-filename="C:\Users\Jarno\lessons\introduction-to-mpi\files\manager.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96">
   <defs
@@ -195,7 +195,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="-27.158065"
+     inkscape:cx="-95.658065"
      inkscape:cy="124.00069"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -203,9 +203,9 @@
      showborder="true"
      borderlayer="false"
      inkscape:window-width="1532"
-     inkscape:window-height="1329"
-     inkscape:window-x="98"
-     inkscape:window-y="98"
+     inkscape:window-height="1036"
+     inkscape:window-x="112"
+     inkscape:window-y="5"
      inkscape:window-maximized="0"
      fit-margin-top="1"
      fit-margin-left="1"
@@ -220,7 +220,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -378,14 +378,14 @@
          id="tspan896-8">Rank 2</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="22.544086"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="29.714115"
        y="273.80731"
        id="text4526-8-9-9-2-5"><tspan
          sodipodi:role="line"
-         x="22.544086"
+         x="29.714115"
          y="273.80731"
-         style="font-size:3.88055563px;stroke-width:0.26458332"
-         id="tspan971">Master</tspan></text>
+         style="font-size:3.88055563px;text-align:center;text-anchor:middle;stroke-width:0.26458332"
+         id="tspan971">Manager</tspan></text>
   </g>
 </svg>
