@@ -18,14 +18,14 @@ keypoints:
 In many fields of science we need more computational power than a single core on a single processor can provide.
 In essence, parallel computing means simply using more than one computer or more than one core to solve a problem faster.
 
-Naively, using more CPU's (or cores) means that one can solve a problem much faster, in time scales that make sense for research projects or study programs.
-However, how efficiently a problem can be solved in parallel depends on how the problem is divided among each CPU's (or cores) and the data and memory needs of the algorithm. This determines how much the cores need to communicate with each other while working together.
+Naively, using more CPUs (or cores) means that one can solve a problem much faster, in time scales that make sense for research projects or study programs.
+However, how efficiently a problem can be solved in parallel depends on how the problem is divided among each CPUs (or cores) and the data and memory needs of the algorithm. This determines how much the cores need to communicate with each other while working together.
 The number of cores we can efficiently use also depends on the problem.
 You probably have two or four on your laptop, and many problems can be run very efficiently on all of those cores.
 As a researcher, you probably have access to an HPC system with thousands or hundreds of thousands of cores.
 To use them all efficiently would be challenging in almost any field.
 
-Also, if not careful, sometimes running in parallel can give a wrong result. Consider the sum, 1 - 1 + 1 - 1 + 1 ... Depending on how this summing is performed on multiple CPU's (or cores), the final answer is different. In practice, since there are always round-off errors in numerical calculations and the order of numerical calculations in parallel computing can be different, the result from running on a serial program on one CPU can be different from the result from running a parallel program on multple CPU's.
+Also, if not careful, sometimes running in parallel can give a wrong result. Consider the sum, 1 - 1 + 1 - 1 + 1 ... Depending on how this summing is performed on multiple CPUs (or cores), the final answer is different. In practice, since there are always round-off errors in numerical calculations and the order of numerical calculations in parallel computing can be different, the result from running on a serial program on one CPU can be different from the result from running a parallel program on multple CPU's.
 
 During this course you will learn to design parallel algorithms and write parallel programs using the MPI library.
 MPI stands for Message Passing Interface, and is a low level, extremely flexible and simple set of commands for communicating between copies of a program.
