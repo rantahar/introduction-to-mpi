@@ -15,7 +15,7 @@ How to realize a parallel computing is roughly divided into two camps: one is "d
 ## Embarassingly Parallel Problems
 
 Coming back to the examples of building a car out of a set of parts on a manufacturing line.
-We can increase the number of cars produced in a given amount of time by building more assemply
+We can increase the number of cars produced in a given amount of time by building more assembly
 lines and hiring more workers. The problem can be solved faster by running more independent
 copies of the problem at once.
 
@@ -61,7 +61,7 @@ the master, the bandwidth of the master rank can become bottleneck.
 
 ## Data Parallellism
 
-Data parallellism is the other main parallellisation paradigm. It refers to distributing
+Data parallellism is one of the two main pallellisation paradigms. It refers to distributing
 the data between the ranks. Each rank processes it's own portion of the input data and
 communicates only the portion that is necessary to the other ranks.
 Often all the ranks execute the same steps, just with a different set of data.
@@ -95,7 +95,7 @@ at the end.
 
 ## Message Passing
 
-Task parallellism is of the two main paradigms of parallel algorithms.
+Task parallellism is one of the two main paradigms of parallel algorithms.
 It refers to separating the process into small individual tasks and distributing
 them accross the ranks.
 
