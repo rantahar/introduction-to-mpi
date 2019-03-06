@@ -25,7 +25,7 @@ You probably have two or four on your laptop, and many problems can be run very 
 As a researcher, you probably have access to an HPC system with thousands or hundreds of thousands of cores.
 To use them all efficiently would be challenging in almost any field.
 
-Also, if not careful, sometimes running in parallel can give a wrong result. Consider the sum, 1 - 1 + 1 - 1 + 1 ... Depending on how this summing is performed on multiple CPUs (or cores), the final answer is different. In practice, since there are always round-off errors in numerical calculations and the order of numerical calculations in parallel computing can be different, the result from running on a serial program on one CPU can be different from the result from running a parallel program on multple CPU's.
+Also, if not careful, sometimes running in parallel can give a wrong result. Consider the sum, 1 - 1 + 1 - 1 + 1 ... Depending on how this summing is performed on multiple CPUs (or cores), the final answer is different. In practice, since there are always round-off errors in numerical calculations and the order of numerical calculations in parallel computing can be different, the result from running on a serial program on one CPU can be different from the result from running a parallel program on multple CPUs.
 
 During this course you will learn to design parallel algorithms and write parallel programs using the MPI library.
 MPI stands for Message Passing Interface, and is a low level, extremely flexible and simple set of commands for communicating between copies of a program.

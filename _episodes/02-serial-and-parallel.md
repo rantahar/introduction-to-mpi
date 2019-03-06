@@ -173,11 +173,11 @@ Consider a part of a program such as
   otherwise continue;
 ~~~
 
-In one CPU situation, there is no problem executing this part of program and the program runs without stopping since the "if" statement is always false. Now, what if there are multi CPUs (or cores) and the variable "x" and "y" are shared among these multi CPU's (or cores)? If "if" statement happens before "y=2" in one of CPU's (since "x" and "y" is shared, when one CPU updates "y", the other CPU can't touch it and just proceed to the next step), the second CPU will stop running the program since it thinks "y=0" and "x=1" and "if" statement is true for that CPU. So, sharing data among CPU's (or cores) in parallelization should be "sequentially consistent".
+In one CPU situation, there is no problem executing this part of program and the program runs without stopping since the "if" statement is always false. Now, what if there are multi CPUs (or cores) and the variable "x" and "y" are shared among these multi CPUs (or cores)? If "if" statement happens before "y=2" in one of CPUs (since "x" and "y" is shared, when one CPU updates "y", the other CPU can't touch it and just proceed to the next step), the second CPU will stop running the program since it thinks "y=0" and "x=1" and "if" statement is true for that CPU. So, sharing data among CPUs (or cores) in parallelization should be "sequentially consistent".
 
 ### Surface-to Volume Ratio
 
-In a parallel algorithm, the data which is handled by a CPU (or a core) can be considered in two parts: the one which needs the data that other CPUs (or cores) controls for computation and the other which a given CPU or core controls and can compute. The whole data which a CPU or a core compute is the sum of the two. The data under the control of the other CPU's (or cores) is called "surface" and the whole data is called "volume".
+In a parallel algorithm, the data which is handled by a CPU (or a core) can be considered in two parts: the one which needs the data that other CPUs (or cores) controls for computation and the other which a given CPU or core controls and can compute. The whole data which a CPU or a core compute is the sum of the two. The data under the control of the other CPUs (or cores) is called "surface" and the whole data is called "volume".
 
 The surface data requires communications. The more surface there is, the more communications among CPUs (cores) are needed and the longer the wall clock time of a program takes to finish.
 
