@@ -18,7 +18,7 @@ keypoints:
 
 How to realize a parallel computing is roughly divided into two camps: one is "data parallel" and the other is "message passing". MPI (Message Passing Interface, the parallelization method we use in our lessons) obviously belongs to the second camp. "openMP" belongs to the first. In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is achieved by receiving data which it doesn't have and sending data which it has. In data parallel paradigm, there are many different data and operations (instructions in assembly language speaking) are performed on these data at the same time. Parallelism is achieved by how many different data a single operation can act on. This division is mainly due to historical development of parallel architectures: one follows from shared memory architecture like SMP (Shared Memory Processor) and the other from distributed computer architecture. A familiar example of the shared memory architecture is GPU (or multi-core CPU) architecture and a familiar example of the distributed computing architecture is cluster computer. Which architecture is more useful depends on what kind of problems you have. Sometimes, one has to use both!
 
-## Embarassingly Parallel Problems
+### Embarassingly Parallel Problems
 
 Coming back to the examples of building a car out of a set of parts on a manufacturing line.
 We can increase the number of cars produced in a given amount of time by building more assembly
@@ -29,7 +29,15 @@ This known as an embarassingly parallel problem. No communication is needed betw
 This is the best case scenario, you don't need to design a parallel algorithm to solve the
 problem.
 
-### Queue
+### Shared Memory
+
+If our problem is constructing a single car as quickly as possible, and not building many
+cars quickly, we need to split the work in some way.
+If we hire a large number of workers and buy tools for each of them,
+we can identify different tasks that can be performed in parallel,
+and give them out to the workers when they are free.
+
+#### Queue
 
 A task queue is a simple implementation of task parallellism.
 Each worker will get tasks from a predefined queue.
@@ -45,7 +53,7 @@ all the other ranks, resulting in some communication overhead.
 If several ranks are using the same data, communicating it can also create
 some overhead.
 
-### Master / Worker
+#### Master / Worker
 
 The master / worker approach is a more flexible version of the queue method.
 We hire a manager to distribute tasks to the workers.
@@ -64,20 +72,56 @@ In a large application this is usually a small cost.
 The larger cost is a bit more subtle. Because every node needs to communicate with
 the master, the bandwidth of the master rank can become bottleneck.
 
+#### Pipeline
 
-## Data Parallellism
+A conveyor belt in a car manufacturing plant is an example of a pipeline
+if there are many cars being built at the same time.
+There can be many workers working on different cars at the same time,
+but each worker always performs the same step.
+One worker might, for example, only always attach the left front tire.
+Once this step is done, the car moves forward on the conveyor belt.
 
-Data parallellism is one of the two main pallellisation paradigms. It refers to distributing
-the data between the ranks. Each rank processes it's own portion of the input data and
-communicates only the portion that is necessary to the other ranks.
-Often all the ranks execute the same steps, just with a different set of data.
+In a pipeline, each rank performs a single step in a process with many steps.
+Data flows trough the pipeline and get's modified along the way.
+Naturally a pipeline is only efficient if there is a large amount of data
+to feed into it.
+The different stages cannot work on the same piece of data at the same time.
+
+The main downside of a pipeline is that some of the ranks may spend time
+waiting for data from the previous step.
+It's important to balance the steps to minimize the wait time.
+
+
+### Message Passing
+
+In the message passing paradigm, each processor runs it's own program and works on it's own data.
+To work on the same problem in parallel, they communicate by sending messages to each other.
+
+Imagine we hire workers to build a car as before, but instead of having them work in the same room
+on the same car, we put them in separate room and have them work on different parts.
+Worker 1 will build the back part of the car, worker 2 will build the middle part and
+worker 3 will build the front.
+At the end, workers 2 and 3 will load their finished producs onto a conveyer belt that delivers them
+to worker 1, who will weld them together.
+
+This may be an inefficient way to build a car, but is often a closer analogy to the way different 
+processors work in a computer or a cluster.
+Each processor, or a core, will have it's own cache, a small amount of memory it does not share
+with the others.
+Cores on the same chip will share some memory on the chip, analogous to the workers sharing a storeroom
+they can take parts from.
+Clusters have many chips connected with a fast network connection.
+Compared to the speed at which a core can do computation, this is analogous to going to a different
+building at the other side of the town.
+
+In Shared Memory, if one rank modifies a piece of data, all the other ranks will see the change.
+In Message passing this is not the case. Each rank has it's own data and modifying it will only
+modify the data for that rank.
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
-In car manufacturing, you migth split the parts between the workers and have them construct
-subcomponents. However this would probably be inefficient in the final steps.
-The second example, a sum over a set of numbers, is a better fit for a data parallel approach.
-First we need to change the algorithm, to make it possible to execute in parallel.
+Let's say we need to calculate the sum of a large set of numbers.
+Here is a simple parallel version of the algorithm.
 
 ~~~
 sum = 0
@@ -99,24 +143,7 @@ This algorithm is data parallel. We can have each rank perform the sum over its 
 Each rank only needs it's own sublist and only needs to communicate it's subsum to the others
 at the end.
 
-## Message Passing
-
-Task parallellism is one of the two main paradigms of parallel algorithms.
-It refers to separating the process into small individual tasks and distributing
-them accross the ranks.
-
-If our problem is constructing a single car as quickly as possible, and not building many
-cars quickly, we need to split the work in some way.
-If we hire a large number of workers and buy tools for each of them,
-we can identify different tasks that can be performed in parallel,
-and give them out to the workers when they are free.
-
-In MPI, we write the program by giving instructions for a single worker.
-We need to make sure that the worker can find a task to execute and that
-no other worker will try to do the same task.
-
-
-### Domain Decomposition
+#### Domain Decomposition
 
 When the data is structured in a regular way, such as when
 simulating atoms in a crystal, it makes sense to divide the space
@@ -125,40 +152,6 @@ own domain.
 
 ![Data points divided to four ranks]({{ page.root }}{% link files/domaindecomposition.png %})
 
-Domain decomposition is a subset of data parallel algorithms.
-In fact, the example of the sum algorithm uses domain decomposition.
-It splits the long list of numbers into domains that each rank will work on.
-
-A common feature of domain decomposed algorithms is that communications is limited to a small number
-of other ranks that work on a domain a short distance away.
-For example, in a simulation of atomic crystals, updating a single atom usually requires information 
-of a couple of it's nearest neighbours.
-
-
-### Reduction
-
-Reductions are another common pattern you will certainly run into.
-A reduction happens when one rank processes a large amount of data into only a few numbers
-and only communicates these to the other ranks.
-The algorithm for calculating a sum of numbers above performs a reduction.
-However a reduction could be much more complicated. For example, in the simulation of a
-galaxy, the exact positions of far away stars may not matter.
-Instead it can be sufficient to communicate the center of mass of all the objects on a
-given rank.
-
-Since simple reductions such as sums are common in almost any parallel algorithm, they have
-their own implementations in MPI libraries.
-These implementations tend to be very efficient and can be specifically tuned to the processors
-and the communication devices on a given system.
-
-### All to All
-
-In other cases, some information needs to be sent from every rank to every other rank
-in the system.
-This is the most problematic scenario, the large amount of communication required reduces the
-potential gain from designing a parallel algorithm.
-Nevertheless the perfomance gain may be worth the effort if it is necessary to solve the
-problem quickly.
 
 Many algorithms involve multiplying very large matrices.
 These include finite element methods for computational field theories as well as
@@ -176,6 +169,48 @@ The ranks don't actually need all the data, but they do need a large amount.
 Assuming that each rank holds one submatrix of A and B at the beginning, they need
 to send all their data to two other processes.
 If there were more that 4 ranks, they would need to share an entire row and a column.
+
+
+## Communication Patterns
+
+### Gather / Scatter
+
+In gather type communication, all ranks send a piece of information to one rank.
+Gathers are typically used when printing out information or writing to disk.
+For example, each could send the result of a measurement to rank 0 and rank 0
+could print all of them. This ensures that the information is printed in order.
+
+Similarly, in a scatter communication, one rank one rank sends a piece of data to all the other ranks.
+Scatters are useful for communicating parameters to all the ranks doing the computation.
+The parameter could be read from disk but it could also be produced by a previous computation.
+
+Gather and Scatter operations require more communication as the number of ranks increases and don't
+tend to get slower when the number of ranks is large.
+They have efficient implementations in the MPI libraries.
+
+### Halo Exchange
+
+A common feature of domain decomposed algorithms is that communications is limited to a small number
+of other ranks that work on a domain a short distance away.
+For example, in a simulation of atomic crystals, updating a single atom usually requires information 
+of a couple of it's nearest neighbours.
+
+### Reduction
+
+A reduction happens when one rank processes a large amount of data into only a few numbers
+and only communicates these to the other ranks.
+The algorithm for calculating a sum of numbers above performs a reduction.
+
+### All to All
+
+In other cases, some information needs to be sent from every rank to every other rank
+in the system.
+This is the most problematic scenario, the large amount of communication required reduces the
+potential gain from designing a parallel algorithm.
+Nevertheless the perfomance gain may be worth the effort if it is necessary to solve the
+problem quickly.
+
+
 
 > ## Pattern Examples
 >
