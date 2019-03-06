@@ -5,34 +5,35 @@ exercises: 20
 questions:
 - "How do I send data from one rank to another"
 objectives:
-- "Introduce the MPI_Send and MPI_Recv functions"
+- "Introduce the `MPI_Send` and `MPI_Recv` functions"
 keypoints:
-- "Use MPI_Send to send messages"
-- "And MPI_Recv to receive them"
-- "MPI_Recv will block the program until the message is received"
+- "Use `MPI_Send` to send messages"
+- "And `MPI_Recv` to receive them"
+- "`MPI_Recv` will block the program until the message is received"
 ---
 
 ## Communication
 In this section we will use two MPI library functions functions for sending and receiving data.
-These are MPI_Send and MPI_Recv.
+These are `MPI_Send` and `MPI_Recv`.
 
 These two functions together accomplish the task of sending and receiving data
 from one rank to another.
 They are the basic building blocks for essentially all of the more
 specialized MPI commands described later.
 They are also the basic communication tools in your MPI application.
-Since MPI_Send and MPI_Recv involve two ranks, they are called "point-to-point" communication (unlike "global" communication mentioned in lesson 2).
+Since `MPI_Send` and `MPI_Recv` involve two ranks, they are called "point-to-point" communication
+(unlike "global" communication mentioned in lesson 2).
 
 The process of communicating data follows a standard pattern.
 Rank A decides to send data to rank B.
 It first packs the data into a buffer.
 This avoids sending multiple messages, which would take more time.
-Rank A then calls MPI_Send to create a message for rank B.
+Rank A then calls `MPI_Send` to create a message for rank B.
 The communication device is then given the responsibility of routing
 the message to the correct destination.
 
 Rank B must know that it is about to receive a message and acknowledge this
-by calling MPI_Recv.
+by calling `MPI_Recv`.
 This instructs the communication device to listen for incoming data.
 
 > ## MPI_Send and MPI_Recv in C
@@ -109,19 +110,19 @@ This instructs the communication device to listen for incoming data.
 {: .prereq .foldable}
 
 The number of arguments can make these commands look complicated,
-but you will quickly get used to it.
-The first four arguments are straightforward, they
-specify what data needs to be sent or received
+so don't worry if you need to refer back to the documentation regularly
+when working with them.
+The first four arguments specify what data needs to be sent or received
 and the destination or source of the message.
 
-The message tag is used to differentiate messages in case rank A has sent
+The message tag is used to differentiate messages, in case rank A has sent
 multiple pieces of data to rank B.
 When rank B requests for a message with the correct tag, the data buffer will
 be overwritten by that message.
 
 The communicator is something we have seen before.
 It specifies information about the system and where each rank actually is.
-The status parameter in MPI_Recv will give information about any possible problems
+The status parameter in `MPI_Recv` will give information about any possible problems
 in transit.
 
 > ## Example in C
@@ -573,13 +574,13 @@ in transit.
 >
 >> ## Solution in C
 >> 
->> MPI_Send will block execution until until the receiving process has called
->> MPI_Recv. This prevents the sender from unintentionally modifying the message
+>> `MPI_Send` will block execution until until the receiving process has called
+>> `MPI_Recv`. This prevents the sender from unintentionally modifying the message
 >> buffer before the message is actually sent.
->> Above, both ranks call MPI_Send and just wait for the other respond.
+>> Above, both ranks call `MPI_Send` and just wait for the other respond.
 >> The solution is to have one of the ranks receive it's message before sending.
 >>
->> Sometimes MPI_Send will actually make a copy of the buffer and return immediately.
+>> Sometimes `MPI_Send` will actually make a copy of the buffer and return immediately.
 >> This generally happens only for short messages.
 >> Even when this happens, the actual transfer will not start before the receive is posted.
 >> 
@@ -638,13 +639,13 @@ in transit.
 >
 >> ## Solution in Fortran
 >> 
->> MPI_Send will block execution until until the receiving process has called
->> MPI_Recv. This prevents the sender from unintentionally modifying the message
+>> `MPI_Send` will block execution until until the receiving process has called
+>> `MPI_Recv`. This prevents the sender from unintentionally modifying the message
 >> buffer before the message is actually sent.
->> Above, both ranks call MPI_Send and just wait for the other respond.
->> The solution is to have one of the ranks receive it's message before sending.
+>> Above, both ranks call `MPI_Send` and just wait for the other respond.
+>> The solution is to have one of the ranks receive its message before sending.
 >>
->> Sometimes MPI_Send will actually make a copy of the buffer and return immediately.
+>> Sometimes `MPI_Send` will actually make a copy of the buffer and return immediately.
 >> This generally happens only for short messages.
 >> Even when this happens, the actual transfer will not start before the receive is posted.
 >> 
