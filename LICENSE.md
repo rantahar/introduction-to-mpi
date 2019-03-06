@@ -5,17 +5,18 @@ root: .
 ---
 ## Instructional Material
 
-This material is
-made available under the [Creative Commons Attribution NonCommercial ShareAlike
-license][https://creativecommons.org/licenses/by-nc-sa/4.0/]. 
-The following is a human-readable summary of
+All Software Carpentry and Data Carpentry instructional material is
+made available under the [Creative Commons Attribution
+license][cc-by-human]. The following is a human-readable summary of
 (and not a substitute for) the [full legal text of the CC BY 4.0
-license][https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode].
+license][cc-by-legal].
 
 You are free:
 
 * to **Share**---copy and redistribute the material in any medium or format
 * to **Adapt**---remix, transform, and build upon the material
+
+for any purpose, even commercially.
 
 The licensor cannot revoke these freedoms as long as you follow the
 license terms.
@@ -29,11 +30,6 @@ Under the following terms:
   license][cc-by-human], and indicate if changes were made. You may do
   so in any reasonable manner, but not in any way that suggests the
   licensor endorses you or your use.
-
-* **NonCommercial** — You may not use the material for commercial purposes.
-
-* **ShareAlike** — If you remix, transform, or build upon the material, you
-  must distribute your contributions under the same license as the original.
 
 **No additional restrictions**---You may not apply legal terms or
 technological measures that legally restrict others from doing
@@ -52,7 +48,7 @@ Notices:
 ## Software
 
 Except where otherwise noted, the example programs and other software
-provided are made available under the
+provided by Software Carpentry and Data Carpentry are made available under the
 [OSI][osi]-approved
 [MIT license][mit-license].
 
@@ -66,6 +62,14 @@ the following conditions:
 
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
