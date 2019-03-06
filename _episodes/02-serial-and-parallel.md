@@ -31,12 +31,14 @@ What do you do? You build two lines of conveyor belts and hire twice number of p
 Now you get two cars in the same amount of time!
 If you build three conveyor belts and hire thrice the number of people,
 you get three cars for the same amount of time.
-Or you can identify the steps which don't intefere with each other and can be executed at the same time
-(for example, the front part of the car can be constructed independently of the rear part of the car)
-and let two people work at the same time.
-If you find more steps which can be done without interfering each other,
-these steps can be executed at the same time.
-Overall time is saved.
+
+But what if you're a boutique car manufacturer, making only a handful of cars, and constructing a
+new assembly line would cost more time and money and it would save? How can you product cars more
+quickly without constructing an extra line? The only way is to have multiple people work on the same
+car at hte same time. To do this, identify the steps which don't intefere with each other and can be
+executed at the same time (for example, the front part of the car can be constructed independently
+of the rear part of the car). If you find more steps which can be done without interfering each other,
+these steps can be executed at the same time. Overall time is saved.
 More cars for the same amount of time!
 
 If your problem can be solved like the first case, you are in luck.
@@ -48,7 +50,7 @@ In the second case, the most important thing to consider is the indepedence of a
 This independency is called "atomicity" of an operation.
 
 In the analogy with car manufacturing, the speed of conveyor belt is the "clock" of CPU, parts are "input",
-doing something is an "operation", and the car structure on the conveyor belt is "output".
+doing something is an "operation", and the car structure on the conveyor belt is "output". 
 The algorithm is the set of operations that constructs a car from the parts.
 ![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %})
 It consists of individual steps, adding parts or adjusting them.
