@@ -60,7 +60,7 @@ for(i=0;i<N;i++) {
 
 in C.
 
-In both languages, parallelization is achieved by just one additional line which is handled by preprocessor (!$ in Fortran and # in C) in the compile stage. This is possible since the computer system architecture supports "openMP" and all the complicated mechanism for parallelization is hidden. Actually, this means that the system architecture has a shared memory view of variables and each CPU (or core) can access to all the memory address. So, the compiler "calculates" the address off-set for each CPU (or core) and let each CPU (or core) compute on a part of the whole data. Here, the catch word is shared memory which allows all CPU's (or cores) to access.
+In both languages, parallelization is achieved by just one additional line which is handled by preprocessor (!$ in Fortran and # in C) in the compile stage. This is possible since the computer system architecture supports "openMP" and all the complicated mechanism for parallelization is hidden. Actually, this means that the system architecture has a shared memory view of variables and each CPU (or core) can access to all the memory address. So, the compiler "calculates" the address off-set for each CPU (or core) and let each CPU (or core) compute on a part of the whole data. Here, the catch word is shared memory which allows all CPU's (or cores) to access all the address space.
 
 ### Message Passing
 
