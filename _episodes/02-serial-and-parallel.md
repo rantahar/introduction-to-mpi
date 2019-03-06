@@ -159,19 +159,22 @@ But if we keep increasing the number of ranks the time spent in communication gr
 
 ### L. Lamport's Sequential Consistency
 
-Message Passing based parallelization necessarily involves several "distributed" computing elements (CPU's or cores) which may operate on independent clocks. This can give wrong result since the order of execution of an algorithm may not be the same as the corresponding serial execution performed by one CPU (or a core). Using car manufacturing analogy, speeds of conveyor belts may be different.
+Message Passing based parallelization necessarily involves several "distributed" computing elements (CPU's or cores) which may operate on independent clocks. This can give wrong result since the order of execution in an algorithm may not be the same as the corresponding serial execution performed by one CPU (or a core). This problem in parallelization is explained by L. Lamport in "How to make a Multiprocessor computer that correctly executes multiprocess programs". 
 
-The speed of a conveyor belt would depend on many factors, including
-the speed of the workers,
-the type of the conveyor belt,
-when the belt was last maintained,
-the temperature and so on.
-The problem could be solved by having the faster conveyr belts periodically wait for the slower ones.
-This is obviously wasteful and it would be better to design a manufacturing process
-that produces a working car even if some of the build steps happen in a different order.
+Consider a part of a program such as
+
+  y = 0;
+  x = 1;
+  y = 2;
+  if(y < x) then stop;
+  otherwise continue;
+  
+In one CPU situation, there is no problem executing this part of program and the program runs without stopping since the "if" statement is always false. Now, what if there are multi CPU's (or cores) and the variable "x" and "y" are shared among these multi CPU's (or cores)? If "if" statement happens before "y=2" in one of CPU's (since "x" and "y" is shared, when one CPU updates "y", the other CPU can't touch it and just proceed to the next step), that CPU will stop running the program since it thinks "y=0" and "x=1" and "if" statement is true for that CPU. So, sharing data among CPU's (or cores) in parallelization should be "sequentially consistent".
 
 ### Surface-to Volume Ratio
 
 In a parallel algorithm, the data which is handled by a CPU (or a core) can be considered in two parts: the one which needs the data that other CPU's (or cores) controls for computation and the other which a given CPU or core controls and can compute. The whole data which a CPU or a core compute is the sum of the two. The data under the control of the other CPU's (or cores) is called "surface" and the whole data is called "volume".
 
-The surface data requires communications. The more surface is, the more communications among CPU's (cores) are and the longer the wall clock time of a program takes to finish.
+The surface data requires communications. The more surface there is, the more communications among CPU's (cores) are needed and the longer the wall clock time of a program takes to finish. 
+
+Due to the Amdahl's law, you want to minimize the number of communications for the same surface since each communications takes finite amount time to prepare (latency). This suggests that the surface data be exchanged in one communication if possible, not small part of the surface data exchanged in multiple comunications. Of course, the sequential consistency should be obeyed when the surface data is exchanged.
