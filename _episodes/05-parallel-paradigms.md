@@ -144,23 +144,19 @@ To get used to "thinking in parallel", we discuss "Embarrassingly Parallel" (EP)
 
 ### Embarrassingly Parallel Problem
 
-Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many data base search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. In data base searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them.
+Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many big database search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. The problem becomes running the same code with a different random number. In big database searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them. To speed up the search, the big database is divided into smaller databases and each smaller databases are searched independently.
 
-#### Queue
+#### Queue Method
 
-A task queue is a simple implementation of "Embarassingly Parallel (EP)" problem.
-Each worker will get tasks from a predefined queue.
+Each worker will get tasks from a predefined queue (a random number in a Monte Carlo problem and a smaller databases in a big database search problem).
 The tasks can be very different and take different amounts of time,
 but when a worker has completed its tasks, it will pick the next one
 from the queue.
 
 ![Each rank taking one task from the top of a queue]({{ page.root }}{% link files/queue.png %})
 
-In an MPI code,
-the queue approach requires the ranks to communicate what they are doing to
-all the other ranks, resulting in some communication overhead.
-If several ranks are using the same data, communicating it can also create
-some overhead.
+In an MPI code, the queue approach requires the ranks to communicate what they are doing to
+all the other ranks, resulting in some communication overhead (but neglible compared to overall task time).
 
 #### Manager / Worker
 
@@ -168,7 +164,7 @@ The manager / worker approach is a more flexible version of the queue method.
 We hire a manager to distribute tasks to the workers.
 The manager can run some complicated logic to decide wich tasks to give to a
 worker.
-The manager can also perform any serial parts of the program.
+The manager can also perform any serial parts of the program like generating random number or dividing up the big database.
 
 ![A manager rank controlling the queue]({{ page.root }}{% link files/manager.png %})
 
