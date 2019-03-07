@@ -262,15 +262,15 @@ For example, the function can calculate the sum of numbers distributed accross
 all the ranks.
 
 Possible operations include
-* MPI_SUM: Calculate the sum of numbers sent by each rank
-* MPI_MAX: Return the maximum value of numbers sent by each rank
-* MPI_MIN: Return the minimum of numbers sent by each rank
-* MPI_PROD: Calculate the product of numbers sent by each rank
-* MPI_MAX: Return the maximum value and the number of the rank that sent the maximum value
-* MPI_MIN: Return the minimum value of the number of the rank that sent the minimum value
+* `MPI_SUM`: Calculate the sum of numbers sent by each rank
+* `MPI_MAX`: Return the maximum value of numbers sent by each rank
+* `MPI_MIN`: Return the minimum of numbers sent by each rank
+* `MPI_PROD`: Calculate the product of numbers sent by each rank
+* `MPI_MAXLOC`: Return the maximum value and the number of the rank that sent the maximum value
+* `MPI_MINLOC`: Return the minimum value of the number of the rank that sent the minimum value
 
-The MPI_Reduce operation is usually faster than what you would write by hand.
-It can different algorithms depending on the system it's running on to reach best
+The `MPI_Reduce` operation is usually faster than what you might write by hand.
+It can apply different algorithms depending on the system it's running on to reach the best
 possible performance.
 This is particularly the case on systems designed for high performance computing,
 where the `MPI_Reduce` operations
