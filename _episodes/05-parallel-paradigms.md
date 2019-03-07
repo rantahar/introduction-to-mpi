@@ -117,7 +117,7 @@ for(i=0; i<m; i++) {
 
 in C.
 
-Other than changing the number of loops from `N` to `m`, the code is exactly the same.
+Other than changing the number of loops from `N` to `m`, the code is exactly the same. Here, `m` is the reduced number of loops each CPU (or core) needs to do (if there are `N` number of CPU's (or cores), `m` is 1 (= `N`/`N`)).
 But the parallelization by message passing is not complete yet. In the message passing paradigm,
 each CPU (or core) is independent from the other CPUs (or cores). We must make sure that each CPU
 (or core) has correct data to compute and writes out the result in correct order. This part depends
@@ -129,69 +129,56 @@ core). This particular CPU writes out the received data in a file in correct ord
 computer supports a parallel file system, each CPU (or core) reads the correct data from one file,
 computes and writes out the result to one file in correct order.
 
-Both data parallel and message passing achieves the following, logically.
+In the end, both data parallel and message passing logically achieve the following,
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
+In some cases, one has to combine "data parallel" method and "message passing" method. For example, there are the problems larger than one GPU can handle. Then, data parallel method is used for one GPU portion of the problem and then message passing method is used to employ several GPU's (each GPU handles a part of the problem) unless special hardware/software supports multiple GPU usage. 
+
+
 ## Algorithm Design
 
+Designing a parallel algorithm that determines which of two paradigms in the above one should follow rests on the actual understanding of how the problem can be solved in parallel. This requires some thought and practice.
 
-### Queue
+To get used to "thinking in parallel", we discuss "Embarrassingly Parallel" (EP) problems first and then we consider problems which are not EP problems.  
 
-A task queue is a simple implementation of "Embarassingly Parallel (EP)" problem.
-Each worker will get tasks from a predefined queue.
+### Embarrassingly Parallel Problems
+
+Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many big database search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. The problem becomes running the same code with a different random number over and over again! In big database searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them. To speed up the search, the big database is divided into smaller databases and each smaller databases are searched independently by many workers!
+
+#### Queue Method
+
+Each worker will get tasks from a predefined queue (a random number in a Monte Carlo problem and smaller databases in a big database search problem).
 The tasks can be very different and take different amounts of time,
 but when a worker has completed its tasks, it will pick the next one
 from the queue.
 
 ![Each rank taking one task from the top of a queue]({{ page.root }}{% link files/queue.png %})
 
-In an MPI code,
-the queue approach requires the ranks to communicate what they are doing to
-all the other ranks, resulting in some communication overhead.
-If several ranks are using the same data, communicating it can also create
-some overhead.
+In an MPI code, the queue approach requires the ranks to communicate what they are doing to
+all the other ranks, resulting in some communication overhead (but neglible compared to overall task time).
 
-### Manager / Worker
+#### Manager / Worker Method
 
 The manager / worker approach is a more flexible version of the queue method.
 We hire a manager to distribute tasks to the workers.
 The manager can run some complicated logic to decide wich tasks to give to a
 worker.
-The manager can also perform any serial parts of the program.
+The manager can also perform any serial parts of the program like generating random number or dividing up the big database. The manage can become one of workers after finishing managerial work.
 
 ![A manager rank controlling the queue]({{ page.root }}{% link files/manager.png %})
 
 In an MPI implementation, main function will usually contain an `if`
 statement that determines whether the rank is the manager or a worker.
-The manager usually executes a completely different code from the workers.
+The manager can execute a completely different code from the workers or the manager can execute the same partial code as the workers once the managerial part of the code is done. It depends whether the managerial load takes a lot of time to finish or not. Idling is a waste in parallel computing!
 
-Naturally the Manager / Worker approach reserves a rank to be the manager.
-In a large application this is usually a small cost.
-The larger cost is a bit more subtle. Because every node needs to communicate with
-the manager, the bandwidth of the manager rank can become a bottleneck.
+Because every worker rank needs to communicate with the manager, the bandwidth of the manager rank can become a bottleneck if adminstrative works need a lot of information (there is a similarity to a real life). This can happen if the manager needs to send the smaller databases (divided from the one big databases) to the worker ranks. But this is a waste of resources and is not a suitable solution for EP problem. Instead, it's better to have a parallel file system so that each worker ranks can access the necessary part of the big databases independently.
 
-### Pipeline
+### General Parallel Problems (Non-EP Problems)
 
-A conveyor belt in a car manufacturing plant is an example of a pipeline
-if there are many cars being built at the same time.
-There can be many workers working on different cars at the same time,
-but each worker always performs the same step.
-One worker might, for example, only always attach the left front tire.
-Once this step is done, the car moves forward on the conveyor belt.
+As we discussed in the 1st lesson, in general not all the parts of a serial code can be parallelized. So, one needs to identify which part of a serial code is parallelizable. In science and technology, many numerical computations can be defined on a regular structured data (e.g., partial differential equation on 3-D space using a finite difference method). In this case, one needs to consider how to decompose the domain so that many CPU's (or cores) can work in parallel. 
 
-In a pipeline, each rank performs a single step in a process with many steps.
-Data flows through the pipeline and gets modified along the way.
-Naturally a pipeline is only efficient if there is a large amount of data
-to feed into it.
-The different stages cannot work on the same piece of data at the same time.
-
-The main downside of a pipeline is that some of the ranks may spend time
-waiting for data from the previous step.
-It's important to balance the steps to minimize the wait time.
-
-
-### Domain Decomposition
+#### Domain Decomposition
 
 When the data is structured in a regular way, such as when
 simulating atoms in a crystal, it makes sense to divide the space
@@ -220,9 +207,13 @@ Assuming that each rank holds one submatrix of A and B at the beginning, they ne
 to send all their data to two other processes.
 If there were more that 4 ranks, they would need to share an entire row and a column.
 
+#### Load Balancing
 
+Even if the data is structured in a regular way and the domain is decomposed such that each CPU (or core) can take charge of roughly equal amount of the sub-domain, the work that each CPU (or core) has to do may not be equal. For example, in weather forecasting, the 3D spatial domain can be decomposed in an equal portion. But when the sun moves across the domain, the amount of work is different in that domain since more complicated chemistry/physics is happening in that domain. Balancing this type of loads is a difficult problem and requires a careful thought before designing a parallel algorithm. 
 
 ## Communication Patterns
+
+In MPI parallelization, several communication patterns occur.
 
 ### Gather / Scatter
 
@@ -241,16 +232,35 @@ They have efficient implementations in the MPI libraries.
 
 ### Halo Exchange
 
+![Halo Exchange]({{ page.root }}{% link files/haloexchange.png %}){:height="200px"}
+
 A common feature of domain decomposed algorithms is that communications is limited to a small number
 of other ranks that work on a domain a short distance away.
 For example, in a simulation of atomic crystals, updating a single atom usually requires information 
 of a couple of its nearest neighbours.
 
+In such a case each rank only needs a thin slice of data from it's neighbouring rank
+and send the same slice from it's own data to the neighbour.
+The data received from neighbours forms a "halo" around the the ranks data.
+
+
 ### Reduction
 
-A reduction happens when one rank processes a large amount of data into only a few numbers
-and only communicates these to the other ranks.
-The algorithm for calculating a sum of numbers above performs a reduction.
+![Reduction]({{ page.root }}{% link files/reduction.png %}){:height="150px"}
+
+A reduction is an operation that reduces a large amount of data, a vector or a matrix,
+to a single number.
+The sum examble above is a reduction.
+Since data is needed from all ranks, this tends to be a time consuming operation, similar to
+a gather operation.
+Usually each rank first performs the reduction locally, arriving at a single number.
+They then perform steps of collecting data from some of the ranks and performing the reduction
+on that data, until all the data has been collected.
+The most efficient implementation depends several technical features of the system.
+Fortunately many common reductions are implemented in the MPI library and are often
+optimised for a specific system.
+
+
 
 ### All to All
 
