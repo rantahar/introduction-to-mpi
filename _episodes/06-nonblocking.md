@@ -22,15 +22,15 @@ We saw that these functions are blocking:
 written to the receive buffer.
 This is safe and usually straightforward, but causes the program to wait
 while the communication is happening.
-Usually there is computation that we could run while waiting for data.
+Usually there is computation that we could perform while waiting for data.
 
 The MPI standard includes non-blocking versions of the send and receive functions,
 `MPI_ISend` and `MPI_IRecv`.
 These function will return immediately, giving you more control of the flow
 of the program. After calling them, it is not safe to modify the sending or
 the receiving buffer, but the program is free to continue with other operations.
-When it needs the data in the buffers, it needs to make sure the process is complete
-using the `MPI_Wait` and `MPI_Test` functions.
+When it needs the data in the buffers, it needs to make sure the communication process
+is complete using the `MPI_Wait` and `MPI_Test` functions.
 
 > ## `MPI_ISend` and `MPI_IRecv` in C
 >
@@ -311,7 +311,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>    MPI_Finalize();
 >> }
 >> ~~~
->> {: .output}
+>> {: .source .language-c}
 >{: .prereq .foldable}
 >
 >
