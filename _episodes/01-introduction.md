@@ -21,7 +21,7 @@ In essence, parallel computing means simply using more than one computer or more
 Naively, using more CPUs (or cores) means that one can solve a problem much faster, in time scales that make sense for research projects or study programs.
 However, how efficiently a problem can be solved in parallel depends on how the problem is divided among each CPUs (or cores) and the data and memory needs of the algorithm. This determines how much the cores need to communicate with each other while working together.
 The number of cores we can efficiently use also depends on the problem.
-You probably have two or four on your laptop, and many problems can be run very efficiently on all of those cores.
+You probably have two or four cores on your laptop, and many problems can be run very efficiently on all of those cores.
 As a researcher, you probably have access to a High-Performance Computing (HPC) system with thousands or hundreds of thousands of cores.
 To use them all efficiently would be challenging in almost any field.
 
@@ -34,19 +34,22 @@ MPI stands for Message Passing Interface, and is a low level, extremely flexible
 
 > ## Running with mpirun
 >
-> Let's get our hands dirty from the start and make sure mpi is installed. Open a bash command line and run the simple command.
+> Let's get our hands dirty from the start and make sure MPI is installed. Open a bash command line and run the simple command.
 > ~~~
 > echo Hello World!
 > ~~~
 >{: .language-bash}
 >
-> Now use mpirun to run the same command:
+> Now use `mpirun` to run the same command:
 > ~~~
 > mpirun -n 4 echo Hello World!
 > ~~~
 > {: .language-bash}
 >
 > What did mpirun do?
+>
+> If `mpirun` is not found, try `mpiexec` instead.
+> This is another common name for the command.
 >
 {: .challenge}
 
@@ -148,7 +151,7 @@ new functions that we have introduced. Since the set of compiler flags that woul
 necessary for this tends to be quite long, MPI libraries such as OpenMPI provide
 compiler wrappers, which set up the correct environment before invoking your compiler
 of choice. The wrapper for C compilers is usually called `mpicc`, while the wrapper
-for Fortran is usually called `mpif90`. These can be called in exactly the same way
+for Fortran is usually called `mpifort`. These can be called in exactly the same way
 as your usual C compiler, e.g. `gcc` and `gfortran`, respectively. Any options not
 recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
@@ -165,7 +168,7 @@ The best way to think about writing MPI code is to focus on what a single rank
 needs to be doing.
 When all ranks are doing their job, the algorithm will work correctly.
 
-Usually the rank will need to know how many other ranks there are. You can find this out using the `MPI_Comm_size` in C or `MPI_Comm_size` in Fortran.
+Usually the rank will need to know how many other ranks there are. You can find this out using the `MPI_Comm_size` function.
 
 ## Hello World!
 > ## Hello World!
@@ -225,7 +228,10 @@ Usually the rank will need to know how many other ranks there are. You can find 
 
 >## Parallel loop
 >
-> Modify the following code to split the loops among processes
+> Modify the following code to split the iterations of the loop among processes.
+> Each iteration of the loop should be run by only one rank.
+> Each rank should also have more or less the same amount of work.
+> 
 >
 >> ## C
 >> ~~~
