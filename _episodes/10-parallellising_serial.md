@@ -49,7 +49,6 @@ Can you replace the serial parts with a different, more parallel algorithm?
 >
 >> ## Solution
 >>
->> There are no clearly identifiable parallel tasks.
 >> The loops over space can be run in parallel.
 >> There are parallisable loops in
 >> * the setup, when initialising the fields
@@ -59,7 +58,7 @@ Can you replace the serial parts with a different, more parallel algorithm?
 >> * writing the files could be done in parallel
 >>
 >> The best strategy would seem to be parallelising the loops.
->> This will lead to a data parallel implementation with the
+>> This will lead to a domain decomposed implementation with the
 >> elements of the fields `u` and `rho` divided across the ranks.
 >>
 >{: .solution}
@@ -88,7 +87,7 @@ This is really only a problem if done in a tight loop, many times per second.
 >
 > How would you divide the data between the ranks?
 > When does each rank need data from other ranks?
-> Which ranks does each rank need to exchange data with?
+> Which ranks need data from which other ranks?
 >
 >> ## Solution
 >> Only one of the loops requires data from the other ranks,
@@ -235,7 +234,7 @@ Use small units. Smaller units are easier to test.
 >>      integer, intent(in) :: MAX
 >>      real, intent(inout), dimension (0:(MAX+1),0:(MAX+1)) :: u, unew
 >>      real, intent(in), dimension (0:(MAX+1),0:(MAX+1)) :: rho
->>      real hsq
+>>      real, intent(in) :: hsq
 >>      double precision, intent(out) :: unorm
 >>      integer i, j
 >>
@@ -303,7 +302,7 @@ Use small units. Smaller units are easier to test.
 >>      call poisson_step( u, unew, rho, MAX, hsq, unorm )
 >>      call assert_true( unorm == 112.5, "Test One Step")
 >>
->>      ! Run a single iteration of the poisson solver
+>>      ! Run 49 iterations of the poisson solver (to get to 50)
 >>      do i = 1, 50
 >>         call poisson_step( u, unew, rho, MAX, hsq, unorm )
 >>      end do
@@ -320,17 +319,17 @@ Use small units. Smaller units are easier to test.
 >
 {: .challenge}
 
-### Write a Single Rank Version
+### Write a Parallel Function Thinking About a Single Rank
 
 In the message passing framework, all ranks execute the same code.
 The most straightforward way of approaching writing a parallel implementation
 is to think about a single rank at a time.
 What does this rank need to to and what infromation does it need to do it?
 
-Communicate data in the simplest possible way,
-probably just after it's created or just before it's needed.
-Use blocking or non-blocking communication,
-which ever you feel is simple. If you use non-blocking functions, call wait immediately.
+Communicate data in the simplest possible way
+just after it's created or just before it's needed.
+Use blocking or non-blocking communication, which ever you feel is simpler.
+If you use non-blocking functions, call wait immediately.
 
 The point is to write a simple code that works correctly.
 You can optimise later.
@@ -488,11 +487,7 @@ You can optimise later.
 >
 >
 >> ## Solution in Fortran
->> Run the `j`-loop over a smaller slice. Here we have called the
->> size of the `j`-slice `my_j_max`.
 >>
->> The calculation of `unorm` is a sum over all ranks.
->> Use `MPI_Allreduce` to get it right.
 >>~~~
 >>module poisson_solver
 >>
@@ -595,7 +590,7 @@ You can optimise later.
 >>      call poisson_step( u, unew, rho, MAX, hsq, unorm )
 >>      call assert_true( unorm == 112.5, "Test One Step")
 >>
->>      ! Run a single iteration of the poisson solver
+>>      ! Run 49 iterations of the poisson solver (to get to 50)
 >>      do i = 1, 50
 >>         call poisson_step( u, unew, rho, MAX, hsq, unorm )
 >>      end do
@@ -839,17 +834,20 @@ You can optimise later.
 >
 {: .challenge}
 
-### Optimisation
+### Optimise
 
 Now it's time to think about optimising the code.
 Try it with a different numbers of ranks, up to
 the maximum number you expect to use.
-A parallel profiler is useful for finding the places 
-where communication is taking time.
+In the next lesson we will talk about a parallel profiler that can produce
+useful information for this.
 
 It's also good to check the speed with just one rank.
 In most cases it can be made as fast as a serial code
 using the same algorithm.
+
+When making changes to improve performance, keep running the test suite.
+A fast but incorrect program is useless.
 
 > ## Strong Scaling
 >
