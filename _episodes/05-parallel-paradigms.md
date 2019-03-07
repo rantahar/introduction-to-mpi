@@ -117,7 +117,7 @@ for(i=0; i<m; i++) {
 
 in C.
 
-Other than changing the number of loops from `N` to `m`, the code is exactly the same.
+Other than changing the number of loops from `N` to `m`, the code is exactly the same. Here, `m` is the reduced number of loops each CPU (or core) needs to do (if there are `N` number of CPU's (or cores), `m` is 1 (= `N`/`N`)).
 But the parallelization by message passing is not complete yet. In the message passing paradigm,
 each CPU (or core) is independent from the other CPUs (or cores). We must make sure that each CPU
 (or core) has correct data to compute and writes out the result in correct order. This part depends
@@ -133,10 +133,12 @@ Both data parallel and message passing achieves the following, logically.
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
+In some cases, one has to combine "data parallel" method and "message passing" method. For example, there are the problems larger than one GPU can handle. Then, data parallel method is used for one GPU portion of the problem and then message passing method is used to employ several GPU's (each GPU handles a part of the problem) unless special hardware/software supports multiple GPU usage. 
 
 
 ## Algorithm Design
 
+Designing a parallel algorithm that determines which of two paradigms in the above one should follow rests on the understanding of how the problem can be solved in parallel. 
 
 ### Queue
 
