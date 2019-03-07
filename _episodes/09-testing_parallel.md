@@ -1,12 +1,12 @@
 ---
-title: "Testing a Parallel Code"
+title: "Testing Parallel Software"
 teaching: 20
 exercises: 30
 questions:
 - "How do I make sure the program works?"
-- "How parallel execution affect testing?"
+- "How does parallel execution affect testing?"
 objectives:
-- "Learn to build test suits to verify a parallel program."
+- "Learn to build test suites to verify a parallel program."
 - "Point out differences between parallel and serial algorithms"
 keypoints:
 - "It's always easy to make mistakes"
@@ -15,18 +15,18 @@ keypoints:
 
 ## Automated Testing
 
-Automated testing is very helpful when developing you application.
-They allow you to quickly and easily check the correctness of your application
+Automated testing is very helpful when developing your application.
+It allows you to quickly and easily check the correctness of your application
 while making changes to it.
-It's easy to make mistakes and debugging an entire application a significant
-amout on time.
+It's easy to make mistakes, and debugging an entire application takes a significant
+amount of time.
 As a bonus, when the code is well covered by automated tests,
 it will always work correctly, at least in the ways you have defined in the tests.
 
 In the ideal scenario, you start from a correctly working serial application
-with that alredy includes a full suite of tests for each function.
+that already includes a full suite of tests for each function.
 If this is not the case, it is best to start by writing tests for each function
-in the files you with to parallellise.
+in the files you wish to parallellise.
 If there are long functions, it may be a good idea to split them into smaller ones
 and test these separately.
 
@@ -37,7 +37,7 @@ and test these separately.
 > This is useful for developing from an already correct implementation of
 > an algorithm.
 > A failed test will immediately point out the location of a bug, and the
-> smaller the units, the easiear it is to find the problem.
+> smaller the units, the easier it is to find the problem.
 > Smaller units also allow each test to run faster.
 > 
 > You might also wish to test the correctness of the whole algorithm.
@@ -48,7 +48,7 @@ and test these separately.
 >
 > Especially in scientific applications, the correct output is often not known.
 > In these cases you can test for known properties of the output, or test 
-> with against a run of the serial version.
+> the results compared to a run of the serial version.
 >
 {: .callout}
 
@@ -102,17 +102,17 @@ and test these separately.
 > Testing frameworks in general use similar concepts and any lessons learned here
 > can be applied to any framework.
 >
-> You will need one file from the FRUIT zip.
-> If you didnt donwload the it yet, take a look at the [setup]({{ page.root }}{% link setup.md %}) for details.
+> You will need one file from the FRUIT ZIP archive.
+> If you haven't downloaded it yet, take a look at the [setup]({{ page.root }}{% link setup.md %}) for details.
 >
-> Copy fruit.f90 from the src folder in the zip archive to your working directory.
+> Copy `fruit.f90` from the src folder in the ZIP archive to your working directory.
 > Compile it with
 > ~~~
 > gfortran -c fruit.f90
 > ~~~
 >{: .language-bash}
 >
-> This creates two modules, fruit.mod and fruit_util.mod, and a object file, fruit.o.
+> This creates two modules, `fruit.mod` and `fruit_util.mod`, and an object file, `fruit.o`.
 > 
 > Tests are defined in test modules. Here is a very simple example
 > for making sure that 1 is 1.
@@ -161,14 +161,13 @@ and test these separately.
 
 ## Test suites automate and simplify testing
 
-A test suite is nothing but a program that runs your functions and checks that the output
-is correct.
+A test suite is a program that runs your functions and checks that the output is correct.
 You check the output using a set of assert functions.
 You assert that certain statements are true or that certain numbers are equal.
 The test suite will report a failure if one or more of the assert statements fail.
 
 It is good practice to write to name the test functions according to the function it is
-testing and to give more information if there is more than one test for the function.
+testing, and to give more information if there is more than one test for the function.
 Don't be afraid of using long function names.
 When the test suite reports a failure, it will report the name of the test function.
 This way you know exactly where in your code the problem is.
@@ -427,8 +426,8 @@ This way you know exactly where in your code the problem is.
 ### Setup and teardown
 
 Above we had to create a vector separately for both tests.
-In a larger program, writing a test can recuire a large amount of setup.
-The environment and the parameters need to mimick the way the fuction is
+In a larger program, writing a test can require a large amount of setup.
+The environment and the parameters need to mimic the way the function is
 called in the code.
 
 Doing these separately in each test results in a lot of repeated code.
@@ -613,8 +612,8 @@ each test.
 > but we might want to change this later, so it's good to be careful.
 > In general, we don't want previous test to be able affect the current one.
 >
-> FRUIT also contains methods for automatically creating test groups called
-> baskets and generating the driver to run them.
+> FRUIT also contains methods for automatically creating test groups, called
+> baskets, and generating the driver to run them.
 > These features use ruby, which you need to install separately.
 > It's well worth looking into the features of this tool if you plan to
 > develop in Fortran.
@@ -629,12 +628,12 @@ and the environment.
 
 ## Testing an MPI Code
 
-You can test an function that uses MPI in the same way.
+You can test a function that uses MPI in the same way.
 The main differences are that you need to set up the MPI environment and
 mock the data and the environment for each rank.
 
-It's not good practice to include MPI_Init or MPI_Finalize in the test function itself.
-If an assert is triggered, MPI_Finalize may not be run, which could in turn ruin
+It's not good practice to include `MPI_Init` or `MPI_Finalize` in the test function itself.
+If an assert is triggered, `MPI_Finalize` may not be run, which could in turn ruin
 the rest of the tests.
 Instead call them either in the setup and teardown functions or in the main program.
 
@@ -875,7 +874,7 @@ Instead call them either in the setup and teardown functions or in the main prog
 
 > ## Testing MPI
 >
-> Implement a test of the find_sum function in the above example
+> Implement a test of the `find_sum` function in the above example
 >
 >
 >> ## Solution in C
@@ -977,12 +976,12 @@ Instead call them either in the setup and teardown functions or in the main prog
 
 Since all processes are running the tests, you will see multiple copies of the each of the
 lines printed in the terminal.
-The test suite is not really aware of MPI, it's just running multiple copies of the tests.
+The test suite is not aware of MPI---it's just running multiple copies of the tests.
 This is not necessarily a problem.
 A test can fail on one rank and succeed on a different one.
 In general you want to test all the ranks.
 
-The "--tag-output" option for mpirun is usefull here.
+The `--tag-output` option for `mpirun` is useful here.
 It will append rank numbers to every line printed by the application.
 This helps in keeping track of the ranks with errors.
 
@@ -1000,8 +999,8 @@ This does not necessarily mean that the implementation is incorrect.
 
 > ## Floating Point Ordering
 >
-> Increase the number of ranks in the above test keeping the vector lenght at 1024.
-> At some point test of the find_sum function will start to fail.
+> Increase the number of ranks in the above test, keeping the vector lenght at 1024.
+> At some point test of the `find_sum` function will start to fail.
 > * Why does it fail? What is the difference between the serial and the MPI versions?
 > * Is this a problem? How would you fix it?
 > * Let's say we don't care about the small difference. Change the test to only report differences larger than 0.0001.

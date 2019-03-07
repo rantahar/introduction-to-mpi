@@ -1,10 +1,10 @@
 ---
-title: "Parallellising a Serial Code"
+title: "Parallelising a Serial Code"
 teaching: 30
 exercises: 30
 questions:
 - "What is the best way to write a parallel code?"
-- "How do I parallellise my serial code?"
+- "How do I parallelise my serial code?"
 objectives:
 - "Go through practical steps for going from a serial code to a parallel code"
 - "Allow students to work on their own code or on example codes"
@@ -27,25 +27,25 @@ or in
 and familiarise yourself with what how it works.
 
 If you have your own serial code, it's advisable to choose a small
-section of the code and go trough the same steps.
+section of the code and go through the same steps.
 
 ### Parallel regions
 
 The first step is to identify parts of the code that
 can be written in parallel.
-Go trough the algorithm and decide for each region if the data can be partitioned for parallel execution
+Go through the algorithm and decide for each region if the data can be partitioned for parallel execution,
 or if certain tasks can be separated and run in parallel.
 
 Can you find large or time consuming serial regions?
 The sum of the serial regions gives the minimum amount of time it will take to run the program.
-If the serial parts are a significant part of the algorithm, it may not be possible to write an efficient parallel a version.
+If the serial parts are a significant part of the algorithm, it may not be possible to write an efficient parallel version.
 Can you replace the serial parts with a different, more parallel algorithm?
 
 
 > ## Parallel Regions
 >
 > Identify any parallel and serial regions in the code.
-> What would be the optimal parallellisation strategy?
+> What would be the optimal parallelisation strategy?
 >
 >> ## Solution
 >>
@@ -53,14 +53,14 @@ Can you replace the serial parts with a different, more parallel algorithm?
 >> The loops over space can be run in parallel.
 >> There are parallisable loops in
 >> * the setup, when initialising the fields
->> * the calculation of the time step, unew
->> * the difference, unorm
->> * overwriting the field u
+>> * the calculation of the time step, `unew`
+>> * the difference, `unorm`
+>> * overwriting the field `u`
 >> * writing the files could be done in parallel
 >>
->> The best strategy would seem to be parallellising the loops.
+>> The best strategy would seem to be parallelising the loops.
 >> This will lead to a data parallel implementation with the
->> elements of the fields u and rho divided across the ranks.
+>> elements of the fields `u` and `rho` divided across the ranks.
 >>
 >{: .solution}
 >
@@ -73,7 +73,7 @@ If you decide it's worth your time to try to parallelise the problem,
 the next step is to decide how the ranks will share the tasks or the data.
 This should be done for each region separately, but taking into account the time it would take to reorganise the data if you decide to change the pattern between regions.
 
-The parallellisation strategy is often based on the
+The parallelisation strategy is often based on the
 underlying problem the algorithm is dealing with.
 For example in materials science, it makes sense
 to decompose the data into domains by splitting the
@@ -86,23 +86,22 @@ This is really only a problem if done in a tight loop, many times per second.
 
 > ## Communications Patterns
 >
-> How would you divide the data to the ranks?
-> When does each rank need data from the other
-> ranks?
-> Which ones?
+> How would you divide the data between the ranks?
+> When does each rank need data from other ranks?
+> Which ranks does each rank need to exchange data with?
 >
 >> ## Solution
 >> Only one of the loops requires data from the other ranks,
 >> and these are only nearest neighbours.
 >>
->> Parallellising the loops would actually be the same thing as splitting the physical volume.
+>> Parallelising the loops would actually be the same thing as splitting the physical volume.
 >> Each iteration of the loop accesses one element
->> in the rho and uner fields and four elements in
->> the u field.
->> The u field needs to be communicated if the value
+>> in the `rho` and `uner` fields and four elements in
+>> the `u` field.
+>> The `u` field needs to be communicated if the value
 >> is stored on a different rank.
 >>
->> There is also a global reduction for calculating unorm.
+>> There is also a global reduction for calculating `unorm`.
 >> Every node needs to know the result.
 >>
 >{: .solution}
@@ -167,8 +166,8 @@ Use small units. Smaller units are easier to test.
 >> ~~~
 >> {:.source .language-c}
 >>
->> Assuming the above is saved to poisson_step.c, the
->> the following wil run a simple test
+>> Assuming the above is saved to `poisson_step.c`, the
+>> the following will run a simple test
 >> ~~~
 >>#include <stdarg.h>
 >>#include <stddef.h>
@@ -338,25 +337,24 @@ You can optimise later.
 
 > ## Parallel Execution
 > 
-> Let's parallellise split the outer loop across 
-> the ranks.
+> Let's split the outer loop across the ranks.
 > Write a program that performs the iterations from
-> j=rank*(MAX/n_ranks) to j=(rank+1)*(MAX/n_ranks).
+> `j=rank*(MAX/n_ranks)` to `j=(rank+1)*(MAX/n_ranks)`.
 >
 > First, just implement a single step.
-> For this, you should not need to communicate the field u.
+> For this, you should not need to communicate the field `u`.
 > You will need a reduction.
 > 
 > Make sure the test also works correctly in parallel.
-> Each rank needs to create the part of the fields u, unew and rho
-> it needs for it's own part of the loop.
+> Each rank needs to create the part of the fields `u`, `unew` and `rho`
+> it needs for its own part of the loop.
 >
 > After this step the first test should succeed and the second test
 > should fail.
 >
 >> ## Solution in C
 >>
->> In poisson_step.c:
+>> In `poisson_step.c`:
 >> ~~~
 >>#include <stdio.h>
 >>#include <math.h>
@@ -448,8 +446,9 @@ You can optimise later.
 >>  // Test a configuration with u=10 at x=1 and y=1
 >>  // The actual x coordinate is my_j_max*rank + x
 >>  // meaning that x=1 is on rank 0
->>  if( rank == 0 )
+>>  if( rank == 0 ){
 >>     u[1][1] = 10;
+>>  }
 >>
 >>  // Test one step
 >>  unorm = poisson_step( u, unew, rho, hsq, my_j_max );
@@ -489,11 +488,11 @@ You can optimise later.
 >
 >
 >> ## Solution in Fortran
->> Run the j-loop over a smaller slice. Here we have called the
->> size of the j-slice my_j_max.
+>> Run the `j`-loop over a smaller slice. Here we have called the
+>> size of the `j`-slice `my_j_max`.
 >>
->> The calculation of unorm is a sum over all ranks.
->> Use MPI_Allreduce to get it right.
+>> The calculation of `unorm` is a sum over all ranks.
+>> Use `MPI_Allreduce` to get it right.
 >>~~~
 >>module poisson_solver
 >>
@@ -547,7 +546,7 @@ You can optimise later.
 >>~~~
 >>{: .source .language-fortran}
 >>
->> In the test function, we need create a fields, from 0 to my_j_max.
+>> In the test function, we need create a fields, from 0 to `my_j_max`.
 >>~~~
 >>module poisson_test
 >>  use fruit
@@ -619,9 +618,9 @@ You can optimise later.
 > 50 iterations.
 >
 >> ## Solution in C
->> Each rank needs to send the values at u[1] down to rank-1 and
->> the values at u[my_j_max] to rank+1.
->> There needs to be an exeption for the first and the last rank.
+>> Each rank needs to send the values at `u[1]` down to `rank-1`B and
+>> the values at `u[my_j_max]` to `rank+1`.
+>> There needs to be an exception for the first and the last rank.
 >>
 >> In poisson_step.c:
 >>~~~
@@ -683,19 +682,27 @@ You can optimise later.
 >>    // Ranks with odd number send first
 >>
 >>    // Send data down from rank to rank-1
->>    for( int i=0;i < MAX;i++) sendbuf[i] = unew[1][i+1];
+>>    for( int i=0;i < MAX;i++){
+>>      sendbuf[i] = unew[1][i+1];
+>>    }
 >>    MPI_Send(sendbuf,MAX,MPI_FLOAT,rank-1,1,MPI_COMM_WORLD);
 >>    // Receive dat from rank-1
 >>    MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank-1,2,MPI_COMM_WORLD,&mpi_status);
->>    for( int i=0;i < MAX;i++) u[0][i+1] = recvbuf[i];
+>>    for( int i=0;i < MAX;i++){
+>>      u[0][i+1] = recvbuf[i];
+>>    }
 >>     
 >>    if ( rank != (n_ranks-1)) {
 >>      // Send data up to rank+1 (if I'm not the last rank)
->>      for( int i=0;i < MAX;i++) sendbuf[i] = unew[my_j_max][i+1];
+>>      for( int i=0;i < MAX;i++){
+>>        sendbuf[i] = unew[my_j_max][i+1];
+>>      }
 >>      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD);
 >>      // Receive data from rank+1
 >>      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank+1,2,MPI_COMM_WORLD,&mpi_status);
->>      for( int i=0;i < MAX;i++) u[my_j_max+1][i+1] = recvbuf[i];
+>>      for( int i=0;i < MAX;i++){
+>>        u[my_j_max+1][i+1] = recvbuf[i];
+>>      }
 >>    }
 >>  
 >>  } else {
@@ -704,20 +711,28 @@ You can optimise later.
 >>    if (rank != 0) {
 >>      // Receive data from rank-1 (if I'm not the first rank)
 >>      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank-1,1,MPI_COMM_WORLD,&mpi_status);
->>      for( int i=0;i < MAX;i++) u[0][i+1] = recvbuf[i];
+>>      for( int i=0;i < MAX;i++){
+>>        u[0][i+1] = recvbuf[i];
+>>      }
 >>	     
 >>      // Send data down to rank-1
->>      for( int i=0;i < MAX;i++) sendbuf[i] = unew[1][i+1];
+>>      for( int i=0;i < MAX;i++){
+>>        sendbuf[i] = unew[1][i+1];
+>>      }
 >>      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank-1,2,MPI_COMM_WORLD);
 >>    }
 >>
 >>    if (rank != (n_ranks-1)) {
 >>      // Receive data from rank+1 (if I'm not the last rank)
 >>      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD,&mpi_status);
->>      for( int i=0;i < MAX;i++) u[my_j_max+1][i+1] = recvbuf[i];
+>>      for( int i=0;i < MAX;i++){
+>>        u[my_j_max+1][i+1] = recvbuf[i];
+>>      }
 >>      
 >>      // Send data up to rank+1
->>      for( int i=0;i < MAX;i++) sendbuf[i] = unew[my_j_max][i+1];
+>>      for( int i=0;i < MAX;i++){
+>>        sendbuf[i] = unew[my_j_max][i+1];
+>>      }
 >>      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,2,MPI_COMM_WORLD);
 >>    }
 >>  }
@@ -729,8 +744,8 @@ You can optimise later.
 >{: .solution}
 >
 >> ## Solution in Fortran
->> Each rank needs to send the values at u(1) down to rank-1 and
->> the values at u(my_j_max) to rank+1.
+>> Each rank needs to send the values at `u(1)` down to `rank-1` and
+>> the values at `u(my_j_max)` to `rank+1`.
 >> There needs to be an exeption for the first and the last rank.
 >>
 >>~~~
@@ -843,32 +858,30 @@ using the same algorithm.
 > An algorithm with good strong scaling behaviour allows you to
 > solve a problem more and more quickly by throwing more cores
 > at it.
-> There are no real problems with perfect strong scaling
+> There are no real problems where you can achieve perfect strong scaling
 > but some do get close.
 >
-> Write a main function that calls the poisson step 100 times and set MAX=512.
+> Write a main function that calls the poisson step 100 times and set `MAX=512`.
 >
 > Try running your program with an increasing number of ranks.
-> Measure the time taken using the unix time utility.
+> Measure the time taken using the Unix `time` utility.
 > What are the limitations on scaling?
 >
 >> ## Solution 
 >>
->> Exact numbers depend on the machine your running on, 
->> but with a small number of ranks, up to 4, you should
+>> Exact numbers depend on the machine you're running on, 
+>> but with a small number of ranks (up to 4) you should
 >> see the time decrease with the number of ranks.
 >> At 8 ranks the result is a bit worse and doubling again to 16 has little effect.
 >>
 >> The figure below shows an example of the scaling with
->> MAX=512 and MAX=2048.
+>> `MAX=512` and `MAX=2048`.
 >> ![A figure showing the result described above for MAX=512 and MAX=2048]({{ page.root }}{% link fig/poisson_scaling_plot.png %})
 >>
->> In the example, which runs on a 40 core Intel Scalable CPU,
+>> In the example, which runs on a machine with two 20-core Intel Xeon Scalable CPUs,
 >> using 32 ranks actually takes more time.
->> This is becouse the CPU has two sets of 20 cores that are
->> slightly separated.
->> The 32 ranks don't fit on one side and communicating between
->> the sides takes more time.
+>> The 32 ranks don't fit on one CPU and communicating between
+>> the the two CPUs takes more time, even though they are within the same machine.
 >>
 >> The communication could be made more efficient.
 >> We could use non-blocking communication and do some of the computation
@@ -880,7 +893,7 @@ using the same algorithm.
 
 > ## Weak Scaling
 >
-> Weak saling refers to increasing the size of the problem
+> Weak scaling refers to increasing the size of the problem
 > while increasing the number of ranks.
 > This is much easier than strong scaling and there are several
 > algorithms with good weak scaling.
@@ -891,7 +904,7 @@ using the same algorithm.
 > using HPC systems.
 >
 > Run the Poisson solver with and increasing number of ranks,
-> increasing MAX with the number of ranks.
+> increasing `MAX` with the number of ranks.
 > How does it behave?
 >
 >> ## Solution
