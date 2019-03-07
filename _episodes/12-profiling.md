@@ -45,7 +45,7 @@ provided by the Score-P utility.
 ~~~
 scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
 ~~~
-{: .output}
+{: .source .language-bash}
 This will produce an instrumented binary.
 When you execute, it will track function calls and the time spent in each
 function.
@@ -54,13 +54,13 @@ Next, run the new executable using scalasca to analyse the result
 ~~~
 scalasca -analyze mpirun -n 2 poisson
 ~~~
-{: .output}
+{: .source .language-bash}
 
 Finally, you can examine the results in the GUI
 ~~~
 scalasca -examine scorep_poisson_2_sum
 ~~~
-{: .output}
+{: .source .language-bash}
 This will open the cubeGUI.
 ![A picture of the cube GUI]({{ page.root }}{% link fig/cube.png %})
 
@@ -82,7 +82,7 @@ To supress the GUI, use the `-s` parameter.
 scalasca -examine -s scorep_poisson_2_sum
 cat scorep_poisson_2_sum/scorep.score
 ~~~
-{: .output}
+{: .source .language-bash}
 The command line version will produce output that looks something like this:
 ~~~
 Estimated aggregate size of event trace:                   608200 bytes
@@ -120,7 +120,7 @@ For example the following will print out the time spent in each function:
 ~~~
 cube_stat -p scorep_poisson_2_sum/summary.cubex
 ~~~
-{: .output}
+{: .source .language-bash}
 This outputs
 ~~~
 Routine                  time
@@ -144,7 +144,7 @@ You can also get a call tree using
 ~~~
 cube_calltree -m time scorep_poisson_2_sum/summary.cubex
 ~~~
-{: .output}
+{: .source .language-bash}
 will print out something like this:
 ~~~
 Reading scorep_poisson_2_sum/summary.cubex... done.
@@ -206,7 +206,7 @@ SCOREP_REGION_NAMES_BEGIN
     poisson_step
 SCOREP_REGION_NAMES_END
 ~~~
-{: .output}
+{: .source}
 
 Save this to a file called `poisson.filter`.
 Running 
@@ -214,7 +214,7 @@ Running
 scalasca -examine -s -f poisson.filter scorep_poisson_2_sum
 cat scorep_poisson_2_sum/scorep.score_poisson.filter
 ~~~
-{: .output}
+{: .source .language-bash}
 will produce something like
 ~~~
 Estimated aggregate size of event trace:                   813kB
@@ -254,7 +254,7 @@ Once you are happy with the filter, it can then be passed to Score-P with the
 export SCOREP_FILTERING_FILE=poisson.filter
 scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
 ~~~
-{: .output}
+{: .source .language-bash}
 
 ### Trace Analysis
 
@@ -262,12 +262,12 @@ Let's now run the application with the full trace using the `-t` flag
 ~~~
 scalasca -analyze -t mpirun -n 2 poisson
 ~~~
-{: .output}
+{: .source .language-bash}
 And examine the results written to the `scorep_poisson_2_trace` directory
 ~~~
 scalasca -examine scorep_poisson_2_trace
 ~~~
-{: .output}
+{: .source .language-bash}
 
 There are some new measurements on the left column.
 Notably you will find a a measure of `MPI_Wait` states, how long the ranks spend
@@ -287,24 +287,24 @@ in your code.
 >~~~
 > #include "scorep/SCOREP_User.h"
 > ~~~
->{:. output}
+>{:.source .language-c}
 >
 > You need to declare the region
 >~~~
 > SCOREP_USER_REGION_DEFINE( region_name );
 >~~~
->{:. output}
+>{:.source .language-c}
 >
 > At the beginning of the region add
 >~~~
 > SCOREP_USER_REGION_BEGIN( region_name, "<region_name>", SCOREP_USER_REGION_TYPE_LOOP );
 >~~~
->{:. output}
+>{:.source .language-c}
 > and at the end of the region add
 >~~~
 > SCOREP_USER_REGION_END( region_name );
 >~~~
->{:. output}
+>{:.source .language-c}
 >
 > Adding annotations to loops can be done in a single line
 >~~~
@@ -313,13 +313,13 @@ in your code.
 >  ...
 >}
 >~~~
->{: .output}
+>{:.source .language-c}
 >
 >When compiling with Score-P, you need to add `--user`,
 >~~~
 >scorep --user mpicc poisson_main_mpi.c poisson_step_mpi.c
 >~~~
->{: .output}
+>{:.source .language-bash}
 >
 {: .prereq .foldable}
 
@@ -332,24 +332,24 @@ in your code.
 >~~~
 > #include "scorep/SCOREP_User.inc"
 > ~~~
->{:. output}
+>{:.source .language-fortran}
 >
 > You need to declare the region
 >~~~
 > SCOREP_USER_REGION_DEFINE( region_name )
 >~~~
->{:. output}
+>{:.source .language-fortran}
 >
 > At the beginning of the region add
 >~~~
 > SCOREP_USER_REGION_BEGIN( region_name, "<region_name>", SCOREP_USER_REGION_TYPE_LOOP )
 >~~~
->{:. output}
+>{:.source .language-fortran}
 > and at the end of the region add
 >~~~
 > SCOREP_USER_REGION_END( region_name )
 >~~~
->{:. output}
+>{:.source .language-fortran}
 >
 >When compiling with Score-P, you need to add `--user`,
 >~~~
