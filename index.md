@@ -14,7 +14,7 @@ algorithm.
 MPI stands for Message Passing Interface.
 It is a straightforward standard for communicating between the
 individual processes that make up a program.
-There are several implementations of the standard for nearly most platforms
+There are several implementations of the standard for nearly all platforms
 (Linux, Windows, OS X...)
 and many popular languages
 (C, C++, Fortran, Python...).
