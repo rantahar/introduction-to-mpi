@@ -45,13 +45,13 @@ using the `MPI_Wait` and `MPI_Test` functions.
 >    MPI_Request* request)
 >~~~
 >
-> | data:         | Pointer to the start of the data being sent |
-> | count:        | Number of elements to send |
-> | datatype:     | The type of the data being sent |
-> | destination:  | The rank number of the rank the data will be sent to |
-> | tag:          | A message tag (integer) |
-> | communicator: | The communicator (we have used MPI_COMM_WORLD in earlier) |
-> | request:      | Pointer for writing the request structure |
+> | `data`:         | Pointer to the start of the data being sent |
+> | `count`:        | Number of elements to send |
+> | `datatype`:     | The type of the data being sent |
+> | `destination`:  | The rank number of the rank the data will be sent to |
+> | `tag`:          | A message tag (integer) |
+> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `request`:      | Pointer for writing the request structure |
 >
 >~~~
 > MPI_Irecv(
@@ -64,13 +64,13 @@ using the `MPI_Wait` and `MPI_Test` functions.
 >    MPI_Request* request)
 >~~~
 >
-> | data:         | Pointer to where the received data should be written |
-> | count:        | Maximum number of elements received |
-> | datatype:     | The type of the data being received |
-> | source:       | The rank number of the rank sending the data |
-> | tag:          | A message tag (integer) |
-> | communicator: | The communicator (we have used MPI_COMM_WORLD in earlier) |
-> | request:      | Pointer for writing the request structure |
+> | `data`:         | Pointer to where the received data should be written |
+> | `count`:        | Maximum number of elements received |
+> | `datatype`:     | The type of the data being received |
+> | `source`:       | The rank number of the rank sending the data |
+> | `tag`:          | A message tag (integer) |
+> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `request`:      | Pointer for writing the request structure |
 >
 {: .prereq .foldable}
 
@@ -82,14 +82,14 @@ using the `MPI_Wait` and `MPI_Test` functions.
 >    INTEGER    COUNT, DATATYPE, DEST, TAG, COMM, REQUEST, IERROR
 >~~~
 >
-> | BUF:      | Vector containing the data to send |
-> | COUNT:    | Number of elements to send |
-> | DATATYPE: | The type of the data being sent |
-> | DEST:     | The rank number of the rank the data will be sent to |
-> | TAG:      | A message tag (integer) |
-> | COMM:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
-> | REQUEST:  | Request handle |
-> | IERROR:   | Error status |
+> | `BUF`:      | Vector containing the data to send |
+> | `COUNT`:    | Number of elements to send |
+> | `DATATYPE`: | The type of the data being sent |
+> | `DEST`:     | The rank number of the rank the data will be sent to |
+> | `TAG`:      | A message tag (integer) |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `REQUEST`:  | Request handle |
+> | `IERROR`:   | Error status |
 >
 >~~~
 > MPI_IRECV(BUF, COUNT, DATATYPE, SOURCE, TAG, COMM, REQUEST, IERROR)
@@ -98,14 +98,14 @@ using the `MPI_Wait` and `MPI_Test` functions.
 >    INTEGER    REQUEST, IERROR
 >~~~
 >
-> | BUF:      | Vector the received data should be written to             |
-> | COUNT:    | Maximum number of elements received                       |
-> | DATATYPE: | The type of the data being received                       |
-> | SOURCE:   | The rank number of the rank sending the data              |
-> | TAG:      | A message tag (integer)                                   |
-> | COMM:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
-> | REQUEST:  | Request handle                                            |
-> | IERROR:   | Error status |
+> | `BUF`:      | Vector the received data should be written to             |
+> | `COUNT`:    | Maximum number of elements received                       |
+> | `DATATYPE`: | The type of the data being received                       |
+> | `SOURCE`:   | The rank number of the rank sending the data              |
+> | `TAG`:      | A message tag (integer)                                   |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `REQUEST`:  | Request handle                                            |
+> | `IERROR`:   | Error status |
 >
 {: .prereq .foldable}
 
@@ -130,9 +130,9 @@ The request can be created by either an `MPI_ISend` or an `MPI_IRecv`.
 >    MPI_Status* status)
 >~~~
 >
-> | request:      | The request |
-> | flag:         | Pointer for writing the result of the test |
-> | status:       | A pointer for writing the exit status of the MPI command |
+> | `request`:      | The request |
+> | `flag`:         | Pointer for writing the result of the test |
+> | `status`:       | A pointer for writing the exit status of the MPI command |
 >
 >~~~
 > MPI_Wait(
@@ -140,8 +140,8 @@ The request can be created by either an `MPI_ISend` or an `MPI_IRecv`.
 >    MPI_Status* status)
 >~~~
 >
-> | request:      | The request |
-> | status:       | A pointer for writing the exit status of the MPI command |
+> | `request`:      | The request |
+> | `status`:       | A pointer for writing the exit status of the MPI command |
 >
 {: .prereq .foldable}
 
@@ -153,19 +153,19 @@ The request can be created by either an `MPI_ISend` or an `MPI_IRecv`.
 >    INTEGER    REQUEST, STATUS(MPI_STATUS_SIZE), IERROR
 >~~~
 >
-> | REQUEST:  | The request |
-> | FLAG:     | Pointer for writing the result of the test |
-> | STATUS:   | A pointer for writing the exit status of the MPI command |
-> | IERROR:   | Error status |
+> | `REQUEST`:  | The request |
+> | `FLAG`:     | Pointer for writing the result of the test |
+> | `STATUS`:   | A pointer for writing the exit status of the MPI command |
+> | `IERROR`:   | Error status |
 >
 >~~~
 >MPI_WAIT(REQUEST, STATUS, IERROR)
 >    INTEGER    REQUEST, STATUS(MPI_STATUS_SIZE), IERROR
 >~~~
 >
-> | REQUEST:  | The request |
-> | STATUS:   | A pointer for writing the exit status of the MPI command |
-> | IERROR:   | Error status |
+> | `REQUEST`:  | The request |
+> | `STATUS`:   | A pointer for writing the exit status of the MPI command |
+> | `IERROR`:   | Error status |
 >
 {: .prereq .foldable}
 

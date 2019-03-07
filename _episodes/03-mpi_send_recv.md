@@ -48,12 +48,12 @@ This instructs the communication device to listen for incoming data.
 >    MPI_Comm communicator)
 >~~~
 >
-> | data:         | Pointer to the start of the data being sent |
-> | count:        | Number of elements to send |
-> | datatype:     | The type of the data being sent |
-> | destination:  | The rank number of the rank the data will be sent to |
-> | tag:          | A message tag (integer) |
-> | communicator: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `data`:         | Pointer to the start of the data being sent |
+> | `count`:        | Number of elements to send |
+> | `datatype`:     | The type of the data being sent |
+> | `destination`:  | The rank number of the rank the data will be sent to |
+> | `tag`:          | A message tag (integer) |
+> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
 >
 >~~~
 > MPI_Recv(
@@ -66,13 +66,13 @@ This instructs the communication device to listen for incoming data.
 >    MPI_Status* status)
 >~~~
 >
-> | data:         | Pointer to where the received data should be written |
-> | count:        | Maximum number of elements received |
-> | datatype:     | The type of the data being received |
-> | source:       | The rank number of the rank sending the data |
-> | tag:          | A message tag (integer) |
-> | communicator: | The communicator (we have used MPI_COMM_WORLD in earlier) |
-> | status:       | A pointer for writing the exit status of the MPI command |
+> | `data`:         | Pointer to where the received data should be written |
+> | `count`:        | Maximum number of elements received |
+> | `datatype`:     | The type of the data being received |
+> | `source`:       | The rank number of the rank sending the data |
+> | `tag`:          | A message tag (integer) |
+> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `status`:       | A pointer for writing the exit status of the MPI command |
 >
 {: .prereq .foldable}
 
@@ -84,13 +84,13 @@ This instructs the communication device to listen for incoming data.
 >    INTEGER    COUNT, DATATYPE, DEST, TAG, COMM, IERROR
 >~~~
 >
-> | BUF:      | Vector containing the data to send |
-> | COUNT:    | Number of elements to send |
-> | DATATYPE: | The type of the data being sent |
-> | DEST:     | The rank number of the rank the data will be sent to |
-> | TAG:      | A message tag (integer) |
-> | COMM:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
-> | IERROR:   | Error status |
+> | `BUF`:      | Vector containing the data to send |
+> | `COUNT`:    | Number of elements to send |
+> | `DATATYPE`: | The type of the data being sent |
+> | `DEST`:     | The rank number of the rank the data will be sent to |
+> | `TAG`:      | A message tag (integer) |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `IERROR`:   | Error status |
 >
 >~~~
 > MPI_RECV(BUF, COUNT, DATATYPE, SOURCE, TAG, COMM, STATUS, IERROR)
@@ -99,13 +99,13 @@ This instructs the communication device to listen for incoming data.
 >    INTEGER    STATUS(MPI_STATUS_SIZE), IERROR
 >~~~
 >
-> | BUF:      | Vector the received data should be written to             |
-> | COUNT:    | Maximum number of elements received                       |
-> | DATATYPE: | The type of the data being received                       |
-> | SOURCE:   | The rank number of the rank sending the data              |
-> | TAG:      | A message tag (integer)                                   |
-> | COMM:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
-> | STATUS:   | A pointer for writing the exit status of the MPI command  |
+> | `BUF`:      | Vector the received data should be written to             |
+> | `COUNT`:    | Maximum number of elements received                       |
+> | `DATATYPE`: | The type of the data being received                       |
+> | `SOURCE`:   | The rank number of the rank sending the data              |
+> | `TAG`:      | A message tag (integer)                                   |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `STATUS`:   | A pointer for writing the exit status of the MPI command  |
 >
 {: .prereq .foldable}
 
