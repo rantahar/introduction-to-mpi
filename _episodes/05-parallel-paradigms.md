@@ -140,9 +140,11 @@ In some cases, one has to combine "data parallel" method and "message passing" m
 
 Designing a parallel algorithm that determines which of two paradigms in the above one should follow rests on the actual understanding of how the problem can be solved in parallel. This requires some thought and practice.
 
-To get used to "thinking in parallel", let's consider some examples. Problems which can be parallelized most easily are "Embarrassingly Parallel" (EP) problems, which occur in Monte Carlo simulations and in data base searches. In Monte Carlo simulations, random numbers are used in order to mimic a real situation.
+To get used to "thinking in parallel", we discuss "Embarrassingly Parallel" (EP) problems first and then we consider problems which are not EP problems.  
 
 ### Embarrassingly Parallel Problem
+
+Problems which can be parallelized most easily are , which occur in many Monte Carlo simulation problems and in many data base search problems. In Monte Carlo simulations, random numbers are used in order to mimic a real situation.
 
 #### Queue
 
@@ -160,7 +162,7 @@ all the other ranks, resulting in some communication overhead.
 If several ranks are using the same data, communicating it can also create
 some overhead.
 
-### Manager / Worker
+#### Manager / Worker
 
 The manager / worker approach is a more flexible version of the queue method.
 We hire a manager to distribute tasks to the workers.
