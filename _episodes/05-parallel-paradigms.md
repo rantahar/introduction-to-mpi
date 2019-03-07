@@ -144,7 +144,7 @@ To get used to "thinking in parallel", we discuss "Embarrassingly Parallel" (EP)
 
 ### Embarrassingly Parallel Problem
 
-Problems which can be parallelized most easily are , which occur in many Monte Carlo simulation problems and in many data base search problems. In Monte Carlo simulations, random numbers are used in order to mimic a real situation.
+Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many data base search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. In data base searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them.
 
 #### Queue
 
