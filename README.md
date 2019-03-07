@@ -6,7 +6,7 @@
 Summative assesments:
 Morning session: introduction to MPI concepts and standard functions
    Parallelise a piece of code: identify parallel region and decide on a communication
-   pattern. Write an program using mpi_send, mpi_recv and MPI_Allreduce.
+   pattern. Write an program using MPI_Send, MPI_Recv and MPI_Allreduce.
 Afternoon session: best practices and tools
     Plan the parallellisation of an serial algorithm, including testing.
     Analyse an existing application and identify hotspots.
