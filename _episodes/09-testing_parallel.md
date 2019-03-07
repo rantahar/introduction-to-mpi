@@ -41,7 +41,7 @@ and test these separately.
 > Smaller units also allow each test to run faster.
 > 
 > You might also wish to test the correctness of the whole algorithm.
-> This can be done in essentially the same way, but running essentially the entire
+> This can be done in essentially the same way, but running the entire
 > program or a large section of it in the test.
 > These integration tests are often separated from the unit tests
 > and can take significantly longer to run.
@@ -154,7 +154,7 @@ and test these separately.
 >{: .language-bash}
 > and run the resulting binary.
 >
-> The program will run our little test and produce some statistics about the tests overall.
+> The program will run our little test and produce some statistics about it.
 >
 {: .prereq .foldable}
 
@@ -527,8 +527,9 @@ each test.
 >~~~
 >{: .output}
 >
-> We probably added a couple of lines instead of saving any,
-> but in a longer set of tests, this can save a lot of coding
+> We probably didn't save any lines of code by doing this.
+> Actually we may have added some.
+> But in a longer set of tests, this can save a lot of coding
 > and allows you to change all of the tests at once.
 >
 {: .prereq .foldable}
@@ -986,7 +987,7 @@ It will append rank numbers to every line printed by the application.
 This helps in keeping track of the ranks with errors.
 
 Some tests might make sense only on a specific rank.
-You can use if statements to run asserts only on specific ranks.
+You can use if statements to run asserts only on that ranks.
 The code in a test is normal general purpose code.
 It's good to keep them simple, though.
 
@@ -994,16 +995,17 @@ Another important caveat is the order of floating point operations.
 Since the order of operations ofter depends on the number of ranks, and floating point operations
 are not associative, different rounding errors can accumulate with different rank counts.
 In most cases it's sufficient to allow some rounding error.
-In sufficiently chaotic algorithms, it may not be possible to compare the results.
+In very chaotic algorithms, it may not be possible to compare the results.
 This does not necessarily mean that the implementation is incorrect.
 
 > ## Floating Point Ordering
 >
-> Increase the number of ranks in the above test, keeping the vector lenght at 1024.
-> At some point test of the `find_sum` function will start to fail.
+> Set the vector lenght to 2014 in the above test and increase the number of ranks.
+> At some point the test of the `find_sum` function will start to fail.
 > * Why does it fail? What is the difference between the serial and the MPI versions?
 > * Is this a problem? How would you fix it?
-> * Let's say we don't care about the small difference. Change the test to only report differences larger than 0.0001.
+> * Let's say we don't care about the small difference.
+> Change the test to only report differences larger than 0.0001.
 >
 {: .challenge}
 
