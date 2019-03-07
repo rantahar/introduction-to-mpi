@@ -13,11 +13,8 @@ keypoints:
 ---
 
 ## Communication
-In this section we will use two MPI library functions functions for sending and receiving data.
+In this section we will use two MPI library functions functions to send data from one rank to another.
 These are `MPI_Send` and `MPI_Recv`.
-
-These two functions together accomplish the task of sending and receiving data
-from one rank to another.
 They are the basic building blocks for essentially all of the more
 specialized MPI commands described later.
 They are also the basic communication tools in your MPI application.
@@ -34,7 +31,10 @@ the message to the correct destination.
 
 Rank B must know that it is about to receive a message and acknowledge this
 by calling `MPI_Recv`.
-This instructs the communication device to listen for incoming data.
+This sets up a buffer for writing the incoming data
+and instructs the communication device to listen for the message.
+The message will not actually be sent before the receiving rank call MPI_Recv,
+even if MPI_Send has been called.
 
 > ## MPI_Send and MPI_Recv in C
 >
