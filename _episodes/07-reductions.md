@@ -7,32 +7,32 @@ questions:
 objectives:
 - "Introduce collective operations"
 keypoints:
-- "Use MPI_Barrier for global synchronisation"
-- "All-to-All, One-to-All and All-to_one communications have efficient implementation in the library."
+- "Use `MPI_Barrier` for global synchronisation"
+- "All-to-All, One-to-All and All-to-one communications have efficient implementation in the library."
 - "There are functions for global reductions. Don't write your own."
 ---
 
 ## Collective Operations
 
-There are several special cases that deserve their own implementations in the MPI standard.
-The most common are:
+There are several special cases that are implemented in the MPI standard.
+The most commonly-used are:
 
 * Synchronisation
   * Wait until all processes have reached the same point in the program.
-  * MPI_Barrier()
+  * `MPI_Barrier()`
   * Mainly useful for debugging and solving timing related problems.
 * One-To-All Communication: 
   * One rank send the same message to all other ranks
-  * MPI_Bcast(), MPI_Scatter()
+  * `MPI_Bcast()`, `MPI_Scatter()`
   * Useful for sending input or commands to other all ranks
 * All-to-One
   * All ranks send data to a single rank
-  * MPI_Reduce(), MPI_Gather()
+  * `MPI_Reduce()`, `MPI_Gather()`
 * All-to-All
   * All ranks have data and all ranks receive data
   * Global reductions is an important special case
-  * MPI_Alltoall(), MPI_Allgather
-  * MPI_Allreduce()
+  * `MPI_Alltoall()`, `MPI_Allgather`
+  * `MPI_Allreduce()`
 
 ### Barrier
 
@@ -52,7 +52,7 @@ The most common are:
 >~~~
 {: .prereq .foldable}
 
-Just wait until all ranks have reached this line.
+Wait (doing nothing) until all ranks have reached this line.
 
 ### Broadcast
 
@@ -77,9 +77,9 @@ Just wait until all ranks have reached this line.
 >
 {: .prereq .foldable}
 
-Very similar to MPI_Send, but the same data is sent from root to all ranks.
+Very similar to `MPI_Send`, but the same data is sent from rank `root` to all ranks.
 This function will only return once all processes have reached it, 
-making it a kind of a barrier.
+meaning it has the side-effect of acting as a barrier.
 
 ### Scatter
 
@@ -109,9 +109,9 @@ making it a kind of a barrier.
 >
 {: .prereq .foldable}
 
-The data in the roots send-buffer is split into chunks descrived by the receive-count
+The data in the `send-buffer` on rank `root` is split into chunks described by the `receive-count`,
 and each chunk is sent to a different rank.
-The received data is written to the receive-buffer, so the send-buffer is only
+The received data is written to the `receive-buffer`, so the `send-buffer` is only
 needed by the root.
 
 ### Gather
@@ -142,8 +142,8 @@ needed by the root.
 >
 {: .prereq .foldable}
 
-Each rank sends the data in the send-buffer to the root.
-The root collect the data into the receive-buffer in order of the rank
+Each rank sends the data in the `send-buffer` to rank `root`.
+The `root` collect the data into the `receive-buffer` in order of the rank
 numbers.
 
 
@@ -257,7 +257,7 @@ numbers.
 >
 {: .prereq .foldable}
 
-Each rank sends a piece data, which are combined on their to the roon into a single piece of data.
+Each rank sends a piece of data, which are combined on their way to rank `root` into a single piece of data.
 For example, the function can calculate the sum of numbers distributed accross
 all the ranks.
 
@@ -272,7 +272,8 @@ Possible operations include
 The MPI_Reduce operation is usually faster than what you would write by hand.
 It can different algorithms depending on the system it's running on to reach best
 possible performance.
-Especially on systems designed for high performance computing, the MPI_Reduce operations
+This is particularly the case on systems designed for high performance computing,
+where the `MPI_Reduce` operations
 can use the communication devices to perform reductions en route, without using any
 of the ranks to do the calculation.
 
@@ -302,14 +303,14 @@ of the ranks to do the calculation.
 {: .prereq .foldable}
 
 
-MPI_Allreduce is performs essentially the same operations as MPI_Reduce,
+`MPI_Allreduce` is performs essentially the same operations as MPI_Reduce,
 but the result is sent to all the ranks.
 
 
 > ## Reductions
 >
-> Modify the find_sum and find_max functions to work correctly in parallel
-> using MPI_Reduce or MPI_Allreduce
+> Modify the `find_sum` and `find_max` functions to work correctly in parallel
+> using `MPI_Reduce` or `MPI_Allreduce`
 >
 >> ## C
 >> ~~~
