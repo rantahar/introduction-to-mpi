@@ -8,26 +8,26 @@ objectives:
 - "Use a profiler to find bottlenecks and hotspots and diagnose problems."
 keypoints:
 - "Use a profiler to find the most important functions and concentrate on those."
-- "The Profiler needs to understand MPI. Your cluster probably has one."
+- "The profiler needs to understand MPI. Your cluster probably has one."
 - "If a lot of time is spent in communication, maybe it can be rearranged."
 ---
 
 ## Profiling
 
-Profilers help you find out where the program is spending it's time
+Profilers help you find out where the program is spending its time
 and pinpoint places where optimising it makes sense.
 In this lesson we will use Scalasca, but many other profilers exist.
-Scalasca is specifically an MPI profiler, it will give you
+Scalasca is specifically an MPI profiler; it will give you
 information on communication efficiency and bottlenecks.
 
 Scalasca is an open source application developed by three German research centers. For more information check the [project website](http://scalasca.org).
 
 It is used together with the [Score-P](https://www.vi-hps.org/projects/score-p/) utility, the Cube library
 and the Cube viewer.
-Since it is open source, you can install it on user level on any HPC cluster 
+Since it is open source, you can install it in your home directory on any HPC cluster 
 that does not already have it.
 The process is as described in [setup](setup), but you need to add 
---prefix=$HOME/scalasca/ to the ./configure command to install in
+`--prefix=$HOME/scalasca/` to the `./configure` command to install in
 your home folder.
 
 ### Summary profile
@@ -64,8 +64,8 @@ scalasca -examine scorep_poisson_2_sum
 This will open the cubeGUI.
 ![A picture of the cube GUI]({{ page.root }}{% link fig/cube.png %})
 
-The GUI has three panels, a metric view, a function View and a system view.
-In the metric view you can pick a metric being displayed.
+The GUI has three panels: a metric view, a function view and a system view.
+In the metric view you can pick a metric to be displayed.
 You can dig into the details of some of the metrics in a tree view.
 The second panels shows functions either as a call tree, displaying
 which functions have called which,
@@ -73,11 +73,11 @@ or as a flat view.
 It also displays the metric you have chosen on a function level.
 The system view displays data on the chose function on a deeper level.
 
-Right clicking on the view and choosing info replaces the system view with an info view.
+Right clicking on the view and choosing "Info" replaces the system view with an info view.
 This gives information on the chosen metric.
 
 If your running on a cluster you may wish to use the command line instead.
-To supress the gui use the -s parameter.
+To supress the GUI, use the `-s` parameter.
 ~~~
 scalasca -examine -s scorep_poisson_2_sum
 cat scorep_poisson_2_sum/scorep.score
@@ -110,7 +110,7 @@ flt type         max_tbc         time      % region
 Either way we find that in our case, the program is waiting for MPI
 communication for 36% of the total runtime.
 This is not completely out of the ordinary, but we could do better.
-53% of the time is spent in poisson_step.
+53% of the time is spent in `poisson_step`.
 This is not counting the time spent in functions called by poisson step.
 This essentially means that 53% of the time is spent in actual computation.
 
@@ -134,7 +134,7 @@ INCL(main)          28.531245
 ~~~
 {: .output}
 
-The INCL(main) icnludes function calls inside the main function and
+The INCL(main) includes function calls inside the main function, while
 EXCL(main) counts only the time spent in the main function itself.
 
 This tells us clearly that poisson_step is the most important function
@@ -160,11 +160,11 @@ Reading scorep_poisson_2_sum/summary.cubex... done.
 ~~~
 {: .output}
 
-The numbers on the left give the percentage of time spent in each function.
+The numbers on the left give the amount of time spent in each function.
 
 > ## Options
 >
-> Try adding the -i flag to cube_calltree.
+> Try adding the `-i` flag to `cube_calltree`.
 > What does this do?
 >
 >> ## Solution
@@ -175,10 +175,11 @@ The numbers on the left give the percentage of time spent in each function.
 >
 {: .challenge}
 
->## Note on the Linux Subsystem
+>## Note on the Windows Subsystem for Linux
 >
-> Unfortunately the linux subsystem kernel does not support the hardware level profiling.
-> If you are running of the subsystem you have significantly less information.
+> Unfortunately the kernel interface provided by the Windows Subsystem for Linux 
+> does not support the hardware level profiling.
+> If you are running inside the Subsystem you have significantly less information.
 > In a moment we will see ways of getting more information even in this case,
 > but the best option is the first two commands on an HPC cluster and examine
 > the results on your personal computer.
@@ -195,7 +196,7 @@ Filtering can be used to turn off measurements in less important parts of
 the code or to restrict measurements to the most interesting parts
 of the code.
 The filter needs to be saved as a file.
-The following will filter out everything except poisson_step, effectively
+The following will filter out everything except `poisson_step`, effectively
 restricting the measurements to this function.
 ~~~
 SCOREP_REGION_NAMES_BEGIN
@@ -207,7 +208,7 @@ SCOREP_REGION_NAMES_END
 ~~~
 {: .output}
 
-Save this to a file called poisson.filter.
+Save this to a file called `poisson.filter`.
 Running 
 ~~~
 scalasca -examine -s -f poisson.filter scorep_poisson_2_sum
@@ -244,8 +245,8 @@ flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
 
 ~~~
 {: .output}
-The + and - sign denote that are included and filtered out.
-The * character denotes a region that is partially filtered.
+The `+` and `-` sign denote that are included and filtered out.
+The `*` character denotes a region that is partially filtered.
 
 Once you are happy with the filter, it can then be passed to Score-P with the
 `SCOREP_FILTERING_FILE` environment variable
@@ -257,21 +258,21 @@ scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
 
 ### Trace Analysis
 
-Let's now run the application with the full trace using the -t flag
+Let's now run the application with the full trace using the `-t` flag
 ~~~
 scalasca -analyze -t mpirun -n 2 poisson
 ~~~
 {: .output}
-And examine the results writtent to the scorep_poisson_2_trace directory
+And examine the results written to the `scorep_poisson_2_trace` directory
 ~~~
 scalasca -examine scorep_poisson_2_trace
 ~~~
 {: .output}
 
 There are some new measurements on the left column.
-Notably you will find a a measure of MPI_Wait states, how long the ranks spend
+Notably you will find a a measure of `MPI_Wait` states, how long the ranks spend
 waiting for data.
-In addition, you will see the number of MPI communications and time spent synchronising
+In addition, you will see the number of MPI communications, and the time spent synchronising
 ranks.
 
 ### User defined regions
@@ -359,7 +360,7 @@ in your code.
 
 >## User Defined Regions
 >
-> Add a user defined region to poisson_step_mpi.c.
+> Add a user defined region to `poisson_step_mpi.c`.
 > Include the calculation of unorm, both the loop and
 > the reduction.
 >
@@ -391,7 +392,7 @@ in your code.
 >## Note on the Linux Subsystem
 >
 > The profiler will be able to track annotated regions even
-> on the linux subsystem.
+> on the Windows Subsystem for Linux.
 > If you don't have access to a cluster, you can still work
 > iteratively on your program by annotating all interesting
 > regions manually.
@@ -420,7 +421,7 @@ is as follows
 > ## Iterative Improvement
 >
 > In the Poisson code,
-> try changing the location of the calls to MPI_Send. How does this affect performance?
+> try changing the location of the calls to `MPI_Send`. How does this affect performance?
 >
 {: .challenge}
 
