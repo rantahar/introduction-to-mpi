@@ -174,9 +174,9 @@ The manager can execute a completely different code from the workers or the mana
 
 Because every worker rank needs to communicate with the manager, the bandwidth of the manager rank can become a bottleneck if adminstrative works need a lot of information (there is a similarity to a real life). This can happen if the manager needs to send the smaller databases (divided from the one big databases) to the worker ranks. But this is a waste of resources and is not a suitable solution for EP problem. Instead, it's better to have a parallel file system so that each worker ranks can access the necessary part of the big databases independently.
 
-### General Parallel Problem (Non-EP Problems)
+### General Parallel Problems (Non-EP Problems)
 
-As we discussed in the 1st lesson, in general not all the parts of a serial code can be parallelized. 
+As we discussed in the 1st lesson, in general not all the parts of a serial code can be parallelized. So, one needs to identify which part of a serial code is parallelizable. In science and technology, many numerical computations can be defined on a regular structured data (e.g., partial differential equation on 3-D space using a finite difference method). In this case, one needs to consider how to decompose the domain so that many CPU's (or cores) can work in parallel. 
 
 #### Domain Decomposition
 
@@ -209,7 +209,11 @@ If there were more that 4 ranks, they would need to share an entire row and a co
 
 #### Load Balancing
 
+Even if the data is structured in a regular way and the domain is decomposed such that each CPU (or core) can take charge of roughly equal amount of the sub-domain, the work that each CPU (or core) has to do may not be equal. For example, in weather forecasting, the 3D spatial domain can be decomposed in an equal portion. But when the sun moves across the domain, the amount of work is different in that domain since more complicated chemistry/physics is happening in that domain. Balancing this type of loads is a difficult problem and requires a careful thought before designing a parallel algorithm. 
+
 ## Communication Patterns
+
+In MPI parallelization, several communication patterns occur.
 
 ### Gather / Scatter
 
