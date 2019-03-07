@@ -149,15 +149,13 @@ in transit.
 >
 >  if( rank == 0 ){
 >     char *message = "Hello, world!\n";
->     // Note that MPI_BYTE is the MPI type for char
->     MPI_Send(message, 13, MPI_BYTE, 1, 0, MPI_COMM_WORLD);
+>     MPI_Send(message, 14, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
 >  }
 >
 >  if( rank == 1 ){
 >     char message[14];
 >     MPI_Status  status;
->     // Note that MPI_BYTE is the MPI type for char
->     MPI_Recv(message, 14, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
+>     MPI_Recv(message, 14, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
 >     printf("%s",message);
 >  }
 >  
@@ -253,15 +251,13 @@ in transit.
 >>
 >>      if( rank%2 == 0 ){
 >>         char *message = "Hello, world!\n";
->>         // Note that MPI_BYTE is the MPI type for char
->>         MPI_Send(message, 14, MPI_BYTE, my_pair, 0, MPI_COMM_WORLD);
+>>         MPI_Send(message, 14, MPI_CHAR, my_pair, 0, MPI_COMM_WORLD);
 >>      }
 >>   
 >>      if( rank%2 == 1 ){
 >>         char message[14];
 >>         MPI_Status  status;
->>         // Note that MPI_BYTE is the MPI type for char
->>         MPI_Recv(message, 14, MPI_BYTE, my_pair, 0, MPI_COMM_WORLD, &status);
+>>         MPI_Recv(message, 14, MPI_CHAR, my_pair, 0, MPI_COMM_WORLD, &status);
 >>         printf("%s",message);
 >>      }
 >>   }
@@ -394,7 +390,7 @@ in transit.
 >>  
 >>        char message[20];
 >>        sprintf(message, "Hello World, I'm rank %d\n", rank);
->>        MPI_Send(message, 20, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+>>        MPI_Send(message, 20, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
 >>  
 >>     } else {
 >>        // Rank 0 will receive each message and print them
@@ -403,7 +399,7 @@ in transit.
 >>           char message[20];
 >>           MPI_Status status;
 >>  
->>           MPI_Recv(message, 13, MPI_BYTE, sender, 0, MPI_COMM_WORLD, &status);
+>>           MPI_Recv(message, 13, MPI_CHAR, sender, 0, MPI_COMM_WORLD, &status);
 >>           printf("%s",message);
 >>        }
 >>     }
