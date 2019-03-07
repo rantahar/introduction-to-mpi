@@ -142,13 +142,13 @@ Designing a parallel algorithm that determines which of two paradigms in the abo
 
 To get used to "thinking in parallel", we discuss "Embarrassingly Parallel" (EP) problems first and then we consider problems which are not EP problems.  
 
-### Embarrassingly Parallel Problem
+### Embarrassingly Parallel Problems
 
 Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many big database search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. The problem becomes running the same code with a different random number over and over again! In big database searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them. To speed up the search, the big database is divided into smaller databases and each smaller databases are searched independently by many workers!
 
 #### Queue Method
 
-Each worker will get tasks from a predefined queue (a random number in a Monte Carlo problem and a smaller databases in a big database search problem).
+Each worker will get tasks from a predefined queue (a random number in a Monte Carlo problem and smaller databases in a big database search problem).
 The tasks can be very different and take different amounts of time,
 but when a worker has completed its tasks, it will pick the next one
 from the queue.
@@ -158,7 +158,7 @@ from the queue.
 In an MPI code, the queue approach requires the ranks to communicate what they are doing to
 all the other ranks, resulting in some communication overhead (but neglible compared to overall task time).
 
-#### Manager / Worker
+#### Manager / Worker Method
 
 The manager / worker approach is a more flexible version of the queue method.
 We hire a manager to distribute tasks to the workers.
@@ -172,10 +172,7 @@ In an MPI implementation, main function will usually contain an `if`
 statement that determines whether the rank is the manager or a worker.
 The manager can execute a completely different code from the workers or the manager can execute the same partial code as the workers once the managerial part of the code is done. It depends whether the managerial load takes a lot of time to finish or not. Idling is a waste in parallel computing!
 
-Naturally the Manager / Worker approach reserves a rank to be the manager.
-In a large application this is usually a small cost.
-The larger cost is a bit more subtle. Because every node needs to communicate with
-the manager, the bandwidth of the manager rank can become a bottleneck.
+Because every worker rank needs to communicate with the manager, the bandwidth of the manager rank can become a bottleneck if adminstrative works need a lot of information (there is a similarity to a real life). This can happen if the manager needs to send the smaller databases (divided from the one big databases) to the worker ranks. But this is a waste of resources and is not a suitable solution for EP problem. Instead, it's better to have a parallel file system so that each worker ranks can access the necessary part of the big databases independently.
 
 ### Pipeline
 
