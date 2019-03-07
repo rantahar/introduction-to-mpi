@@ -68,7 +68,7 @@ If you have access to a cluster and scalasca is installed, you don't
 need to install scalasca itself on your laptop.
 
 Scalasca consists of four parts
-* Scorep for compiling an instrumented binary
+* Score-P for compiling an instrumented binary
 * Scalasca for profiling and analysing
 * CubeGUI, a graphical viewer
 * The cubelib library

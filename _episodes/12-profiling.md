@@ -22,7 +22,7 @@ information on communication efficiency and bottlenecks.
 
 Scalasca is an open source application developed by three German research centers. For more information check the [project website](http://scalasca.org).
 
-It is used together with the [scorep](https://www.vi-hps.org/projects/score-p/) utility, the Cube library
+It is used together with the [Score-P](https://www.vi-hps.org/projects/score-p/) utility, the Cube library
 and the Cube viewer.
 Since it is open source, you can install it on user level on any HPC cluster 
 that does not already have it.
@@ -40,8 +40,8 @@ as long as this does not change the algorithm itself.
 Later we will see how we can limit the scope of the profiler, but first
 we need to run a summary of the whole program.
 
-Start by recompiling the application, replacing mpicc with the version
-provided by the scorep utility.
+Start by recompiling the application, replacing `mpicc` with the version
+provided by the Score-P utility.
 ~~~
 scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
 ~~~
@@ -247,8 +247,8 @@ flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
 The + and - sign denote that are included and filtered out.
 The * character denotes a region that is partially filtered.
 
-Once you are happy with the filter, it can then be passed to scorep with the
-SCOREP_FILTERING_FILE environment variable
+Once you are happy with the filter, it can then be passed to Score-P with the
+`SCOREP_FILTERING_FILE` environment variable
 ~~~
 export SCOREP_FILTERING_FILE=poisson.filter
 scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
@@ -276,13 +276,13 @@ ranks.
 
 ### User defined regions
 
-By default scorep only collects information about functions.
+By default Score-P only collects information about functions.
 You can also define your own regions using annotations 
 in your code.
 
->## Scorep Annotations in C
+>## Score-P Annotations in C
 >
-> Include the Scorep header file
+> Include the Score-P header file
 >~~~
 > #include "scorep/SCOREP_User.h"
 > ~~~
@@ -307,14 +307,14 @@ in your code.
 >
 > Adding annotations to loops can be done in a single line
 >~~~
->SCOREP_USER_REGION( “<solver>", SCOREP_USER_REGION_TYPE_LOOP )
+>SCOREP_USER_REGION( "<solver>", SCOREP_USER_REGION_TYPE_LOOP )
 >for(i = 0; i < 100; i++) {
 >  ...
 >}
 >~~~
 >{: .output}
 >
->When compiling with scorep, you need to add --user,
+>When compiling with Score-P, you need to add `--user`,
 >~~~
 >scorep --user mpicc poisson_main_mpi.c poisson_step_mpi.c
 >~~~
@@ -323,11 +323,11 @@ in your code.
 {: .prereq .foldable}
 
 
->## Scorep Annotations in Fortran
+>## Score-P Annotations in Fortran
 >
 > Using Score-P annotations requires processing the file
 > with the C preprocessor.
-> Include the Scorep header file
+> Include the Score-P header file
 >~~~
 > #include "scorep/SCOREP_User.inc"
 > ~~~
@@ -350,7 +350,7 @@ in your code.
 >~~~
 >{:. output}
 >
->When compiling with scorep, you need to add --user,
+>When compiling with Score-P, you need to add `--user`,
 >~~~
 >scorep --user mpif90 poisson_mpi.f99
 >~~~
