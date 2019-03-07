@@ -161,9 +161,17 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 >
 {: .challenge}
 
-Notice the `MPI_COMM_WORLD` parameter. This is an MPI communicator and was created by `MPI_Init`. It labels the set of cores, called ranks, we are working with.
+> ## Communicators
+>
+> The `MPI_COMM_WORLD` parameter is an _MPI communicator_, which was created by `MPI_Init`.
+> It labels the set of cores, called ranks, we are working with, and provides a context for
+> communications between them. You are also able to create your own communicators, which contain
+> a subset of the MPI ranks executing. Because of this, most MPI functions require you to specify
+> the communicator you want them to operate on---for this lesson, this will always be `MPI_COMM_WORLD`.
+{: .callout}
 
-Notice also that we are still only coding for a single copy of the program. This is always true when using MPI. Each copy runs the same code and only differs by its rank number.
+Notice that we are still only coding for a single copy of the program. This is always true when using
+MPI. Each copy runs the same code and only differs by its rank number.
 The best way to think about writing MPI code is to focus on what a single rank
 needs to be doing.
 When all ranks are doing their job, the algorithm will work correctly.
