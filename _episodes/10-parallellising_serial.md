@@ -446,8 +446,9 @@ You can optimise later.
 >>  // Test a configuration with u=10 at x=1 and y=1
 >>  // The actual x coordinate is my_j_max*rank + x
 >>  // meaning that x=1 is on rank 0
->>  if( rank == 0 )
+>>  if( rank == 0 ){
 >>     u[1][1] = 10;
+>>  }
 >>
 >>  // Test one step
 >>  unorm = poisson_step( u, unew, rho, hsq, my_j_max );
@@ -681,19 +682,27 @@ You can optimise later.
 >>    // Ranks with odd number send first
 >>
 >>    // Send data down from rank to rank-1
->>    for( int i=0;i < MAX;i++) sendbuf[i] = unew[1][i+1];
+>>    for( int i=0;i < MAX;i++){
+>>      sendbuf[i] = unew[1][i+1];
+>>    }
 >>    MPI_Send(sendbuf,MAX,MPI_FLOAT,rank-1,1,MPI_COMM_WORLD);
 >>    // Receive dat from rank-1
 >>    MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank-1,2,MPI_COMM_WORLD,&mpi_status);
->>    for( int i=0;i < MAX;i++) u[0][i+1] = recvbuf[i];
+>>    for( int i=0;i < MAX;i++){
+>>      u[0][i+1] = recvbuf[i];
+>>    }
 >>     
 >>    if ( rank != (n_ranks-1)) {
 >>      // Send data up to rank+1 (if I'm not the last rank)
->>      for( int i=0;i < MAX;i++) sendbuf[i] = unew[my_j_max][i+1];
+>>      for( int i=0;i < MAX;i++){
+>>        sendbuf[i] = unew[my_j_max][i+1];
+>>      }
 >>      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD);
 >>      // Receive data from rank+1
 >>      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank+1,2,MPI_COMM_WORLD,&mpi_status);
->>      for( int i=0;i < MAX;i++) u[my_j_max+1][i+1] = recvbuf[i];
+>>      for( int i=0;i < MAX;i++){
+>>        u[my_j_max+1][i+1] = recvbuf[i];
+>>      }
 >>    }
 >>  
 >>  } else {
@@ -702,20 +711,28 @@ You can optimise later.
 >>    if (rank != 0) {
 >>      // Receive data from rank-1 (if I'm not the first rank)
 >>      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank-1,1,MPI_COMM_WORLD,&mpi_status);
->>      for( int i=0;i < MAX;i++) u[0][i+1] = recvbuf[i];
+>>      for( int i=0;i < MAX;i++){
+>>        u[0][i+1] = recvbuf[i];
+>>      }
 >>	     
 >>      // Send data down to rank-1
->>      for( int i=0;i < MAX;i++) sendbuf[i] = unew[1][i+1];
+>>      for( int i=0;i < MAX;i++){
+>>        sendbuf[i] = unew[1][i+1];
+>>      }
 >>      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank-1,2,MPI_COMM_WORLD);
 >>    }
 >>
 >>    if (rank != (n_ranks-1)) {
 >>      // Receive data from rank+1 (if I'm not the last rank)
 >>      MPI_Recv(recvbuf,MAX,MPI_FLOAT,rank+1,1,MPI_COMM_WORLD,&mpi_status);
->>      for( int i=0;i < MAX;i++) u[my_j_max+1][i+1] = recvbuf[i];
+>>      for( int i=0;i < MAX;i++){
+>>        u[my_j_max+1][i+1] = recvbuf[i];
+>>      }
 >>      
 >>      // Send data up to rank+1
->>      for( int i=0;i < MAX;i++) sendbuf[i] = unew[my_j_max][i+1];
+>>      for( int i=0;i < MAX;i++){
+>>        sendbuf[i] = unew[my_j_max][i+1];
+>>      }
 >>      MPI_Send(sendbuf,MAX,MPI_FLOAT,rank+1,2,MPI_COMM_WORLD);
 >>    }
 >>  }
