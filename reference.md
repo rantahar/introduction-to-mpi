@@ -24,7 +24,7 @@ layout: reference
 | `MPI_Scatter`   | Send different data to all other ranks.                       |
 | `MPI_Gather`    | Collect data from all other ranks.                            |
 | `MPI_Reduce`    | Perform a reduction on data from all ranks and communicate the result to one rank.  |
-| `MPI_AllReduce` | Perform a reduction on data from all ranks and communicate the result to all ranks. |
+| `MPI_Allreduce` | Perform a reduction on data from all ranks and communicate the result to all ranks. |
 
 ### MPI Types in C
 

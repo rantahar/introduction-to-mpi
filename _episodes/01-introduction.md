@@ -69,9 +69,9 @@ For the copies to work together, they need to know about their role in the compu
 This usually also requires knowing the total number of tasks running at the same time.
 
 To achieve this, the program needs to call the 
-`MPI_Init` function in C, or the `MPI_INIT` function in Fortran.
+`MPI_Init` function.
 This will set up the environment for MPI, and assign a number (called the _rank_) to each process.
-At the end, each process should also cleanup by calling `MPI_Finalize` or `MPI_FINALIZE`.
+At the end, each process should also cleanup by calling `MPI_Finalize`.
 
 Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function.
 
@@ -84,7 +84,7 @@ MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 In Fortran it is
 {% highlight Fortran %}
 integer rank
-call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
 {% endhighlight %}
 
 Here's a more complete example:
@@ -131,10 +131,10 @@ Here's a more complete example:
 >     
 >    integer rank, ierr
 >
->    call MPI_INIT(ierr)
->    call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>    call MPI_Init(ierr)
+>    call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
 >    write(6,*) "My rank number is ", rank
->    call MPI_FINALIZE(ierr)
+>    call MPI_Finalize(ierr)
 >
 >end
 >~~~
@@ -165,7 +165,7 @@ The best way to think about writing MPI code is to focus on what a single rank
 needs to be doing.
 When all ranks are doing their job, the algorithm will work correctly.
 
-Usually the rank will need to know how many other ranks there are. You can find this out using the `MPI_Comm_size` in C or `MPI_COMM_SIZE` in Fortran.
+Usually the rank will need to know how many other ranks there are. You can find this out using the `MPI_Comm_size` in C or `MPI_Comm_size` in Fortran.
 
 ## Hello World!
 > ## Hello World!
@@ -208,12 +208,12 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >>     
 >>     integer rank, n_ranks, ierr
 >>
->>     call MPI_INIT(ierr)
->>     call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
->>     call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
+>>     call MPI_Init(ierr)
+>>     call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
+>>     call MPI_Comm_size(MPI_COMM_WORLD,n_ranks,ierr)
 >>     write(6,*) "Hello World! I'm rank ", rank
 >>     write(6,*) "total no. of ranks = ", n_ranks
->>     call MPI_FINALIZE(ierr)
+>>     call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
@@ -310,12 +310,12 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >>    integer numbers_per_rank, my_first, my_last
 >>    numbers = 10
 >>
->>    ! Call MPI_INIT
->>    call MPI_INIT(ierr)
+>>    ! Call MPI_Init
+>>    call MPI_Init(ierr)
 >>
 >>    ! Get my rank and the total number of ranks
->>    call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
->>    call MPI_COMM_SIZE(MPI_COMM_WORLD,n_ranks,ierr)
+>>    call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
+>>    call MPI_Comm_size(MPI_COMM_WORLD,n_ranks,ierr)
 >>
 >>    ! Calculate the number of iterations for each rank
 >>    numbers_per_rank = numbers/n_ranks
@@ -336,7 +336,7 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >>    end do
 >>
 >>
->>    call MPI_FINALIZE(ierr)
+>>    call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}

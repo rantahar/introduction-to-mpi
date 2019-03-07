@@ -70,7 +70,7 @@ Wait (doing nothing) until all ranks have reached this line.
 
 > ## Broadcast in Fortran
 >~~~
->MPI_BCAST(BUFFER, COUNT, DATATYPE, ROOT, COMM, IERROR)
+>MPI_Bcast(BUFFER, COUNT, DATATYPE, ROOT, COMM, IERROR)
 >    <type>    BUFFER(*)
 >    INTEGER    COUNT, DATATYPE, ROOT, COMM, IERROR
 > ~~~
@@ -100,7 +100,7 @@ meaning it has the side-effect of acting as a barrier.
 
 > ## Scatter in Fortran
 >~~~
->MPI_SCATTER(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
+>MPI_Scatter(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
 >        RECVTYPE, ROOT, COMM, IERROR)
 >    <type>    SENDBUF(*), RECVBUF(*)
 >    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
@@ -133,7 +133,7 @@ needed by the root.
 
 > ## Gather in Fortran
 >~~~
->MPI_GATHER(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
+>MPI_Gather(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
 >        RECVTYPE, ROOT, COMM, IERROR)
 >    <type>    SENDBUF(*), RECVBUF(*)
 >    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
@@ -199,12 +199,12 @@ numbers.
 >>    character(len=40) send_message
 >>    character, dimension(:), allocatable :: receive_message
 >>
->>    ! First call MPI_INIT
->>    call MPI_INIT(ierr)
+>>    ! First call MPI_Init
+>>    call MPI_Init(ierr)
 >>
 >>    ! Get my rank and the number of ranks
->>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
->>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >>
 >>    ! Allocate space for all received messages in receive_message
 >>    allocate ( receive_message(n_ranks*40) )
@@ -221,7 +221,7 @@ numbers.
 >>
 >>    ! Free memory and finalise
 >>    deallocate( receive_message )
->>    call MPI_FINALIZE(ierr)
+>>    call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
@@ -249,7 +249,7 @@ numbers.
 
 > ## Reduce in Fortran
 >~~~
->MPI_REDUCE(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, ROOT, COMM,
+>MPI_Reduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, ROOT, COMM,
 >        IERROR)
 >    <type>    SENDBUF(*), RECVBUF(*)
 >    INTEGER    COUNT, DATATYPE, OP, ROOT, COMM, IERROR
@@ -295,7 +295,7 @@ of the ranks to do the calculation.
 
 > ## Allreduce in Fortran
 >~~~
->MPI_ALLREDUCE(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, COMM, IERROR)
+>MPI_Allreduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, COMM, IERROR)
 >    <type>    SENDBUF(*), RECVBUF(*)
 >    INTEGER    COUNT, DATATYPE, OP, COMM, IERROR
 > ~~~
@@ -348,7 +348,7 @@ but the result is sent to all the ranks.
 >>    // First call MPI_Init
 >>    MPI_Init(&argc, &argv);
 >> 
->>    // Get my rank and the number of ranks
+>>    // Get my rank
 >>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 >> 
 >>    // Each rank will have n_numbers numbers,
@@ -391,11 +391,11 @@ but the result is sent to all the ranks.
 >>   real sum, max, my_first_number
 >>   integer i
 >>
->>   ! First call MPI_INIT
->>   call MPI_INIT(ierr)
+>>   ! First call MPI_Init
+>>   call MPI_Init(ierr)
 >>
 >>   ! Get my rank and the number of ranks
->>   call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>   call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
 >>
 >>   ! Each rank will have n_numbers numbers,
 >>   ! starting from where the previous left
@@ -416,8 +416,8 @@ but the result is sent to all the ranks.
 >>   write(6,*) "Maximum = ", max
 >>
 >>
->>   ! Call MPI_FINALIZE at the end
->>   call MPI_FINALIZE(ierr)
+>>   ! Call MPI_Finalize at the end
+>>   call MPI_Finalize(ierr)
 >>
 >>contains
 >>

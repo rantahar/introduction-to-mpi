@@ -513,7 +513,7 @@ You can optimise later.
 >>      
 >>      ! Find the number of x-slices calculated by each rank
 >>      ! The simple calculation here assumes that MAX is divisible by n_ranks
->>      call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>      call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >>      my_j_max = MAX/n_ranks
 >>
 >>      ! Calculate one timestep
@@ -567,8 +567,8 @@ You can optimise later.
 >>      integer my_j_max
 >>
 >>      ! Get my rank and the number of ranks
->>      call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
->>      call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>      call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
+>>      call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
 >>   
 >>      ! Find the number of x-slices calculated by each rank
 >>      ! The simple calculation here assumes that MAX is divisible by n_ranks
@@ -769,11 +769,11 @@ You can optimise later.
 >>      
 >>      ! Find the number of x-slices calculated by each rank
 >>      ! The simple calculation here assumes that MAX is divisible by n_ranks
->>      call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>      call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >>      my_j_max = MAX/n_ranks
 >>
 >>      ! We need the rank number for the nearest neighbour communication
->>      call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>      call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
 >>
 >>      ! Calculate one timestep
 >>      do j = 1, my_j_max
@@ -806,26 +806,26 @@ You can optimise later.
 >>         ! Ranks with odd number send first
 >>
 >>         ! Send data down from rank to rank-1
->>         call MPI_SEND( unew(1,1), MAX, MPI_REAL, rank-1, 1, MPI_COMM_WORLD, ierr)
+>>         call MPI_Send( unew(1,1), MAX, MPI_REAL, rank-1, 1, MPI_COMM_WORLD, ierr)
 >>         ! Receive dat from rank-1
->>         call MPI_RECV( u(1,0), MAX, MPI_REAL, rank-1, 2, MPI_COMM_WORLD, status, ierr)
+>>         call MPI_Recv( u(1,0), MAX, MPI_REAL, rank-1, 2, MPI_COMM_WORLD, status, ierr)
 >>
 >>         if (rank < (n_ranks-1)) then
->>            call MPI_SEND( unew(1,my_j_max), MAX, MPI_REAL, rank+1, 1, MPI_COMM_WORLD, ierr)
->>            call MPI_RECV( u(1,my_j_max+1), MAX, MPI_REAL, rank+1, 2, MPI_COMM_WORLD, status, ierr)
+>>            call MPI_Send( unew(1,my_j_max), MAX, MPI_REAL, rank+1, 1, MPI_COMM_WORLD, ierr)
+>>            call MPI_Recv( u(1,my_j_max+1), MAX, MPI_REAL, rank+1, 2, MPI_COMM_WORLD, status, ierr)
 >>         endif
 >>
 >>      else
 >>         ! Ranks with even number receive first
 >>
 >>         if (rank > 0) then
->>            call MPI_RECV( u(1,0), MAX, MPI_REAL, rank-1, 1, MPI_COMM_WORLD, status, ierr)
->>            call MPI_SEND( unew(1,1), MAX, MPI_REAL, rank-1, 2, MPI_COMM_WORLD, ierr)
+>>            call MPI_Recv( u(1,0), MAX, MPI_REAL, rank-1, 1, MPI_COMM_WORLD, status, ierr)
+>>            call MPI_Send( unew(1,1), MAX, MPI_REAL, rank-1, 2, MPI_COMM_WORLD, ierr)
 >>         endif
 >>
 >>         if (rank < (n_ranks-1)) then
->>            call MPI_RECV( u(1,my_j_max+1), MAX, MPI_REAL, rank+1, 1, MPI_COMM_WORLD, status, ierr)
->>            call MPI_SEND( unew(1,my_j_max), MAX, MPI_REAL, rank+1, 2, MPI_COMM_WORLD, ierr)
+>>            call MPI_Recv( u(1,my_j_max+1), MAX, MPI_REAL, rank+1, 1, MPI_COMM_WORLD, status, ierr)
+>>            call MPI_Send( unew(1,my_j_max), MAX, MPI_REAL, rank+1, 2, MPI_COMM_WORLD, ierr)
 >>         endif
 >>      endif
 >>

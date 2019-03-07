@@ -807,7 +807,7 @@ Instead call them either in the setup and teardown functions or in the main prog
 >    integer i
 >
 >    ! Get my rank
->    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
 >
 >    ! Each rank will have n_numbers numbers,
 >    ! starting from where the previous left off
@@ -833,7 +833,7 @@ Instead call them either in the setup and teardown functions or in the main prog
 >    call find_max( vector, N, max )
 >
 >    ! Find the correct value using a simple serial method
->    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >
 >    call assert_true( max == n_ranks*N, "Test Max")
 >  end subroutine test_max
@@ -856,14 +856,14 @@ Instead call them either in the setup and teardown functions or in the main prog
 >  call init_fruit
 >
 >  ! Start with MPI_Init
->  call MPI_INIT(ierr)
+>  call MPI_Init(ierr)
 >
 >  call setup(vector, N)
 >  call test_max(vector, N)
 >  call teardown()
 >
 >  ! Call MPI_Finalize at the end
->  call MPI_FINALIZE(ierr)
+>  call MPI_Finalize(ierr)
 >
 >  call fruit_summary
 >  call fruit_finalize
@@ -953,7 +953,7 @@ Instead call them either in the setup and teardown functions or in the main prog
 >>  call init_fruit
 >>
 >>  ! Start with MPI_Init
->>  call MPI_INIT(ierr)
+>>  call MPI_Init(ierr)
 >>
 >>  call setup(vector, N)
 >>  call test_max(vector, N)
@@ -964,7 +964,7 @@ Instead call them either in the setup and teardown functions or in the main prog
 >>  call teardown()
 >>
 >>  ! Call MPI_Finalize at the end
->>  call MPI_FINALIZE(ierr)
+>>  call MPI_Finalize(ierr)
 >>
 >>  call fruit_summary
 >>  call fruit_finalize

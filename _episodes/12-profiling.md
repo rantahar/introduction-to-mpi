@@ -374,15 +374,15 @@ in your code.
 >>~~~
 >>Reading scorep_a_4_sum/summary.cubex... done.
 >>0.0203862       main                         /main
->>0.136475          + mpi_init                 /main/MPI_Init
->>8.259e-06         + mpi_comm_rank            /main/MPI_Comm_rank
->>4.191e-06         + mpi_comm_size            /main/MPI_Comm_size
+>>0.136475          + MPI_Init                 /main/MPI_Init
+>>8.259e-06         + MPI_Comm_rank            /main/MPI_Comm_rank
+>>4.191e-06         + MPI_Comm_size            /main/MPI_Comm_size
 >>20.4657           + poisson_step             /main/poisson_step
 >>7.8862            |   + <norm>               /main/poisson_step/<norm>
->>2.69831           |   |   + mpi_allreduce    /main/poisson_step/<norm>/MPI_Allreduce
->>0.311995          |   + mpi_recv             /main/poisson_step/MPI_Recv
->>0.0263682         |   + mpi_send             /main/poisson_step/MPI_Send
->>0.00338705        + mpi_finalize             /main/MPI_Finalize
+>>2.69831           |   |   + MPI_Allreduce    /main/poisson_step/<norm>/MPI_Allreduce
+>>0.311995          |   + MPI_Recv             /main/poisson_step/MPI_Recv
+>>0.0263682         |   + MPI_Send             /main/poisson_step/MPI_Send
+>>0.00338705        + MPI_Finalize             /main/MPI_Finalize
 >>~~~
 >>{: .output}
 >{: .solution}

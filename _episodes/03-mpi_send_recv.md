@@ -79,7 +79,7 @@ This instructs the communication device to listen for incoming data.
 > ## MPI_Send and MPI_Recv in Fortran
 >
 >~~~
-> MPI_SEND(BUF, COUNT, DATATYPE, DEST, TAG, COMM, IERROR)
+> MPI_Send(BUF, COUNT, DATATYPE, DEST, TAG, COMM, IERROR)
 >    <type>    BUF(*)
 >    INTEGER    COUNT, DATATYPE, DEST, TAG, COMM, IERROR
 >~~~
@@ -93,7 +93,7 @@ This instructs the communication device to listen for incoming data.
 > | `IERROR`:   | Error status |
 >
 >~~~
-> MPI_RECV(BUF, COUNT, DATATYPE, SOURCE, TAG, COMM, STATUS, IERROR)
+> MPI_Recv(BUF, COUNT, DATATYPE, SOURCE, TAG, COMM, STATUS, IERROR)
 >    <type>    BUF(*)
 >    INTEGER    COUNT, DATATYPE, SOURCE, TAG, COMM
 >    INTEGER    STATUS(MPI_STATUS_SIZE), IERROR
@@ -178,31 +178,31 @@ in transit.
 >     integer status(MPI_STATUS_SIZE)
 >     character(len=13)  message
 >
->     ! First call MPI_INIT
->     call MPI_INIT(ierr)
+>     ! First call MPI_Init
+>     call MPI_Init(ierr)
 >
 >     ! Check that there are two ranks
->     call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>     call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >     if (n_ranks .ne. 2) then
 >          write(6,*) "This example requires two ranks"
 >          error stop
 >     end if
 >
 >     ! Get my rank
->     call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>     call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
 >
 >     if (rank == 0) then
 >          message = "Hello, world!"
->          call MPI_SEND( message, 13, MPI_CHARACTER, 1, 0, MPI_COMM_WORLD, ierr)
+>          call MPI_Send( message, 13, MPI_CHARACTER, 1, 0, MPI_COMM_WORLD, ierr)
 >     end if
 >
 >     if (rank == 1) then
->          call MPI_RECV( message, 13, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, status, ierr)
+>          call MPI_Recv( message, 13, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, status, ierr)
 >          write(6,*) message
 >     end if
 >
->     ! Call MPI_FINALIZE at the end
->     call MPI_FINALIZE(ierr)
+>     ! Call MPI_Finalize at the end
+>     call MPI_Finalize(ierr)
 >end
 > ~~~
 >{: .source .language-fortran}
@@ -280,14 +280,14 @@ in transit.
 >>     integer status(MPI_STATUS_SIZE)
 >>     character(len=13)  message
 >>
->>     ! First call MPI_INIT
->>     call MPI_INIT(ierr)
+>>     ! First call MPI_Init
+>>     call MPI_Init(ierr)
 >>
 >>     ! Find the number of ranks
->>     call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>     call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >>
 >>     ! Get my rank
->>     call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>     call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
 >>
 >>     ! Figure out my pair
 >>     if ( MOD(rank,2) == 1 ) then
@@ -301,17 +301,17 @@ in transit.
 >>
 >>          if ( MOD(rank,2) == 0 ) then
 >>               message = "Hello, world!"
->>               call MPI_SEND( message, 13, MPI_CHARACTER, my_pair, 0, MPI_COMM_WORLD, ierr)
+>>               call MPI_Send( message, 13, MPI_CHARACTER, my_pair, 0, MPI_COMM_WORLD, ierr)
 >>          end if
 >>
 >>          if ( MOD(rank,2) == 1 ) then
->>               call MPI_RECV( message, 13, MPI_CHARACTER, my_pair, 0, MPI_COMM_WORLD, status, ierr)
+>>               call MPI_Recv( message, 13, MPI_CHARACTER, my_pair, 0, MPI_COMM_WORLD, status, ierr)
 >>               write(6,*) message
 >>          end if
 >>     end if
 >>
->>     ! Call MPI_FINALIZE at the end
->>     call MPI_FINALIZE(ierr)
+>>     ! Call MPI_Finalize at the end
+>>     call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
@@ -356,16 +356,16 @@ in transit.
 >>     
 >>    integer rank, ierr
 >>
->>    ! First call MPI_INIT
->>    call MPI_INIT(ierr)
+>>    ! First call MPI_Init
+>>    call MPI_Init(ierr)
 >>
 >>    ! Get my rank
->>    call MPI_COMM_RANK(MPI_COMM_WORLD,rank,ierr)
+>>    call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
 >>
 >>    write(6,*) "Hello World, I'm rank", rank
 >>
->>    ! Call MPI_FINALIZE at the end
->>    call MPI_FINALIZE(ierr)
+>>    ! Call MPI_Finalize at the end
+>>    call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
@@ -423,31 +423,31 @@ in transit.
 >>    integer status(MPI_STATUS_SIZE)
 >>    character(len=40) message
 >>
->>    ! First call MPI_INIT
->>    call MPI_INIT(ierr)
+>>    ! First call MPI_Init
+>>    call MPI_Init(ierr)
 >>
 >>    ! Get my rank and the number of ranks
->>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
->>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >>
 >>    if (rank .NE. 0) then
 >>        ! All ranks other than 0 should send a message
 >>
 >>        write(message,*) "Hello World, I'm rank", rank
->>        call MPI_SEND( message, 40, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, ierr)
+>>        call MPI_Send( message, 40, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, ierr)
 >>
 >>    else
 >>        ! Rank 0 will receive each message and print them
 >>
 >>        do sender = 1, n_ranks-1
->>            call MPI_RECV( message, 40, MPI_CHARACTER, sender, 0, MPI_COMM_WORLD, status, ierr)
+>>            call MPI_Recv( message, 40, MPI_CHARACTER, sender, 0, MPI_COMM_WORLD, status, ierr)
 >>            write(6,*) message
 >>        end do
 >>
 >>    end if
 >>
->>    ! Call MPI_FINALIZE at the end
->>    call MPI_FINALIZE(ierr)
+>>    ! Call MPI_Finalize at the end
+>>    call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
@@ -528,12 +528,12 @@ in transit.
 >>    integer send_message(n_numbers)
 >>    integer recv_message(n_numbers)
 >>
->>    ! First call MPI_INIT
->>    call MPI_INIT(ierr)
+>>    ! First call MPI_Init
+>>    call MPI_Init(ierr)
 >>
 >>    ! Get my rank and the number of ranks
->>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
->>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >>
 >>    ! Check that there are exactly two ranks
 >>    if (n_ranks .NE. 2) then
@@ -554,14 +554,14 @@ in transit.
 >>    end do
 >>
 >>    ! Send the message to other rank
->>    call MPI_SEND( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
+>>    call MPI_Send( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
 >>
 >>    ! Receive the message from the other rank
->>    call MPI_RECV( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
+>>    call MPI_Recv( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
 >>    write(6,*) "Message received by rank", rank
 >>
->>    ! Call MPI_FINALIZE at the end
->>    call MPI_FINALIZE(ierr)
+>>    ! Call MPI_Finalize at the end
+>>    call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
@@ -658,12 +658,12 @@ in transit.
 >>    integer send_message(n_numbers)
 >>    integer recv_message(n_numbers)
 >>
->>    ! First call MPI_INIT
->>    call MPI_INIT(ierr)
+>>    ! First call MPI_Init
+>>    call MPI_Init(ierr)
 >>
 >>    ! Get my rank and the number of ranks
->>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
->>    call MPI_COMM_SIZE(MPI_COMM_WORLD, n_ranks, ierr)
+>>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
 >>
 >>    ! Check that there are exactly two ranks
 >>    if (n_ranks .NE. 2) then
@@ -684,14 +684,14 @@ in transit.
 >>    end do
 >>
 >>    ! Send the message to other rank
->>    call MPI_SEND( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr );
+>>    call MPI_Send( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr );
 >>
 >>    ! Receive the message from the other rank
->>    call MPI_RECV( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
+>>    call MPI_Recv( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
 >>    write(6,*) "Message received by rank", rank
 >>
->>    ! Call MPI_FINALIZE at the end
->>    call MPI_FINALIZE(ierr)
+>>    ! Call MPI_Finalize at the end
+>>    call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
@@ -785,11 +785,11 @@ in transit.
 >>    ball = 1 ! A dummy message to simulate the ball
 >>    max_count = 1000000
 >>
->>    ! First call MPI_INIT
->>    call MPI_INIT(ierr)
+>>    ! First call MPI_Init
+>>    call MPI_Init(ierr)
 >>
 >>    ! Get my rank
->>    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+>>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
 >>
 >>    ! Call the other rank the neighbour
 >>    if (rank == 0) then
@@ -800,7 +800,7 @@ in transit.
 >>
 >>    ! Rank 0 starts with the ball. Send it to rank 1.
 >>    if ( rank == 0 ) then
->>        call MPI_SEND( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
+>>        call MPI_Send( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
 >>    end if
 >>
 >>    ! Now run send and receive in a loop until someone gets bored
@@ -808,11 +808,11 @@ in transit.
 >>    bored = .false.
 >>    do while ( .NOT. bored )
 >>        ! Receive the ball
->>        call MPI_RECV( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
+>>        call MPI_Recv( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
 >>
 >>        ! Increment the counter and send the ball back
 >>        counter = counter + 1
->>        call MPI_SEND( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
+>>        call MPI_Send( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
 >>
 >>        ! Check if the rank is bored
 >>        bored = counter < max_count
@@ -820,8 +820,8 @@ in transit.
 >>
 >>    write(6, *) "Rank ", rank, "is bored and giving up"
 >>
->>    ! Call MPI_FINALIZE at the end
->>    call MPI_FINALIZE(ierr)
+>>    ! Call MPI_Finalize at the end
+>>    call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
