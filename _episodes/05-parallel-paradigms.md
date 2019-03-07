@@ -174,27 +174,11 @@ The manager can execute a completely different code from the workers or the mana
 
 Because every worker rank needs to communicate with the manager, the bandwidth of the manager rank can become a bottleneck if adminstrative works need a lot of information (there is a similarity to a real life). This can happen if the manager needs to send the smaller databases (divided from the one big databases) to the worker ranks. But this is a waste of resources and is not a suitable solution for EP problem. Instead, it's better to have a parallel file system so that each worker ranks can access the necessary part of the big databases independently.
 
-### Pipeline
+### General Parallel Problem (Non-EP Problems)
 
-A conveyor belt in a car manufacturing plant is an example of a pipeline
-if there are many cars being built at the same time.
-There can be many workers working on different cars at the same time,
-but each worker always performs the same step.
-One worker might, for example, only always attach the left front tire.
-Once this step is done, the car moves forward on the conveyor belt.
+As we discussed in the 1st lesson, in general not all the parts of a serial code can be parallelized. 
 
-In a pipeline, each rank performs a single step in a process with many steps.
-Data flows through the pipeline and gets modified along the way.
-Naturally a pipeline is only efficient if there is a large amount of data
-to feed into it.
-The different stages cannot work on the same piece of data at the same time.
-
-The main downside of a pipeline is that some of the ranks may spend time
-waiting for data from the previous step.
-It's important to balance the steps to minimize the wait time.
-
-
-### Domain Decomposition
+#### Domain Decomposition
 
 When the data is structured in a regular way, such as when
 simulating atoms in a crystal, it makes sense to divide the space
@@ -223,7 +207,7 @@ Assuming that each rank holds one submatrix of A and B at the beginning, they ne
 to send all their data to two other processes.
 If there were more that 4 ranks, they would need to share an entire row and a column.
 
-
+#### Load Balancing
 
 ## Communication Patterns
 
