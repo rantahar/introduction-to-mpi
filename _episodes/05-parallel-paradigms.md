@@ -22,16 +22,16 @@ we use in our lessons) obviously belongs to the second camp. "OpenMP" belongs to
 In message passing paradigm, each CPU (or a core) runs an independent program. Parallelism is
 achieved by receiving data which it doesn't have and sending data which it has. In data
 parallel paradigm, there are many different data and the same operations (instructions in
-assembly language speaking) are performed on these data at the same time. Parallelism is
+assembly language) are performed on these data at the same time. Parallelism is
 achieved by how many different data a single operation can act on. This division is mainly
 due to historical development of parallel architectures: one follows from shared memory
 architecture like SMP (Shared Memory Processor) and the other from distributed computer
 architecture. A familiar example of the shared memory architecture is GPU (or multi-core
-sCPU) architecture and a familiar example of the distributed computing architecture is cluster
+CPU) architecture and a familiar example of the distributed computing architecture is cluster
 computer. Which architecture is more useful depends on what kind of problems you have.
 Sometimes, one has to use both!
 
-Consider a simple loop which can be sped up if we have many CPUs (or cores) for the illustration.
+Consider a simple loop which can be sped up if we have many CPUs (or cores) for illustration.
 
 {% highlight Fortran %}
 do i=1,N
@@ -57,7 +57,7 @@ in C. If we have $N$ CPUs (or cores), each element of the loop can be computed i
 ### Data Parallel
 
 One standard method for programming in data parallel fashion is called "OpenMP" (for "Open MultiProcessing").
-To understand what data parallel means, let's consider the following bit of OpenMP code which parallelize the above loop.
+To understand what data parallel means, let's consider the following bit of OpenMP code which parallelizes the above loop.
 
 {% highlight Fortran %}
 !$omp parallel do
@@ -125,7 +125,7 @@ each CPU (or core) is independent from the other CPUs (or cores). We must make s
 on the computer system. Let's assume that the system is a cluster computer. In a cluster computer,
 sometimes only one CPU (or core) has an access to the file system. In this case, this particular CPU
 reads in the whole data and sends the correct data to each CPU (or core) (including itself). MPI
-communications! After the computation, each CPU (or core) send the result to that particular CPU (or
+communications! After the computation, each CPU (or core) sends the result to that particular CPU (or
 core). This particular CPU writes out the received data in a file in correct order. If the cluster
 computer supports a parallel file system, each CPU (or core) reads the correct data from one file,
 computes and writes out the result to one file in correct order.
@@ -134,6 +134,7 @@ In the end, both data parallel and message passing logically achieve the followi
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
+Each rank operates on it's own set of data.
 In some cases, one has to combine the "data parallel" method and "message passing" methods. For example,
 there are problems larger than one GPU can handle. Then, data parallelism is used for the portion of the
 problem contained within one GPU and then message passing is used to employ several GPUs (each GPU
@@ -223,10 +224,7 @@ $$ B = \left[ \begin{array}{cc}B_{11} & B_{12} \\ B_{21} & B_{22}\end{array} \ri
 
 $$ A \cdot B = \left[ \begin{array}{cc}A_{11} \cdot B_{11} + A_{12} \cdot B_{21} & A_{11} \cdot B_{12} + A_{12} \cdot B_{22} \\ A_{21} \cdot B_{11} + A_{22} \cdot B_{21} & A_{21} \cdot B_{12} + A_{22} \cdot B_{22}\end{array} \right] $$
 
-The ranks don't actually need all the data, but they do need a large amount.
-Assuming that each rank holds one submatrix of A and B at the beginning, they need
-to send all their data to two other processes.
-If there were more that 4 ranks, they would need to share an entire row and a column.
+If the number of ranks is higher, each rank needs data from one row and one column to complete it's operation.
 
 #### Load Balancing
 
@@ -241,28 +239,29 @@ In MPI parallelization, several communication patterns occur.
 In gather type communication, all ranks send a piece of information to one rank.
 Gathers are typically used when printing out information or writing to disk.
 For example, each could send the result of a measurement to rank 0 and rank 0
-could print all of them. This ensures that the information is printed in order.
+could print all of them. This is necessary of only one rank has access to the screen.
+It also ensures that the information is printed in order.
 
 Similarly, in a scatter communication, one rank one rank sends a piece of data to all the other ranks.
 Scatters are useful for communicating parameters to all the ranks doing the computation.
 The parameter could be read from disk but it could also be produced by a previous computation.
 
-Gather and scatter operations require more communication as the number of ranks increases, but don't
-tend to get slower when the number of ranks is large.
+Gather and scatter operations require more communication as the number of ranks increases.
+The amount of messages sent usually increases logarithmically with the number of ranks.
 They have efficient implementations in the MPI libraries.
 
 ### Halo Exchange
 
 ![Halo Exchange]({{ page.root }}{% link files/haloexchange.png %}){:height="200px"}
 
-A common feature of domain decomposed algorithms is that communications is limited to a small number
+A common feature of domain decomposed algorithm is that communications is limited to a small number
 of other ranks that work on a domain a short distance away.
 For example, in a simulation of atomic crystals, updating a single atom usually requires information 
 of a couple of its nearest neighbours.
 
 In such a case each rank only needs a thin slice of data from it's neighbouring rank
 and send the same slice from it's own data to the neighbour.
-The data received from neighbours forms a "halo" around the the ranks data.
+The data received from neighbours forms a "halo" around the ranks own data.
 
 
 ### Reduction
@@ -275,7 +274,7 @@ The sum examble above is a reduction.
 Since data is needed from all ranks, this tends to be a time consuming operation, similar to
 a gather operation.
 Usually each rank first performs the reduction locally, arriving at a single number.
-They then perform steps of collecting data from some of the ranks and performing the reduction
+They then perform the steps of collecting data from some of the ranks and performing the reduction
 on that data, until all the data has been collected.
 The most efficient implementation depends several technical features of the system.
 Fortunately many common reductions are implemented in the MPI library and are often
