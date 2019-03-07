@@ -37,6 +37,10 @@ Make changes a section at a time until the program is sufficiently
 efficient.
 Don't parallellise sections that have no effect on performance.
 
+* **Test**
+
+Write tests and make sure they don't fail when making changes.
+
 ## Optimisation
 
 * **Don't Optimise Prematurely**
@@ -64,8 +68,8 @@ a number from one rank to the other.
 * **Interleave Communication and Computation**
 
 When communication time starts to become a significant bottleneck, think about
-what is the earliest time you can send the data and the latest time you need it
-start transfers early and do as much work as possible while the data is moving
+what is the earliest time you can send the data and the latest time you need it.
+Start transfers early and do as much work as possible while the data is moving
 from one rank to another.
 
 
@@ -92,18 +96,16 @@ They are often optimised for a specific set of machines.
 In an HPC system, it's worth using one that's designed for that system.
 
 
-* **Prefer Blocking Receives**
-
-Use blocking receives when it doesn't affect performance.
-They make it much easier to keep track of things.
-
 
 * **Post Receives Early**
 
 When performance really matters, post receives early.
-You can only post the send once you have the data.
-You can post a receive when ever you want.
-There is no reason for a communication to be waiting for a
+You can only post the send once you have the data, but
+you can post a receive when ever you want.
+This allows the communication device to set up a buffer and prepare
+to receive the message.
+It also avoid the other rank waiting for the receive when it already
+has the data.
 receive to be posted.
 
 Do this within reason. Don't start all your transfers at the beginning of the program.
