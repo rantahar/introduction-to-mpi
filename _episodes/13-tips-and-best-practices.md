@@ -35,7 +35,7 @@ Start with a working serial code and continually compare between the
 parallel and the serial versions.
 Make changes a section at a time until the program is sufficiently
 efficient.
-Don't parallellise sections that have no effect on performance.
+Don't spend time parallellising sections that have no effect on performance.
 
 * **Test**
 
