@@ -33,9 +33,9 @@ If you build three conveyor belts and hire thrice the number of people,
 you get three cars for the same amount of time.
 
 But what if you're a boutique car manufacturer, making only a handful of cars, and constructing a
-new assembly line would cost more time and money and it would save? How can you product cars more
+new assembly line would cost more time and money than it would save? How can you product cars more
 quickly without constructing an extra line? The only way is to have multiple people work on the same
-car at hte same time. To do this, identify the steps which don't intefere with each other and can be
+car at the same time. To do this,, you identify the steps which don't intefere with each other and can be
 executed at the same time (for example, the front part of the car can be constructed independently
 of the rear part of the car). If you find more steps which can be done without interfering each other,
 these steps can be executed at the same time. Overall time is saved.
@@ -46,7 +46,7 @@ You just need more CPUs (or cores) to do the work.
 This is called an "Embarrasingly Parallel (EP)" problem.
 It is the easiest problem to parallelize.
 In the second case, the most important thing to consider is the indepedence of a step
-(that is, whether a step can be executed without interfering other steps).
+(that is, whether a step can be executed without interfering with other steps).
 This independency is called "atomicity" of an operation.
 
 In the analogy with car manufacturing, the speed of conveyor belt is the "clock" of CPU, parts are "input",
@@ -65,7 +65,6 @@ and they work together to create an output, a car with tires.
 The crucial thing that allows us to add the tires in parallel is that they are independent.
 Adding one tire does not prevent you from adding another or require that any of the other tires are added.
 The workers operate on different parts of the car.
-These are independent operations.
 
 ### Data Dependency
 Another example, and a common operation in scientific computating, is calculating the sum of a set
@@ -92,10 +91,7 @@ A part of the program that cannot be run in parallel is called a "serial region"
 a part that can be run in parallel is called a "parallel region".
 Any program will have some serial regions.
 In a good parallel program, most of the time is spent in parallel regions.
-
-Any algorithm will have parallel regions and serial regions.
 The program can never run faster than the sum of the serial regions.
-Fortunately, the parallel part is often much larger than the serial part.
 
 >## Serial and Parallel regions
 >
@@ -160,7 +156,7 @@ hardware for the communication. The latency consists of the software latency (ho
 operating system needs in order to prepare for a communication) and the hardware latency (how long the
 hardware takes to send/receive even a small bit of data).
 For the same size problem, the time spent in communication is not significant when the number of ranks
-is small and the execution of parallel regions get faster with the number of ranks.
+is small and the execution of parallel regions gets faster with the number of ranks.
 But if we keep increasing the number of ranks, the time spent in communication grows when multiple CPUs
 (or cores) are involved with communication (technically, this is called "global communication").
 
@@ -186,26 +182,26 @@ Consider a part of a program such as
   otherwise continue;
 ~~~
 
-In one CPU situation, there is no problem executing this part of program and the program runs without
-stopping since the `if` statement is always false. Now, what if there are multi CPUs (or cores) and
-the variable `x` and `y` are shared among these multi CPUs (or cores)? If the `if` statement happens before
-`y = 2` in one of CPUs (since `x` and `y` is shared, when one CPU updates `y`, the other CPU can't touch
+In a one CPU situation, there is no problem executing this part of the program and the program runs without
+stopping since the `if` statement is always false. Now, what if there are multiple CPUs (or cores) and
+the variable `x` and `y` are shared among these CPUs (or cores)? If the `if` statement happens before
+`y = 2` in one of the CPUs (since `x` and `y` are shared, when one CPU updates `y`, the other CPU can't touch
 it and just proceed to the next step), the second CPU will stop running the program since it thinks
-`y = 0` and `x = 1` and `if` statement is true for that CPU. So, sharing data among CPUs (or cores) in
+`y = 0` and `x = 1` and the `if` statement is true for that CPU. So, sharing data among CPUs (or cores) in
 parallelization should be "sequentially consistent".
 
 ### Surface-to Volume Ratio
 
 In a parallel algorithm, the data which is handled by a CPU (or a core) can be considered in two parts:
-the one which needs the data that other CPUs (or cores) controls for computation and the other which a
-given CPU or core controls and can compute. The whole data which a CPU or a core compute is the sum of
+the part the CPU needs that other CPUs (or cores) control and a part that the CPU (or core) controls itself
+and can compute. The whole data which a CPU or a core computes is the sum of
 the two. The data under the control of the other CPUs (or cores) is called "surface" and the whole data
 is called "volume".
 
 The surface data requires communications. The more surface there is, the more communications among CPUs
-(cores) are needed and the longer the wall clock time of a program takes to finish.
+(cores) are needed and the longer the wall clock time the program takes to finish.
 
 Due to Amdahl's law, you want to minimize the number of communications for the same surface since
 each communications takes finite amount time to prepare (latency). This suggests that the surface data
 be exchanged in one communication if possible, not small part of the surface data exchanged in multiple
-communications. Of course, the sequential consistency should be obeyed when the surface data is exchanged.
+communications. Of course, sequential consistency should be obeyed when the surface data is exchanged.
