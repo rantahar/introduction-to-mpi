@@ -142,8 +142,9 @@ Designing a parallel algorithm that determines which of two paradigms in the abo
 
 To get used to "thinking in parallel", let's consider some examples. Problems which can be parallelized most easily are "Embarrassingly Parallel" (EP) problems, which occur in Monte Carlo simulations and in data base searches. In Monte Carlo simulations, random numbers are used in order to mimic a real situation.
 
+### Embarrassingly Parallel Problem
 
-### Queue
+#### Queue
 
 A task queue is a simple implementation of "Embarassingly Parallel (EP)" problem.
 Each worker will get tasks from a predefined queue.
