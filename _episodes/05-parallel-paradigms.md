@@ -144,7 +144,7 @@ To get used to "thinking in parallel", we discuss "Embarrassingly Parallel" (EP)
 
 ### Embarrassingly Parallel Problem
 
-Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many big database search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. The problem becomes running the same code with a different random number. In big database searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them. To speed up the search, the big database is divided into smaller databases and each smaller databases are searched independently.
+Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many big database search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. The problem becomes running the same code with a different random number over and over again! In big database searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them. To speed up the search, the big database is divided into smaller databases and each smaller databases are searched independently by many workers!
 
 #### Queue Method
 
@@ -164,13 +164,13 @@ The manager / worker approach is a more flexible version of the queue method.
 We hire a manager to distribute tasks to the workers.
 The manager can run some complicated logic to decide wich tasks to give to a
 worker.
-The manager can also perform any serial parts of the program like generating random number or dividing up the big database.
+The manager can also perform any serial parts of the program like generating random number or dividing up the big database. The manage can become one of workers after finishing managerial work.
 
 ![A manager rank controlling the queue]({{ page.root }}{% link files/manager.png %})
 
 In an MPI implementation, main function will usually contain an `if`
 statement that determines whether the rank is the manager or a worker.
-The manager usually executes a completely different code from the workers.
+The manager can execute a completely different code from the workers or the manager can execute the same partial code as the workers once the managerial part of the code is done. It depends whether the managerial load takes a lot of time to finish or not. Idling is a waste in parallel computing!
 
 Naturally the Manager / Worker approach reserves a rank to be the manager.
 In a large application this is usually a small cost.
