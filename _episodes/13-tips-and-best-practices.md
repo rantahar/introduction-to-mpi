@@ -37,7 +37,7 @@ parallel regions and less need for communication.
 How will I split the work? Will different ranks work on different tasks?
 Will I split the data between the tasks, and if I do, how should I split it?
 The way the task is distributed will determine how efficient the resulting
-program can be and how well he runtime scales with the number of ranks.
+program can be and how well the run time scales with the number of ranks.
 
 
 * **Start With a Working Serial Code**
@@ -47,13 +47,13 @@ Start with a working serial code and continually compare between the
 parallel and the serial versions.
 Make changes a section at a time until the program is sufficiently
 efficient.
-Don't parallellise sections that have on effect on performance.
+Don't parallellise sections that have no effect on performance.
 
 ## Optimisation
 
 * **Don't Optimise Prematurely**
 
-You should start with straightforward, easy to read and correct code.
+You should start with straightforward, easy-to-read, correct code.
 Optimisation usually makes the code less readable can lead to mistakes.
 
 
@@ -61,7 +61,7 @@ Optimisation usually makes the code less readable can lead to mistakes.
 
 Once you have a working code only optimise the important parts.
 Use a profiler to determine where the program spends its time.
-Spend you time on the same lines of code.
+Spend your time on the same lines of code.
 Keep everything else nice, clean and readable.
 
 
