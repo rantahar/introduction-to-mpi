@@ -143,7 +143,7 @@ needed by the root.
 {: .prereq .foldable}
 
 Each rank sends the data in the `send-buffer` to rank `root`.
-The `root` collect the data into the `receive-buffer` in order of the rank
+The `root` collects the data into the `receive-buffer` in order of the rank
 numbers.
 
 
