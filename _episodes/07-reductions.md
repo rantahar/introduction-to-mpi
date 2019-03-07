@@ -173,7 +173,7 @@ numbers.
 >>
 >>   //Use gather to send all messages to rank 0
 >>   sprintf(message, "Hello World, I'm rank %d\n", rank);
->>   MPI_Gather( send_message, 20, MPI_BYTE, receive_message, 20, MPI_BYTE, 0, MPI_COMM_WORLD, ierr )
+>>   MPI_Gather( send_message, 20, MPI_CHAR, receive_message, 20, MPI_CHAR, 0, MPI_COMM_WORLD, ierr )
 >>   
 >>   if(rank == 0){
 >>      printf("%s", receive_message);

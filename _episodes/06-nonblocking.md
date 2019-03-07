@@ -200,15 +200,13 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >
 >   if( rank == 0 ){
 >      char *message = "Hello, world!";
->      // Note that MPI_BYTE is the MPI type for char
->      MPI_ISend(message, 13, MPI_BYTE, 1, 0, MPI_COMM_WORLD);
+>      MPI_ISend(message, 13, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
 >   }
 >
 >   if( rank == 1 ){
 >      char message[13];
 >      int status;
->      // Note that MPI_BYTE is the MPI type for char
->      MPI_IRecv(message, 13, MPI_BYTE, 0, 0, MPI_COMM_WORLD, &status);
+>      MPI_IRecv(message, 13, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
 >      MPI_Wait( &request, &status );
 >      printf("%s",message)
 >   }
