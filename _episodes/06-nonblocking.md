@@ -5,7 +5,7 @@ exercises: 10
 questions:
 - "How do I interleave communication and computation?"
 objectives:
-- "Introduce MPI_Isend, MPI_Irecv, MPI_Test and MPI_Wait"
+- "Introduce `MPI_Isend`, `MPI_Irecv`, `MPI_Test` and `MPI_Wait`"
 keypoints:
 - "Non-blocking functions allows interleaving communication and computation"
 ---
@@ -14,25 +14,25 @@ keypoints:
 
 ### Send and Receive
 
-In one of the previous lessons we used the MPI_Send and MPI_Recv functions
+In one of the previous lessons we used the `MPI_Send` and `MPI_Recv` functions
 to communicate between the ranks.
-We saw that these functions are blocking.
-MPI_Send will only return when the program can safely modify the send buffer and
-MPI_Recv will only return once the data has been received and
+We saw that these functions are blocking:
+`MPI_Send` will only return when the program can safely modify the send buffer and
+`MPI_Recv` will only return once the data has been received and
 written to the receive buffer.
 This is safe and usually straightforward, but causes the program to wait
 while the communication is happening.
 Usually there is computation that we could run while waiting for data.
 
 The MPI standard includes non-blocking versions of the send and receive functions,
-MPI_ISend and MPI_IRecv.
+`MPI_ISend` and `MPI_IRecv`.
 These function will return immediately, giving you more control of the flow
 of the program. After calling them, it is not safe to modify the sending or
 the receiving buffer, but the program is free to continue with other operations.
 When it needs the data in the buffers, it needs to make sure the process is complete
-using the MPI_Wait and MPI_Test functions.
+using the `MPI_Wait` and `MPI_Test` functions.
 
-> ## MPI_Isend and MPI_Irecv in C
+> ## `MPI_Isend` and `MPI_Irecv` in C
 >
 >~~~
 > MPI_Isend(
@@ -74,7 +74,7 @@ using the MPI_Wait and MPI_Test functions.
 >
 {: .prereq .foldable}
 
-> ## MPI_Isend and MPI_Irecv in Fortran
+> ## `MPI_Isend` and `MPI_Irecv` in Fortran
 >
 >~~~
 > MPI_ISEND(BUF, COUNT, DATATYPE, DEST, TAG, COMM, REQUEST, IERROR)
@@ -111,17 +111,17 @@ using the MPI_Wait and MPI_Test functions.
 
 There's one new parameter here, a request.
 This is used to keep track of each separate transfer started by the program.
-You can use it to check the status of a transfer using the MPI_Test function,
-or call MPI_Wait to wait until the transfer is complete.
+You can use it to check the status of a transfer using the `MPI_Test` function,
+or call `MPI_Wait` to wait until the transfer is complete.
 
 
 ### Test and Wait
 
-MPI_Test will return the status of the transfer specified by a request and
-MPI_Wait will simply wait until the transfer is complete before returning.
-The request can be created by either an MPI_ISend or an MPI_IRecv.
+`MPI_Test` will return the status of the transfer specified by a request and
+`MPI_Wait` will wait until the transfer is complete before returning.
+The request can be created by either an `MPI_ISend` or an `MPI_IRecv`.
 
-> ## MPI_Test and MPI_Wait in C
+> ## `MPI_Test` and `MPI_Wait` in C
 >
 >~~~
 > MPI_Test(
@@ -145,7 +145,7 @@ The request can be created by either an MPI_ISend or an MPI_IRecv.
 >
 {: .prereq .foldable}
 
-> ## MPI_Test and MPI_Wait in Fortran
+> ## `MPI_Test` and `MPI_Wait` in Fortran
 >
 >~~~
 > MPI_TEST(REQUEST, FLAG, STATUS, IERROR)
@@ -172,7 +172,7 @@ The request can be created by either an MPI_ISend or an MPI_IRecv.
 
 ### Examples
 
-These functions can be used similarly to MPI_Send and MPI_Recv.
+These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 
 > ## Example in C
 > ~~~
@@ -269,7 +269,7 @@ These functions can be used similarly to MPI_Send and MPI_Recv.
 > ## Non-Blocking Communication
 >
 > Here is the blocking example again.
-> Fix the problem using MPI_Isend, MPI_Irecv and MPI_Wait.
+> Fix the problem using `MPI_Isend`, `MPI_Irecv` and `MPI_Wait`.
 >
 >> ## C
 >> ~~~
