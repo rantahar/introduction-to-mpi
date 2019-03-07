@@ -129,7 +129,7 @@ core). This particular CPU writes out the received data in a file in correct ord
 computer supports a parallel file system, each CPU (or core) reads the correct data from one file,
 computes and writes out the result to one file in correct order.
 
-Both data parallel and message passing achieves the following, logically.
+In the end, both data parallel and message passing logically achieve the following,
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
@@ -138,7 +138,10 @@ In some cases, one has to combine "data parallel" method and "message passing" m
 
 ## Algorithm Design
 
-Designing a parallel algorithm that determines which of two paradigms in the above one should follow rests on the understanding of how the problem can be solved in parallel. 
+Designing a parallel algorithm that determines which of two paradigms in the above one should follow rests on the actual understanding of how the problem can be solved in parallel. This requires some thought and practice.
+
+To get used to "thinking in parallel", let's consider some examples. Problems which can be parallelized most easily are "Embarrassingly Parallel" (EP) problems, which occur in Monte Carlo simulations and in data base searches. In Monte Carlo simulations, random numbers are used in order to mimic a real situation.
+
 
 ### Queue
 
