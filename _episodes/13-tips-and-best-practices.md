@@ -9,18 +9,6 @@ objectives:
 keypoints:
 ---
 
-During the second half of the day we will use the methods from the morning sessions
-to parallellise a more complex code.
-We will focus on a workflow that will ensure the parallel implementation produces
-correct results and work on optimising for speed and efficiency. 
-But before digging into our serial code, let's wrap up the morning sessions by picking
-some useful details and thinking about best practices.
-
-The main takeaway should be that the library functions are not very complicated and 
-the number of new operations you are likely to use is relatively small.
-The complication arises from thinking about the ranks working together.
-The most important decisions are the once you are likely to make early.
-
 ## Design
 
 * **Choose a Parallel Algorithm**
