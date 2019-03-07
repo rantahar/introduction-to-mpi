@@ -117,7 +117,8 @@ for(i=0; i<m; i++) {
 
 in C.
 
-Other than changing the number of loops from `N` to `m`, the code is exactly the same. Here, `m` is the reduced number of loops each CPU (or core) needs to do (if there are `N` number of CPU's (or cores), `m` is 1 (= `N`/`N`)).
+Other than changing the number of loops from `N` to `m`, the code is exactly the same. Here, `m`
+is the reduced number of loops each CPU (or core) needs to do (if there are `N` CPUs (or cores), `m` is 1 (= `N`/`N`)).
 But the parallelization by message passing is not complete yet. In the message passing paradigm,
 each CPU (or core) is independent from the other CPUs (or cores). We must make sure that each CPU
 (or core) has correct data to compute and writes out the result in correct order. This part depends
@@ -133,7 +134,10 @@ In the end, both data parallel and message passing logically achieve the followi
 
 ![Each rank has it's own data]({{ page.root }}{% link files/dataparallel.png %})
 
-In some cases, one has to combine "data parallel" method and "message passing" method. For example, there are the problems larger than one GPU can handle. Then, data parallel method is used for one GPU portion of the problem and then message passing method is used to employ several GPU's (each GPU handles a part of the problem) unless special hardware/software supports multiple GPU usage. 
+In some cases, one has to combine the "data parallel" method and "message passing" methods. For example,
+there are problems larger than one GPU can handle. Then, data parallelism is used for the portion of the
+problem contained within one GPU and then message passing is used to employ several GPUs (each GPU
+handles a part of the problem) unless special hardware/software supports multiple GPU usage.
 
 
 ## Algorithm Design
@@ -144,7 +148,16 @@ To get used to "thinking in parallel", we discuss "Embarrassingly Parallel" (EP)
 
 ### Embarrassingly Parallel Problems
 
-Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation problems and in many big database search problems. In Monte Carlo simulations, random initial conditions are used in order to sample a real situation. So, a random number is given and the computation follows using this random number. Depending on the random number, some computation may finish quicker and some computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough picture of the real situation. The problem becomes running the same code with a different random number over and over again! In big database searches, one needs to dig through all the data to find wanted data. There may be just one data or many data which fit the search crieterion. Sometimes, we don't need all the data which satisfy the condition. Sometimes, we need all of them. To speed up the search, the big database is divided into smaller databases and each smaller databases are searched independently by many workers!
+Problems which can be parallelized most easily are EP problems, which occur in many Monte Carlo simulation
+problems and in many big database search problems. In Monte Carlo simulations, random initial conditions
+are used in order to sample a real situation. So, a random number is given and the computation follows
+using this random number. Depending on the random number, some computation may finish quicker and some
+computation may take longer to finish. And we need to sample a lot (like a billion times) to get a rough
+picture of the real situation. The problem becomes running the same code with a different random number
+over and over again! In big database searches, one needs to dig through all the data to find wanted data.
+There may be just one datum or many data which fit the search criterion. Sometimes, we don't need all the
+data which satisfy the condition. Sometimes, we do need all of them. To speed up the search, the big database
+is divided into smaller databases, and each smaller databases are searched independently by many workers!
 
 #### Queue Method
 
@@ -170,13 +183,21 @@ The manager can also perform any serial parts of the program like generating ran
 
 In an MPI implementation, main function will usually contain an `if`
 statement that determines whether the rank is the manager or a worker.
-The manager can execute a completely different code from the workers or the manager can execute the same partial code as the workers once the managerial part of the code is done. It depends whether the managerial load takes a lot of time to finish or not. Idling is a waste in parallel computing!
+The manager can execute a completely different code from the workers, or the manager can execute the same partial code as the workers once the managerial part of the code is done. It depends whether the managerial load takes a lot of time to finish or not. Idling is a waste in parallel computing!
 
-Because every worker rank needs to communicate with the manager, the bandwidth of the manager rank can become a bottleneck if adminstrative works need a lot of information (there is a similarity to a real life). This can happen if the manager needs to send the smaller databases (divided from the one big databases) to the worker ranks. But this is a waste of resources and is not a suitable solution for EP problem. Instead, it's better to have a parallel file system so that each worker ranks can access the necessary part of the big databases independently.
+Because every worker rank needs to communicate with the manager, the bandwidth of the manager rank
+can become a bottleneck if adminstrative work needs a lot of information (as we can observe in real life).
+This can happen if the manager needs to send smaller databases (divided from one big database) to the worker ranks.
+This is a waste of resources and is not a suitable solution for an EP problem.
+Instead, it's better to have a parallel file system so that each worker rank can access the necessary part of the big database independently.
 
 ### General Parallel Problems (Non-EP Problems)
 
-As we discussed in the 2nd lesson, in general not all the parts of a serial code can be parallelized. So, one needs to identify which part of a serial code is parallelizable. In science and technology, many numerical computations can be defined on a regular structured data (e.g., partial differential equation on 3-D space using a finite difference method). In this case, one needs to consider how to decompose the domain so that many CPU's (or cores) can work in parallel. 
+As we discussed in the 2nd lesson, in general not all the parts of a serial code can be parallelized.
+So, one needs to identify which part of a serial code is parallelizable. In science and technology,
+many numerical computations can be defined on a regular structured data (e.g., partial differential
+equations in a 3D space using a finite difference method). In this case, one needs to consider how
+to decompose the domain so that many CPUs (or cores) can work in parallel.
 
 #### Domain Decomposition
 
