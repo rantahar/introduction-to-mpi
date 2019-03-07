@@ -176,7 +176,7 @@ Because every worker rank needs to communicate with the manager, the bandwidth o
 
 ### General Parallel Problems (Non-EP Problems)
 
-As we discussed in the 1st lesson, in general not all the parts of a serial code can be parallelized. So, one needs to identify which part of a serial code is parallelizable. In science and technology, many numerical computations can be defined on a regular structured data (e.g., partial differential equation on 3-D space using a finite difference method). In this case, one needs to consider how to decompose the domain so that many CPU's (or cores) can work in parallel. 
+As we discussed in the 2nd lesson, in general not all the parts of a serial code can be parallelized. So, one needs to identify which part of a serial code is parallelizable. In science and technology, many numerical computations can be defined on a regular structured data (e.g., partial differential equation on 3-D space using a finite difference method). In this case, one needs to consider how to decompose the domain so that many CPU's (or cores) can work in parallel. 
 
 #### Domain Decomposition
 
