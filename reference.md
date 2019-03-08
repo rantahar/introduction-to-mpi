@@ -13,8 +13,8 @@ layout: reference
 | `MPI_Comm_size` | Find the total number of ranks started by the user.           |
 | `MPI_Send`      | Send data to one specified rank.                              |
 | `MPI_Recv`      | Receive data from one specified rank.                         |
-| `MPI_ISend`     | Start sending data to one specified rank.                     |
-| `MPI_IRecv`     | Start receiving data from one specified rank.                 |
+| `MPI_Isend`     | Start sending data to one specified rank.                     |
+| `MPI_Irecv`     | Start receiving data from one specified rank.                 |
 | `MPI_Wait`      | Wait for a transfer to complete.                              |
 | `MPI_Test`      | Check if a transfer is complete.                              |
 | `MPI_Barrier`   | Wait for all the ranks to arrive at this point.               |

@@ -1,7 +1,7 @@
 ---
 title: "Serial and Parallel Regions"
-teaching: 20
-exercises: 20
+teaching: 15
+exercises: 5
 questions:
 - "What is a good parallel algorithm?"
 objectives:
@@ -13,6 +13,8 @@ keypoints:
 - "The theoretical maximum speed is determined by the serial sections"
 - "The other main restriction is communication speed between the processes"
 ---
+
+<!-- Real timings: 3 minutes on challenge, 15 all together -->
 
 ## Serial and Parallel Execution
 
@@ -98,7 +100,7 @@ The program can never run faster than the sum of the serial regions.
 > Identify serial and parallel regions the following algorithm
 >
 > ~~~
->  vector_0[0] = 1;
+>  vector_1[0] = 1;
 >  vector_1[1] = 1;
 >  for i in 2 ... 1000
 >    vector_1[i] = vector_1[i-1] + vector_1[i-2];
@@ -125,6 +127,8 @@ The program can never run faster than the sum of the serial regions.
 >> parallel | for i in 0 ... 1000
 >>          |   vector_3[i] = vector_2[i] + vector_1[i];
 >>          |   print("The sum of the vectors is.", vector_3[i]);
+>>
+>> The first and the second loop could also run at the same time.
 >>~~~
 >>{: .output}
 >>

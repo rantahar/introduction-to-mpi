@@ -1,7 +1,7 @@
 ---
 title: "Parallel Paradigms and Parallel Algorithms"
 teaching: 20
-exercises: 10
+exercises: 0
 questions:
 - "How do I split the work?"
 objectives:
@@ -13,6 +13,8 @@ keypoints:
 - "MPI implements the Message Passing paradigm"
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
+
+<!-- Actual time, challenge 0, all 13 -->
 
 ## Parallel Paradigms
 

@@ -5,10 +5,12 @@ exercises: 10
 questions:
 - "How do I interleave communication and computation?"
 objectives:
-- "Introduce `MPI_ISend`, `MPI_IRecv`, `MPI_Test` and `MPI_Wait`"
+- "Introduce `MPI_Isend`, `MPI_Irecv`, `MPI_Test` and `MPI_Wait`"
 keypoints:
 - "Non-blocking functions allows interleaving communication and computation"
 ---
+
+<!-- Real time: challenges 20 minutes, all 30 minutes -->
 
 ## Non-Blocking Communication
 
@@ -25,17 +27,17 @@ while the communication is happening.
 Usually there is computation that we could perform while waiting for data.
 
 The MPI standard includes non-blocking versions of the send and receive functions,
-`MPI_ISend` and `MPI_IRecv`.
+`MPI_Isend` and `MPI_Irecv`.
 These function will return immediately, giving you more control of the flow
 of the program. After calling them, it is not safe to modify the sending or
 the receiving buffer, but the program is free to continue with other operations.
 When it needs the data in the buffers, it needs to make sure the communication process
 is complete using the `MPI_Wait` and `MPI_Test` functions.
 
-> ## `MPI_ISend` and `MPI_IRecv` in C
+> ## `MPI_Isend` and `MPI_Irecv` in C
 >
 >~~~
-> MPI_ISend(
+> MPI_Isend(
 >    void* data,
 >    int count,
 >    MPI_Datatype datatype,
@@ -54,7 +56,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `request`:      | Pointer for writing the request structure |
 >
 >~~~
-> MPI_IRecv(
+> MPI_Irecv(
 >    void* data,
 >    int count,
 >    MPI_Datatype datatype,
@@ -74,10 +76,10 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 >
 {: .prereq .foldable}
 
-> ## `MPI_ISend` and `MPI_IRecv` in Fortran
+> ## `MPI_Isend` and `MPI_Irecv` in Fortran
 >
 >~~~
-> MPI_ISend(BUF, COUNT, DATATYPE, DEST, TAG, COMM, REQUEST, IERROR)
+> MPI_Isend(BUF, COUNT, DATATYPE, DEST, TAG, COMM, REQUEST, IERROR)
 >    <type>    BUF(*)
 >    INTEGER    COUNT, DATATYPE, DEST, TAG, COMM, REQUEST, IERROR
 >~~~
@@ -92,7 +94,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `IERROR`:   | Error status |
 >
 >~~~
-> MPI_IRecv(BUF, COUNT, DATATYPE, SOURCE, TAG, COMM, REQUEST, IERROR)
+> MPI_Irecv(BUF, COUNT, DATATYPE, SOURCE, TAG, COMM, REQUEST, IERROR)
 >    <type>    BUF(*)
 >    INTEGER    COUNT, DATATYPE, SOURCE, TAG, COMM,
 >    INTEGER    REQUEST, IERROR
@@ -119,7 +121,7 @@ or call `MPI_Wait` to wait until the transfer is complete.
 
 `MPI_Test` will return the status of the transfer specified by a request and
 `MPI_Wait` will wait until the transfer is complete before returning.
-The request can be created by either an `MPI_ISend` or an `MPI_IRecv`.
+The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
 
 > ## `MPI_Test` and `MPI_Wait` in C
 >
@@ -179,10 +181,11 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 > #include <stdio.h>
 > #include <mpi.h>
 >
-> main(int argc, char** argv) {
+> int main(int argc, char** argv) {
 >   int rank, n_ranks;
 >   int my_first, my_last;
 >   int numbers = 10;
+>   MPI_Request request;
 >
 >   // First call MPI_Init
 >   MPI_Init(&argc, &argv);
@@ -199,16 +202,16 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 >
 >   if( rank == 0 ){
->      char *message = "Hello, world!";
->      MPI_ISend(message, 13, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
+>      char *message = "Hello, world!\n";
+>      MPI_Isend(message, 14, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &request);
 >   }
 >
 >   if( rank == 1 ){
->      char message[13];
->      int status;
->      MPI_IRecv(message, 13, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
+>      char message[14];
+>      MPI_Status status;
+>      MPI_Irecv(message, 14, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &request);
 >      MPI_Wait( &request, &status );
->      printf("%s",message)
+>      printf("%s",message);
 >   }
 >   
 >   // Call finalize at the end
@@ -217,7 +220,6 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 > ~~~
 >{: .source .language-c}
 {: .prereq .foldable}
-
 
 > ## Example in Fortran
 > ~~~
@@ -245,11 +247,11 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >
 >     if (rank == 0) then
 >          message = "Hello, world!"
->          call MPI_ISend( message, 13, MPI_CHARACTER, 1, 0, MPI_COMM_WORLD, request, ierr )
+>          call MPI_Isend( message, 13, MPI_CHARACTER, 1, 0, MPI_COMM_WORLD, request, ierr )
 >     end if
 >
 >     if (rank == 1) then
->          call MPI_IRecv( message, 13, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, request, ierr )
+>          call MPI_Irecv( message, 13, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, request, ierr )
 >          call MPI_WAIT( request, status, ierr )
 >          write(6,*) message
 >     end if
@@ -267,7 +269,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 > ## Non-Blocking Communication
 >
 > Here is the blocking example again.
-> Fix the problem using `MPI_ISend`, `MPI_IRecv` and `MPI_Wait`.
+> Fix the problem using `MPI_Isend`, `MPI_Irecv` and `MPI_Wait`.
 >
 >> ## C
 >> ~~~
@@ -276,7 +278,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >> 
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
->>    int n_numbers = 1048576;
+>>    int n_numbers = 524288;
 >>    int send_message[n_numbers];
 >>    int recv_message[n_numbers];
 >>    MPI_Status status;
@@ -322,7 +324,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>    use mpi
 >>    implicit none
 >>     
->>    integer, parameter :: n_numbers=1048576
+>>    integer, parameter :: n_numbers=524288
 >>    integer i
 >>    integer rank, n_ranks, neighbour, ierr
 >>    integer status(MPI_STATUS_SIZE)
@@ -377,11 +379,11 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >> 
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
->>    int n_numbers = 1048576;
+>>    int n_numbers = 524288;
 >>    int send_message[n_numbers];
 >>    int recv_message[n_numbers];
 >>    MPI_Status status;
->>    MPI_Request* request;
+>>    MPI_Request request;
 >> 
 >>    // First call MPI_Init
 >>    MPI_Init(&argc, &argv);
@@ -403,10 +405,10 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>    }
 >> 
 >>    // Send the message to other rank
->>    MPI_ISend(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
+>>    MPI_Isend(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
 >> 
 >>    // Receive the message from the other rank
->>    MPI_IRecv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
+>>    MPI_Irecv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
 >>    MPI_Wait( &request, &status );
 >>    printf("Message received by rank %d \n", rank);
 >> 
@@ -426,7 +428,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>   use mpi
 >>   implicit none
 >>    
->>   integer, parameter :: n_numbers=1048576
+>>   integer, parameter :: n_numbers=524288
 >>   integer i
 >>   integer rank, n_ranks, neighbour, request, ierr
 >>   integer status(MPI_STATUS_SIZE)
@@ -459,10 +461,10 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>   end do
 >>
 >>   ! Send the message to other rank
->>   call MPI_ISend( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, request, ierr )
+>>   call MPI_Isend( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, request, ierr )
 >>
 >>   ! Receive the message from the other rank
->>   call MPI_IRecv( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, request, ierr )
+>>   call MPI_Irecv( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, request, ierr )
 >>   call MPI_WAIT( request, status, ierr )
 >>   write(6,*) "Message received by rank", rank
 >>

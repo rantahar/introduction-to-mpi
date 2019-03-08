@@ -31,7 +31,7 @@ The most commonly-used are:
 * All-to-All
   * All ranks have data and all ranks receive data
   * Global reductions is an important special case
-  * `MPI_Alltoall()`, `MPI_Allgather`
+  * `MPI_Alltoall()`, `MPI_Allgather()`
   * `MPI_Allreduce()`
 
 ### Barrier
@@ -155,34 +155,37 @@ numbers.
 >
 >> ## Solution in C
 >> ~~~
->> #include <stdio.h>
->> #include <mpi.h>
->> 
->> int main(int argc, char** argv) {
->>   int rank, n_ranks, numbers_per_rank;
->>   char send_message[20], *receive_message;
+>>#include <stdio.h>
+>>#include <stdlib.h>
+>>#include <mpi.h>
 >>
->>   // First call MPI_Init
->>   MPI_Init(&argc, &argv);
->>   // Get my rank and the number of ranks
->>   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
->>   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>int main(int argc, char** argv) {
+>>  int rank, n_ranks, numbers_per_rank;
+>>  char send_message[40], *receive_message;
 >>
->>   // Allocate space for all received messages in receive_message
->>   receive_message = malloc( n_ranks*20*sizeof(char) );
+>>  // First call MPI_Init
+>>  MPI_Init(&argc, &argv);
+>>  // Get my rank and the number of ranks
+>>  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>  MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>
->>   //Use gather to send all messages to rank 0
->>   sprintf(message, "Hello World, I'm rank %d\n", rank);
->>   MPI_Gather( send_message, 20, MPI_CHAR, receive_message, 20, MPI_CHAR, 0, MPI_COMM_WORLD, ierr )
->>   
->>   if(rank == 0){
->>      printf("%s", receive_message);
->>   }
->>   
->>   // Free memory and finalise
->>   free( receive_message );
->>   MPI_Finalize();
->> }
+>>  // Allocate space for all received messages in receive_message
+>>  receive_message = malloc( n_ranks*40*sizeof(char) );
+>>
+>>  //Use gather to send all messages to rank 0
+>>  sprintf(send_message, "Hello World, I'm rank %d\n", rank);
+>>  MPI_Gather( send_message, 40, MPI_CHAR, receive_message, 40, MPI_CHAR, 0, MPI_COMM_WORLD );
+>>  
+>>  if(rank == 0){
+>>     for( int i=0; i<n_ranks; i++){
+>>       printf("%s", receive_message + i*40);
+>>     }
+>>  }
+>>  
+>>  // Free memory and finalise
+>>  free( receive_message );
+>>  MPI_Finalize();
+>>}
 >> ~~~
 >>{: .source .language-c}
 >{: .prereq .foldable}
