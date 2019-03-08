@@ -640,110 +640,120 @@ Instead call them either in the setup and teardown functions or in the main prog
 
 > ## Example in C
 > ~~~
-> #include <stdarg.h>
-> #include <stddef.h>
-> #include <setjmp.h>
-> #include <cmocka.h>
-> #include <stdio.h>
-> #include <mpi.h>
-> #include <stdlib.h>
-> 
-> // Calculate the sum of numbers in a vector
-> double find_sum( double * vector, int N ){
->    double sum = 0;
->    double global_sum;
-> 
->    // Calculate the sum on this rank as befor
->    for( int i=0; i<N; i++){
->       sum += vector[i];
->    }
-> 
->    // Call MPI_Allreduce to find the full sum
->    MPI_Allreduce( &sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
-> 
->    return global_sum;
-> }
-> 
-> // Find the maximum of numbers in a vector
-> double find_maximum( double * vector, int N ){
->    double max = 0;
->    double global_max;
-> 
->    // Calculate the maximum on this rank as before
->    for( int i=0; i<N; i++){
->       if( vector[i] > max ){
->          max = vector[i];
->       }
->    }
-> 
->    // Call MPI_Allreduce to find the maximum over all the ranks
->    MPI_Allreduce( &max, &global_max, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
-> 
->    return global_max;
-> }
-> 
-> 
-> /* Test the find_maximum function */
-> static void test_find_maximum(void **state) {
->    double * vector = state[0];
->    int n_numbers = vector[0];
->    double max;
->    int n_ranks;
+>#include <stdarg.h>
+>#include <stddef.h>
+>#include <setjmp.h>
+>#include <cmocka.h>
+>#include <stdio.h>
+>#include <mpi.h>
+>#include <stdlib.h>
 >
->    //Find the sum and check it's correct
->    max = find_maximum( vector+1, n_numbers );
+>// Calculate the sum of numbers in a vector
+>double find_sum( double * vector, int N ){
+>   double sum = 0;
+>   double global_sum;
 >
->    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>   // Calculate the sum on this rank as befor
+>   for( int i=0; i<N; i++){
+>      sum += vector[i];
+>   }
 >
->    assert_true( max == n_ranks*n_numbers - 1 );
-> }
-> 
-> 
-> static int setup(void **state)
-> {
->    int n_numbers = 1024;
->    double * vector;
->    
->    // Start by calling MPI_Init with mocked input
->    char *argv[] = {"mpi_test"};
->    int argc = 1;
->    MPI_Init(&argc, (char ***) &argv);
->    
->    vector = malloc( (n_numbers+1)*sizeof(double) );
->    state[0] = (void *) vector;
-> 
->    // vector[0] will contain n_numbers
->    vector[0] = n_numbers;
->    // Generate a vector
->    for( int i=0; i<n_numbers; i++){
->       vector[1+i] = i;
->    }
-> 
->    return 0;
-> }
-> 
-> static int teardown(void **state)
-> {
->    free( state[0] );
-> 
->    // End by calling MPI_Finalize
->    MPI_Finalize();
-> 
->    return 0;
-> }
-> 
-> 
-> int main(int argc, char** argv) {
->    int cmocka_return_code;
-> 
->    const struct CMUnitTest tests[] = {
->       cmocka_unit_test(test_find_maximum),
->    };
->    
->    cmocka_return_code = cmocka_run_group_tests(tests, setup, teardown);
-> 
->    return cmocka_return_code;
-> }
+>   // Call MPI_Allreduce to find the full sum
+>   MPI_Allreduce( &sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+>
+>   return global_sum;
+>}
+>
+>// Find the maximum of numbers in a vector
+>double find_maximum( double * vector, int N ){
+>   double max = 0;
+>   double global_max;
+>
+>   // Calculate the maximum on this rank as before
+>   for( int i=0; i<N; i++){
+>      if( vector[i] > max ){
+>         max = vector[i];
+>      }
+>   }
+>
+>   // Call MPI_Allreduce to find the maximum over all the ranks
+>   MPI_Allreduce( &max, &global_max, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
+>
+>   return global_max;
+>}
+>
+>
+>/* Test the find_maximum function */
+>static void test_find_maximum(void **state) {
+>   double * state_vector, * vector;
+>   state_vector = state[0];
+>   vector = state_vector+1;
+>   int n_numbers = state_vector[0];
+>   double max;
+>   int n_ranks;
+>
+>   //Find the sum and check it's correct
+>   max = find_maximum( vector+1, n_numbers );
+>
+>   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>
+>   assert_true( max == n_ranks*n_numbers - 1 );
+>}
+>
+>
+>static int setup(void **state)
+>{
+>   int n_numbers = 1024;
+>   int rank, my_first_number;
+>   double * state_vector, * vector;
+>   
+>   // Start by calling MPI_Init with mocked input
+>   char *argv[] = {"mpi_test"};
+>   int argc = 1;
+>   MPI_Init(&argc, (char ***) &argv);
+>   
+>   state_vector = malloc( (n_numbers+1)*sizeof(double) );
+>   state[0] = (void *) state_vector;
+>   vector = state_vector + 1;
+>
+>   // vector[0] will contain n_numbers
+>   state_vector[0] = n_numbers;
+>
+>   // Each rank will have n_numbers numbers,
+>   // starting from where the previous left
+>   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>   my_first_number = n_numbers*rank;
+>
+>   // Generate a vector
+>   for( int i=0; i<n_numbers; i++){
+>      vector[i] = my_first_number + i;
+>   }
+>
+>   return 0;
+>}
+>
+>static int teardown(void **state)
+>{
+>   free( state[0] );
+>
+>   // End by calling MPI_Finalize
+>   MPI_Finalize();
+>
+>   return 0;
+>}
+>
+>
+>int main(int argc, char** argv) {
+>   int cmocka_return_code;
+>
+>   const struct CMUnitTest tests[] = {
+>      cmocka_unit_test(test_find_maximum),
+>   };
+>   
+>   cmocka_return_code = cmocka_run_group_tests(tests, setup, teardown);
+>
+>   return cmocka_return_code;
+>}
 > ~~~
 >{: .source .language-c}
 {: .callout .foldable}
@@ -881,41 +891,44 @@ Instead call them either in the setup and teardown functions or in the main prog
 >> ## Solution in C
 >> The test function:
 >> ~~~
->> /* Test the find_sum_ function */
->> static void test_find_sum(void **state) {
->>    double * vector = state[0];
->>    int n_numbers = vector[0];
->>    double sum, correct sum;
->>    int n_ranks;
+>>/* Test the find_sum_ function */
+>>static void test_find_sum(void **state) {
+>>   double * state_vector, * vector;
+>>   state_vector = state[0];
+>>   vector = state_vector+1;
+>>   int n_numbers = state_vector[0];
+>>   double sum, correct_sum;
+>>   int n_ranks;
 >>
->>    //Find the sum
->>    sum = find_sum( vector+1, n_numbers );
->>    
->>    //Find the correct value using a simple serial method
->>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
->>    correct_sum = 0;
->>    for( int i=0; i<n_ranks*n_numbers; i++){
->>      correct_sum += i;
->>    }
->>    
->>    assert_true( sum == correct_sum );
->> }
+>>   //Find the sum
+>>   sum = find_sum( vector, n_numbers );
+>>   
+>>   //Find the correct value using a simple serial method
+>>   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>   correct_sum = 0;
+>>   for( int i=0; i<n_ranks*n_numbers; i++){
+>>     correct_sum += i;
+>>   }
+>>   
+>>   assert_true( sum == correct_sum );
+>>}
 >>~~~
 >>{: .source .language-c}
 >> 
 >> Add the test to the list in the main function
 >> ~~~
->> int main(int argc, char** argv) {
->>    int cmocka_return_code;
->> 
->>    const struct CMUnitTest tests[] = {
->>       cmocka_unit_test(test_find_maximum, test_find_sum),
->>    };
->>    
->>    cmocka_return_code = cmocka_run_group_tests(tests, setup, teardown);
->> 
->>    return cmocka_return_code;
->> }
+>>int main(int argc, char** argv) {
+>>   int cmocka_return_code;
+>>
+>>   const struct CMUnitTest tests[] = {
+>>      cmocka_unit_test(test_find_maximum),
+>>      cmocka_unit_test(test_find_sum),
+>>   };
+>>   
+>>   cmocka_return_code = cmocka_run_group_tests(tests, setup, teardown);
+>>
+>>   return cmocka_return_code;
+>>}
 >> ~~~
 >>{: .source .language-c}
 >{: .solution}
