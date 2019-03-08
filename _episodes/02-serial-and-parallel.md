@@ -169,7 +169,7 @@ But if we keep increasing the number of ranks, the time spent in communication g
 ### L. Lamport's Sequential Consistency
 
 Message Passing based parallelization necessarily involves several "distributed" computing elements
-(CPUs or cores) which may operate on independent clocks. This can give wrong result since the order
+(CPUs or cores) which may operate on independent clocks. This can give wrong results, since the order
 of execution in an algorithm may not be the same as the corresponding serial execution performed by
 one CPU (or a core). This problem in parallelization is explained by L. Lamport in "How to make a
 Multiprocessor computer that correctly executes multiprocess programs".
