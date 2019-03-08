@@ -174,7 +174,7 @@ numbers.
 >>
 >>  //Use gather to send all messages to rank 0
 >>  sprintf(send_message, "Hello World, I'm rank %d\n", rank);
->>  MPI_Gather( send_message, 40, MPI_CHAR, receive_message, 40, MPI_CHAR, 0, >>MPI_COMM_WORLD );
+>>  MPI_Gather( send_message, 40, MPI_CHAR, receive_message, 40, MPI_CHAR, 0, MPI_COMM_WORLD );
 >>  
 >>  if(rank == 0){
 >>     for( int i=0; i<n_ranks; i++){
