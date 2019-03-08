@@ -909,8 +909,17 @@ A fast but incorrect program is useless.
 >> 
 >> Depending on the machine you're running on, the 
 >> runtime should be relatively constant.
->> Runtime may increase if you need to use nodes that are
+>> Runtime increase if you need to use nodes that are
 >> further away from each other in the network.
+>>
+>> The figure below shows an example of the scaling with
+>> `MAX_X=128*n_ranks`.
+>> ![A figure showing a slowly increasing amount of time as a function of n_ranks]({{ page.root }}{% link fig/poisson_scaling_plot_weak.png %})
+>>
+>> In this case all the ranks are running on the same node with
+>> 40 cores. The increase in runtime is probably due to the
+>> memory bandwidth of the node being used by a larger number of
+>> cores.
 >>
 >{: .solution}
 {: .challenge}

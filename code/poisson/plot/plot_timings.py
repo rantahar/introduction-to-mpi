@@ -3,7 +3,7 @@ import sys, os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot(data, columns, labels, filename):
+def plot(data, columns, labels, filename, log=True):
     # Plot results of a scaling study from a dict or dataframe
     # and label each with the corresponding entry in labels
     # Save to filename
@@ -23,6 +23,10 @@ def plot(data, columns, labels, filename):
     plt.savefig(filename)
     plt.clf() 
 
+
 data = pd.read_csv( "timing.txt", sep=" *", header=[0] )
 plot( data, ['time_512','time_2048'], ["MAX=512","MAX=2048"], "plot.png" )
+
+data = pd.read_csv( "timing_weak.txt", sep=" *", header=[0] )
+plot( data, ['time'], ["MAX_X=128*n_ranks"], "plot_weak.png", log=False )
 
