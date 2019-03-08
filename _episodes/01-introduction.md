@@ -112,7 +112,7 @@ Here's a more complete example:
 > #include <stdio.h>
 > #include <mpi.h>
 > 
-> void main(int argc, char** argv) {
+> int main(int argc, char** argv) {
 >   int rank;
 >
 >   // First call MPI_Init
@@ -218,7 +218,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> #include <stdio.h>
 >> #include <mpi.h>
 >> 
->> void main(int argc, char** argv) {
+>> int main(int argc, char** argv) {
 >>   int rank, n_ranks;
 >>
 >>   // First call MPI_Init
@@ -272,7 +272,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> ~~~
 >> #include <stdio.h>
 >> 
->> void main(int argc, char** argv) {
+>> int main(int argc, char** argv) {
 >>   int numbers = 10;
 >>
 >>   for( int i=1; i<numbers; i++ ) {
@@ -308,7 +308,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>#include <math.h>
 >>#include <mpi.h>
 >>
->>void main(int argc, char** argv) {
+>>int main(int argc, char** argv) {
 >>  int rank, n_ranks, numbers_per_rank;
 >>  int my_first, my_last;
 >>  int numbers = 10;

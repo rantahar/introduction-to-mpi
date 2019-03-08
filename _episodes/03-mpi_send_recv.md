@@ -331,7 +331,7 @@ in transit.
 >> #include <stdio.h>
 >> #include <mpi.h>
 >> 
->> main(int argc, char** argv) {
+>> int main(int argc, char** argv) {
 >>   int rank;
 >>
 >>   // First call MPI_Init
