@@ -217,6 +217,8 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 > }
 > ~~~
 >{: .source .language-c}
+{: .prereq .foldable}
+
 > ## Example in Fortran
 > ~~~
 >program hello
