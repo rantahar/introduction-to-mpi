@@ -98,7 +98,7 @@ The program can never run faster than the sum of the serial regions.
 > Identify serial and parallel regions the following algorithm
 >
 > ~~~
->  vector_0[0] = 1;
+>  vector_1[0] = 1;
 >  vector_1[1] = 1;
 >  for i in 2 ... 1000
 >    vector_1[i] = vector_1[i-1] + vector_1[i-2];
@@ -125,6 +125,8 @@ The program can never run faster than the sum of the serial regions.
 >> parallel | for i in 0 ... 1000
 >>          |   vector_3[i] = vector_2[i] + vector_1[i];
 >>          |   print("The sum of the vectors is.", vector_3[i]);
+>>
+>> The first and the second loop could also run at the same time.
 >>~~~
 >>{: .output}
 >>
