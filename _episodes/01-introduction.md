@@ -137,7 +137,7 @@ Here's a more complete example:
 > * adding -std=f2008 on the command line.
 >
 > Fortran 2008 should be readable to those familiar with an earlier standard.
-> If using Fortran 77, the "use mpi" statement should be replaced by "include "mpif.h".
+> If using Fortran 77, the "use mpi" statement should be replaced by `include "mpif.h"`, which should be after `implicit none`.
 >
 >~~~
 >program hello
