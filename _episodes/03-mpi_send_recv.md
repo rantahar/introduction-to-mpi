@@ -53,7 +53,7 @@ even if MPI_Send has been called.
 > | `datatype`:     | The type of the data being sent |
 > | `destination`:  | The rank number of the rank the data will be sent to |
 > | `tag`:          | A message tag (integer) |
-> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `communicator`: | The communicator (we have used `MPI_COMM_WORLD` in earlier) |
 >
 >~~~
 > MPI_Recv(
@@ -71,7 +71,7 @@ even if MPI_Send has been called.
 > | `datatype`:     | The type of the data being received |
 > | `source`:       | The rank number of the rank sending the data |
 > | `tag`:          | A message tag (integer) |
-> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `communicator`: | The communicator (we have used `MPI_COMM_WORLD` in earlier) |
 > | `status`:       | A pointer for writing the exit status of the MPI command |
 >
 {: .prereq .foldable}
