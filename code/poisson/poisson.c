@@ -9,7 +9,7 @@
 #define MAX 100
 
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
 
   int i, j;
   float u[MAX+2][MAX+2], unew[MAX+2][MAX+2], rho[MAX+2][MAX+2];
@@ -56,8 +56,8 @@ void main(int argc, char** argv) {
     // Calculate one timestep
     for(j = 1;j <= MAX; j++){
       for(i = 1;i <= MAX; i++){
-          double difference = u[j][i-1] + u[j][i+1] + u[j-1][i] + u[j+1][i];
-	        unew[j][i] =0.25*( difference - hsq*rho[j][i] );
+          double neighbour_sum = u[j][i-1] + u[j][i+1] + u[j-1][i] + u[j+1][i];
+	  unew[j][i] =0.25*( neighbour_sum - hsq*rho[j][i] );
       }
     }
 
