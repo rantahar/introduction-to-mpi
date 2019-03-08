@@ -367,7 +367,7 @@ in the code.
 >
 >When compiling with Score-P, add `--user` to enable user defined regions.
 >~~~
->scorep --user mpif90 poisson_mpi.f99
+>scorep --user mpifort poisson_mpi.f99
 >~~~
 >
 {: .prereq .foldable}

@@ -170,7 +170,7 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
 > ## Compile
 >
-> Compile the above code with `mpicc` or `mpif90`, and run it with `mpirun`.
+> Compile the above code with `mpicc` or `mpifort`, and run it with `mpirun`.
 >
 {: .challenge}
 
