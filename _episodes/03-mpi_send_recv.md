@@ -139,7 +139,7 @@ in transit.
 >  // Check that there are two ranks
 >  MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
 >  if( n_ranks != 2 ){
->    printf("This example requires two ranks");
+>    printf("This example requires two ranks\n");
 >    MPI_Finalize();
 >    return(1);
 >  }
@@ -482,7 +482,7 @@ in transit.
 >>
 >>    // Check that there are exactly two ranks
 >>    if( n_ranks != 2 ){
->>         printf("This example requires exactly two ranks");
+>>         printf("This example requires exactly two ranks\n");
 >>         MPI_Finalize();
 >>         return(1);
 >>    }
