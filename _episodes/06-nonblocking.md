@@ -10,6 +10,8 @@ keypoints:
 - "Non-blocking functions allows interleaving communication and computation"
 ---
 
+<!-- Real time: challenges 20 minutes, all 30 minutes -->
+
 ## Non-Blocking Communication
 
 ### Send and Receive
