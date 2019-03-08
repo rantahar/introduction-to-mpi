@@ -1,7 +1,7 @@
 ---
 title: "Serial and Parallel Regions"
-teaching: 20
-exercises: 20
+teaching: 15
+exercises: 5
 questions:
 - "What is a good parallel algorithm?"
 objectives:
@@ -13,6 +13,8 @@ keypoints:
 - "The theoretical maximum speed is determined by the serial sections"
 - "The other main restriction is communication speed between the processes"
 ---
+
+<!-- Real timings: 3 minutes on challenge, 15 all together -->
 
 ## Serial and Parallel Execution
 
