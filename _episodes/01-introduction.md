@@ -76,6 +76,19 @@ To achieve this, the program needs to call the
 This will set up the environment for MPI, and assign a number (called the _rank_) to each process.
 At the end, each process should also cleanup by calling `MPI_Finalize`.
 
+In C they are called as
+{% highlight C %}
+MPI_Init(&argc, &argv);
+MPI_Finalize();
+{% endhighlight %}
+
+In Fortran they are
+{% highlight Fortran %}
+integer ierr
+call MPI_Init(ierr);
+call MPI_Finalize(ierr);
+{% endhighlight %}
+
 Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function.
 
 In C this is called as
@@ -97,12 +110,12 @@ Here's a more complete example:
 > #include <stdio.h>
 > #include <mpi.h>
 > 
-> main(int argc, char** argv) {
->   int rank, n_ranks, numbers_per_rank;
+> void main(int argc, char** argv) {
+>   int rank;
 >
 >   // First call MPI_Init
 >   MPI_Init(&argc, &argv);
->   // Get my rank and the number of ranks
+>   // Get my rank
 >   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 >
 >   printf("My rank number is = %d\n", rank);
@@ -178,6 +191,18 @@ When all ranks are doing their job, the algorithm will work correctly.
 
 Usually the rank will need to know how many other ranks there are. You can find this out using the `MPI_Comm_size` function.
 
+In C the usage is
+{% highlight C %}
+int n_ranks;
+MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+{% endhighlight %}
+
+In Fortran it is
+{% highlight Fortran %}
+integer n_ranks
+MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+{% endhighlight %}
+
 ## Hello World!
 > ## Hello World!
 >
@@ -191,8 +216,8 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> #include <stdio.h>
 >> #include <mpi.h>
 >> 
->> main(int argc, char** argv) {
->>   int rank, n_ranks, numbers_per_rank;
+>> void main(int argc, char** argv) {
+>>   int rank, n_ranks;
 >>
 >>   // First call MPI_Init
 >>   MPI_Init(&argc, &argv);
@@ -245,7 +270,7 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> ~~~
 >> #include <stdio.h>
 >> 
->> main(int argc, char** argv) {
+>> void main(int argc, char** argv) {
 >>   int numbers = 10;
 >>
 >>   for( int i=1; i<numbers; i++ ) {
@@ -281,7 +306,7 @@ Usually the rank will need to know how many other ranks there are. You can find 
 >> #include <math.h>
 >> #include <mpi.h>
 >> 
->> main(int argc, char** argv) {
+>> void main(int argc, char** argv) {
 >>   int rank, n_ranks, numbers_per_rank;
 >>   int my_first, my_last;
 >>   int numbers = 10;
