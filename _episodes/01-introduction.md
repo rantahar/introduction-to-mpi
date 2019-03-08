@@ -137,7 +137,7 @@ Here's a more complete example:
 > * adding -std=f2008 on the command line.
 >
 > Fortran 2008 should be readable to those familiar with an earlier standard.
-> If using Fortran 77, the "use mpi" statement should be replaced by `include "mpif.h"`, which should be after `implicit none`.
+> If using Fortran 90 or earlier, the "use mpi" statement should be replaced by `include "mpif.h"`, which should be after `implicit none`.
 >
 >~~~
 >program hello
@@ -274,7 +274,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>   int numbers = 10;
 >>
 >>   for( int i=1; i<numbers; i++ ) {
->>     print("I'm printing the number %d.", i);
+>>     printf("I'm printing the number %d.\n", i);
 >>   }
 >>
 >> }
@@ -325,7 +325,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>   // Run only the part of the loop this rank needs to run
 >>   // The if statement makes sure we don't go over
 >>   for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
->>     print("I'm printing the number %d.", i);
+>>     printf("I'm printing the number %d.\n", i);
 >>   }
 >>
 >>   // Call finalize at the end
