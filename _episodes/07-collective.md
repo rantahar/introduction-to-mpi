@@ -303,7 +303,7 @@ of the ranks to do the calculation.
 {: .prereq .foldable}
 
 
-`MPI_Allreduce` is performs essentially the same operations as MPI_Reduce,
+`MPI_Allreduce` is performs essentially the same operations as `MPI_Reduce`,
 but the result is sent to all the ranks.
 
 
