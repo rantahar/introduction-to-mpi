@@ -453,79 +453,83 @@ each test.
 >
 >// Calculate the sum of numbers in a vector
 >double find_sum( double * vector, int N ){
->   double sum = 0;
->   for( int i=0; i<N; i++){
->      sum += vector[i];
->   }
->   return sum;
+>  double sum = 0;
+>  for( int i=0; i<N; i++){
+>     sum += vector[i];
+>  }
+>  return sum;
 >}
 >
 >// Find the maximum of numbers in a vector
 >double find_maximum( double * vector, int N ){
->   double max = 0;
->   for( int i=0; i<N; i++){
->      if( vector[i] > max ){
->         max = vector[i];
->      }
->   }
->   return max;
+>  double max = 0;
+>  for( int i=0; i<N; i++){
+>     if( vector[i] > max ){
+>        max = vector[i];
+>     }
+>  }
+>  return max;
 >}
 >
 >
 >/* Test the sum function */
 >static void test_find_sum(void **state) {
->   double * vector = state[0];
->   int n_numbers = vector[0];
->   double sum;
+>  double * state_vector = *state;
+>  double * vector = state_vector +1;
+>  int n_numbers = state_vector[0];
+>  double sum;
 >
->   //Find the sum and check it's correct
->   sum = find_sum( vector+1, n_numbers );
->   assert_true( sum == 523776 );
+>  //Find the sum and check it's correct
+>  sum = find_sum( vector+1, n_numbers );
+>  assert_true( sum == 523776 );
 >}
 >
 >/* Test find_maximum */
 >static void test_find_maximum(void **state) {
->   double * vector = state[0];
->   int n_numbers = vector[0];
->   double max;
+>  double * state_vector = *state;
+>  double * vector = state_vector +1;
+>  int n_numbers = state_vector[0];
+>  double max;
 >
->   //Find the sum and check it's correct
->   max = find_maximum( vector+1, n_numbers );
->   assert_true( max == 1023 );
+>  //Find the sum and check it's correct
+>  max = find_maximum( vector+1, n_numbers );
+>  assert_true( max == 1023 );
 >}
 >
 >
 >static int setup(void **state)
 >{
->   int n_numbers = 1024;
->   double * vector = malloc( (n_numbers+1)*sizeof(double) );
->   state[0] = (void *) vector;
+>  int n_numbers = 1024;
+>  double * state_vector = malloc( (n_numbers+1)*sizeof(double) );
+>  state[0] = (void *) state_vector;
+>  double * vector = state_vector + 1;
 >
->   // vector[0] will contain n_numbers
->   vector[0] = n_numbers;
->   // Generate a vector
->   for( int i=0; i<n_numbers; i++){
->      vector[1+i] = i;
->   }
+>  // vector[0] will contain n_numbers
+>  state_vector[0] = n_numbers;
+>  
+>  // Generate a vector
+>  for( int i=0; i<n_numbers; i++){
+>     vector[i] = i;
+>  }
 >
->   return 0;
+>  return 0;
 >}
 >
 >static int teardown(void **state)
 >{
->   free( state[0] );
->   return 0;
+>  free( state[0] );
+>  return 0;
 >}
 >
 >int main(void) {
->   const struct CMUnitTest tests[] = {
->      cmocka_unit_test(test_find_sum),
->      cmocka_unit_test(test_find_maximum),
->   };
->   return cmocka_run_group_tests(tests, setup, teardown);
+>  const struct CMUnitTest tests[] = {
+>     cmocka_unit_test(test_find_sum),
+>     cmocka_unit_test(test_find_maximum),
+>  };
+>  return cmocka_run_group_tests(tests, setup, teardown);
 >}
 >~~~
->{: .output}
+>{: .source .language-c}
 >
 > We probably didn't save any lines of code by doing this.
 > Actually we may have added some.
