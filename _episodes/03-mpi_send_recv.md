@@ -523,7 +523,7 @@ in transit.
 >>    use mpi
 >>    implicit none
 >>     
->>    integer, parameter :: n_numbers=1048576
+>>    integer, parameter :: n_numbers=524288
 >>    integer i
 >>    integer rank, n_ranks, neighbour, ierr
 >>    integer status(MPI_STATUS_SIZE)
@@ -588,7 +588,7 @@ in transit.
 >> 
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
->>    int n_numbers = 1048576;
+>>    int n_numbers = 524288;
 >>    int send_message[n_numbers];
 >>    int recv_message[n_numbers];
 >>    MPI_Status status;
@@ -653,7 +653,7 @@ in transit.
 >>   use mpi
 >>   implicit none
 >>    
->>   integer, parameter :: n_numbers=1048576
+>>   integer, parameter :: n_numbers=524288
 >>   integer i
 >>   integer rank, n_ranks, neighbour, ierr
 >>   integer status(MPI_STATUS_SIZE)

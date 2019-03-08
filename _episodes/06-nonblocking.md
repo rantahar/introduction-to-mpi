@@ -276,7 +276,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >> 
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
->>    int n_numbers = 1048576;
+>>    int n_numbers = 524288;
 >>    int send_message[n_numbers];
 >>    int recv_message[n_numbers];
 >>    MPI_Status status;
@@ -322,7 +322,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>    use mpi
 >>    implicit none
 >>     
->>    integer, parameter :: n_numbers=1048576
+>>    integer, parameter :: n_numbers=524288
 >>    integer i
 >>    integer rank, n_ranks, neighbour, ierr
 >>    integer status(MPI_STATUS_SIZE)
@@ -377,11 +377,11 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >> 
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
->>    int n_numbers = 1048576;
+>>    int n_numbers = 524288;
 >>    int send_message[n_numbers];
 >>    int recv_message[n_numbers];
 >>    MPI_Status status;
->>    MPI_Request* request;
+>>    MPI_Request request;
 >> 
 >>    // First call MPI_Init
 >>    MPI_Init(&argc, &argv);
@@ -426,7 +426,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>   use mpi
 >>   implicit none
 >>    
->>   integer, parameter :: n_numbers=1048576
+>>   integer, parameter :: n_numbers=524288
 >>   integer i
 >>   integer rank, n_ranks, neighbour, request, ierr
 >>   integer status(MPI_STATUS_SIZE)
