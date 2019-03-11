@@ -6,7 +6,7 @@ questions:
 - "How do I run a program in parallel?"
 objectives:
 - "Introduce parallel computing."
-- "Use mpicc/mpifort and mpirun."
+- "Use `mpicc`/`mpifort` and `mpirun`."
 keypoints:
 - "Many problems can be distributed across several processors and solved faster"
 - "Mpirun runs copies of the program."
