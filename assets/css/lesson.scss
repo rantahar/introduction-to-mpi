@@ -46,6 +46,8 @@ $color-testimonial: #fc8dc1 !default;
 .python, .language-python { @include cdSetup($color-source); }
 .r, .language-r           { @include cdSetup($color-source); }
 .sql, .language-sql       { @include cdSetup($color-source); }
+.c, .language-c       { @include cdSetup($color-source); }
+.fortran, .language-fortran { @include cdSetup($color-source); }
 
 .error::before,
 .output::before,
@@ -55,7 +57,9 @@ $color-testimonial: #fc8dc1 !default;
 .matlab::before, .language-matlab::before,
 .python::before, .language-python::before,
 .r::before, .language-r::before,
-.sql::before, .language-sql::before {
+.sql::before, .language-sql::before,
+.c::before, .language-c::before,
+.fortran::before, .language-fortran::before {
   background-color: #f2eff6;
   display: block;
   font-weight: bold;
@@ -71,6 +75,8 @@ $color-testimonial: #fc8dc1 !default;
 .python::before, .language-python::before { content: "Python"; }
 .r::before, .language-r::before { content: "R"; }
 .sql::before, .language-sql::before { content: "SQL"; }
+.c::before, .language-c::before { content: "C"; }
+.fortran::before, .language-fortran::before { content: "Fortran"; }
 
 
 //----------------------------------------
