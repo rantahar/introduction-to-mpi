@@ -76,87 +76,87 @@ To achieve this, the program needs to call the
 This will set up the environment for MPI, and assign a number (called the _rank_) to each process.
 At the end, each process should also cleanup by calling `MPI_Finalize`.
 
-In C they are called as
-{% highlight C %}
+~~~
 MPI_Init(&argc, &argv);
 MPI_Finalize();
-{% endhighlight %}
+~~~
+{: .language-c .show-c}
 
-In Fortran they are
-{% highlight Fortran %}
+~~~
 integer ierr
 call MPI_Init(ierr);
 call MPI_Finalize(ierr);
-{% endhighlight %}
+~~~
+{: .language-fortran .show-fortran}
+
+
 
 Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function.
 
-In C this is called as
-{% highlight C %}
+~~~
 int rank;
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-{% endhighlight %}
+~~~
+{: .language-c .show-c}
 
-In Fortran it is
-{% highlight Fortran %}
+~~~
 integer rank
 call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
-{% endhighlight %}
+~~~
+{: .language-fortran .show-fortran}
+
 
 Here's a more complete example:
-> ## C
->
->~~~
-> #include <stdio.h>
-> #include <mpi.h>
-> 
-> int main(int argc, char** argv) {
->   int rank;
->
->   // First call MPI_Init
->   MPI_Init(&argc, &argv);
->   // Get my rank
->   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
->
->   printf("My rank number is = %d\n", rank);
->
->   // Call finalize at the end
->   MPI_Finalize();
-> }
->~~~
->{: .source .language-c}
->
-{: .prereq .foldable}
 
-> ## Fortran
+~~~
+ #include <stdio.h>
+ #include <mpi.h>
+ 
+ int main(int argc, char** argv) {
+   int rank;
+
+   // First call MPI_Init
+   MPI_Init(&argc, &argv);
+   // Get my rank
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+   printf("My rank number is = %d\n", rank);
+
+   // Call finalize at the end
+   MPI_Finalize();
+ }
+~~~
+{: .language-c .show-c}
+
+~~~
+program hello
+
+    use mpi
+    implicit none
+     
+    integer rank, ierr
+
+    call MPI_Init(ierr)
+    call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
+    write(6,*) "My rank number is ", rank
+    call MPI_Finalize(ierr)
+
+end
+~~~
+{: .source .language-fortran .show-fortran}
+
+> ## Fortran Standard
 >
-> Fortran examples, exercises and solutions in this workshop will conform to the 
-> Fortran 2008 standard.
-> The standard can be specified to the compiler in two ways:
-> * using the .f08 file extention
-> * adding -std=f2008 on the command line.
+>Fortran examples, exercises and solutions in this workshop will conform to the 
+>Fortran 2008 standard.
+>The standard can be specified to the compiler in two ways:
+>* using the .f08 file extention
+>* adding -std=f2008 on the command line.
+>Fortran 2008 should be readable to those familiar with an earlier standard.
+>If using Fortran 90 or earlier, the "use mpi" statement should be replaced by >`include "mpif.h"`, which should be after `implicit none`.
 >
-> Fortran 2008 should be readable to those familiar with an earlier standard.
-> If using Fortran 90 or earlier, the "use mpi" statement should be replaced by `include "mpif.h"`, which should be after `implicit none`.
->
->~~~
->program hello
->
->    use mpi
->    implicit none
->     
->    integer rank, ierr
->
->    call MPI_Init(ierr)
->    call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
->    write(6,*) "My rank number is ", rank
->    call MPI_Finalize(ierr)
->
->end
->~~~
->{: .source .language-fortran}
->
-{: .prereq .foldable}
+{: .callout .show-fortran}
+
 
 If you try to compile these examples with your usual C or Fortran compiler, then you
 will receive an error, since these do not link to the MPI libraries that provide the
@@ -191,17 +191,18 @@ When all ranks are doing their job, the algorithm will work correctly.
 
 Usually the rank will need to know how many other ranks there are. You can find this out using the `MPI_Comm_size` function.
 
-In C the usage is
-{% highlight C %}
+~~~
 int n_ranks;
 MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-{% endhighlight %}
+~~~
+{: .language-c .show-c}
 
-In Fortran it is
-{% highlight Fortran %}
+~~~
 integer n_ranks
 MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
-{% endhighlight %}
+~~~
+{: .language-fortran .show-fortran}
+
 
 ## Hello World!
 > ## Hello World!
@@ -210,7 +211,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 > Each copy of the program, or rank, should print "Hello World!" followed by its rank number.
 > They should also print the total number of ranks.
 >
->> ## Solution in C
+>> ## Solution
 >>
 >> ~~~
 >> #include <stdio.h>
@@ -233,7 +234,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> }
 >> ~~~
 >>{: .source .language-c}
->{: .solution}
+>{: .solution .show-c}
 > 
 >> ## Solution in Fortran
 >> ~~~
@@ -253,7 +254,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>end
 >> ~~~
 >>{: .source .language-fortran}
->{: .solution}
+>{: .solution .show-fortran}
 >
 {: .challenge}
 
@@ -265,42 +266,37 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 > Each iteration of the loop should be run by only one rank.
 > Each rank should also have more or less the same amount of work.
 > 
+> ~~~
+> #include <stdio.h>
+> 
+> int main(int argc, char** argv) {
+>   int numbers = 10;
 >
->> ## C
->> ~~~
->> #include <stdio.h>
->> 
->> int main(int argc, char** argv) {
->>   int numbers = 10;
->>
->>   for( int i=1; i<numbers; i++ ) {
->>     printf("I'm printing the number %d.\n", i);
->>   }
->>
->> }
->> ~~~
->> {: .source .language-c}
->{: .prereq .foldable}
+>   for( int i=1; i<numbers; i++ ) {
+>     printf("I'm printing the number %d.\n", i);
+>   }
 >
->> ## Fortran
->> ~~~
->>program printnumbers
->>    implicit none
->>    
->>    integer numbers, number
->>    numbers = 10
->>
->>    do number = 0, numbers - 1
->>         write(6,*) "I'm printing the number", number
->>    end do 
->>end
->> ~~~
->> {: .source .language-fortran}
->{: .prereq .foldable}
+> }
+> ~~~
+> {: .source .language-c .show-c}
+>
+> ~~~
+>program printnumbers
+>    implicit none
+>    
+>    integer numbers, number
+>    numbers = 10
+>
+>    do number = 0, numbers - 1
+>         write(6,*) "I'm printing the number", number
+>    end do 
+>end
+> ~~~
+> {: .source .language-fortran .show-fortran}
 >
 >
 >
->> ## Solution in C
+>> ## Solution
 >> ~~~
 >>#include <stdio.h>
 >>#include <math.h>
@@ -334,10 +330,10 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> ~~~
 >> {: .source .language-c}
 >>
->{: .solution}
+>{: .solution .show-c}
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >> ~~~
 >>program print_numbers
 >>
@@ -380,7 +376,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> ~~~
 >>{: .source .language-fortran}
 >>
->{: .solution}
+>{: .solution .show-fortran}
 >
 >
 {: .challenge }
@@ -390,4 +386,3 @@ The trick is in designing a working, fast and efficient parallel algorithm for y
 
 
 {% include links.md %}
-
