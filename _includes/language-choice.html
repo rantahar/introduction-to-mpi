@@ -1,0 +1,18 @@
+{% comment %}
+    Display a table of available language blocks the user can choose from
+{% endcomment %}
+
+<table class="callout table table-striped">
+    <thead>
+        <tr>
+            <th>Display Language</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+            <tbody>
+            <tr>
+                <td><label> <input type="checkbox" id="show_c_checkbox" onclick="toggle_code_display()"> Show C </label></td>
+                <td><label> <input type="checkbox" id="show_fortran_checkbox" onclick="toggle_code_display()"> Show Fortran </label></td>
+            </tr>
+    </tbody>
+</table>

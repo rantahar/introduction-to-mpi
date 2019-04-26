@@ -12,3 +12,35 @@
   ga('create', 'UA-37305346-2', 'auto');
   ga('send', 'pageview');
 </script>
+
+{% comment %}
+Toggle between showing code in different languages using a show-language class
+{% endcomment %}
+<script>
+  function toggle_code_display() {
+    // If the checkbox is checked, display the code block
+    if ($("#show_c_checkbox")[0].checked == true){
+      $(".show-c").show()
+    } else {
+      $(".show-c").hide()
+    }
+    localStorage.setItem('show-c', $("#show_c_checkbox")[0].checked);
+  
+    if ($("#show_fortran_checkbox")[0].checked == true){
+      $(".show-fortran").show()
+    } else {
+      $(".show-fortran").hide()
+    }
+    localStorage.setItem('show-fortran', $("#show_fortran_checkbox")[0].checked);
+  }
+  
+  //Load the checkbox states from local storage and apply
+  if(localStorage.getItem("show-c") == "true"){
+    $("#show_c_checkbox").prop('checked', true);
+  }
+  if(localStorage.getItem("show-fortran") == "true"){
+    $("#show_fortran_checkbox").prop('checked', true);
+  }
+  toggle_code_display();
+</script>
+  
