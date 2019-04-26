@@ -1,7 +1,7 @@
 ---
 title: "Profiling Parallel Applications"
-teaching: 30
-exercises: 30
+teaching: 40
+exercises: 40
 questions:
 - "It works, what is taking time?"
 objectives:
