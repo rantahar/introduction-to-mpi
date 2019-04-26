@@ -1,7 +1,7 @@
 ---
 title: "Non-blocking Communication"
 teaching: 10
-exercises: 10
+exercises: 20
 questions:
 - "How do I interleave communication and computation?"
 objectives:

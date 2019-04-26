@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Parallel Computing"
-teaching: 20
+teaching: 25
 exercises: 20
 questions:
 - "How do I run a program in parallel?"
@@ -12,8 +12,6 @@ keypoints:
 - "Mpirun runs copies of the program."
 - "The copies are separated MPI rank"
 ---
-
-<!-- Real time, challenges 20, all together 45 -->
 
 ## Parallel Computing
 

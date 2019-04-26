@@ -1,6 +1,6 @@
 ---
 title: "MPI_Send and MPI_Recv"
-teaching: 10
+teaching: 5
 exercises: 20
 questions:
 - "How do I send data from one rank to another"
