@@ -14,7 +14,6 @@ keypoints:
 - "Several standard patterns: Trivial, Queue, Master / Worker, Domain Decomposition, All-to-All"
 ---
 
-<!-- Actual time, challenge 0, all 13 -->
 
 ## Parallel Paradigms
 
@@ -35,25 +34,25 @@ Sometimes, one has to use both!
 
 Consider a simple loop which can be sped up if we have many CPUs (or cores) for illustration.
 
-{% highlight Fortran %}
+~~~
 do i=1,N
 
   a(i) = b(i) + c(i)
   
 enddo
-{% endhighlight %}
+~~~
+{: .language-fortran .show-fortran}
 
-in Fortran, and
-
-{% highlight C %}
+~~~
 for(i=0; i<N; i++) {
 
   a[i] = b[i] + c[i];
     
 }
-{% endhighlight %}
+~~~
+{: .language-c .show-c}
 
-in C. If we have $N$ CPUs (or cores), each element of the loop can be computed in just one step
+If we have $N$ CPUs (or cores), each element of the loop can be computed in just one step
 (for a factor of $N$ speed-up).
 
 ### Data Parallel
@@ -61,7 +60,7 @@ in C. If we have $N$ CPUs (or cores), each element of the loop can be computed i
 One standard method for programming in data parallel fashion is called "OpenMP" (for "Open MultiProcessing").
 To understand what data parallel means, let's consider the following bit of OpenMP code which parallelizes the above loop.
 
-{% highlight Fortran %}
+~~~
 !$omp parallel do
 
 do i=1,N
@@ -69,11 +68,10 @@ do i=1,N
   a(i) = b(i) + c(i)
   
 enddo
-{% endhighlight %}
+~~~
+{: .language-fortran .show-fortran}
 
-in Fortran, and
-
-{% highlight C %}
+~~~
 #pragma omp parallel for
 
 for(i=0; i<N; i++) {
@@ -81,9 +79,8 @@ for(i=0; i<N; i++) {
   a[i] = b[i] + c[i];
     
 }
-{% endhighlight %}
-
-in C.
+~~~
+{: .language-c .show-c}
 
 In both languages, parallelization is achieved by just one additional line which is handled by the preprocessor
 (`!$` in Fortran and `#` in C) in the compile stage. This is possible since the computer system architecture
@@ -99,25 +96,23 @@ In the message passing paradigm, each processor runs its own program and works o
 To work on the same problem in parallel, they communicate by sending messages to each other. 
 Again using the above example, each CPU (or core) runs the same program over a portion of the data, as
 
-{% highlight Fortran %}
+~~~
 do i=1,m
 
   a(i) = b(i) + c(i)
   
 enddo
-{% endhighlight %}
+~~~
+{: .language-c .show-c}
 
-in Fortran, and
-
-{% highlight C %}
+~~~
 for(i=0; i<m; i++) {
 
   a[i] = b[i] + c[i];
 
 }
-{% endhighlight %}
-
-in C.
+~~~
+{: .language-fortran .show-fortran}
 
 Other than changing the number of loops from `N` to `m`, the code is exactly the same. Here, `m`
 is the reduced number of loops each CPU (or core) needs to do (if there are `N` CPUs (or cores), `m` is 1 (= `N`/`N`)).
