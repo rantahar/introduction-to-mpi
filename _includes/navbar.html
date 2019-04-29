@@ -16,7 +16,7 @@
 
       {% comment %} Select what logo to display. {% endcomment %}
       {% if site.carpentry == "swc" %}
-      <a href="{{ site.swc_site }}" class="pull-left">
+      <a href="{{ site.swc_site }}" class="pull-left"> {{ site.carpentry }}
         <img class="navbar-logo" src="{{ relative_root_path }}{% link /assets/img/swc-icon-blue.svg %}" alt="Software Carpentry logo" />
       </a>
       {% elsif site.carpentry == "dc" %}
@@ -30,6 +30,10 @@
       {% elsif site.carpentry == "cp" %}
       <a href="{{ site.carpentries_site }}" class="pull-left">
         <img class="navbar-logo" src="{{ relative_root_path }}{% link /assets/img/cp-logo-blue.svg %}" alt="The Carpentries logo" />
+      </a>
+      {% elsif site.carpentry == "sa2c" %}
+      <a href="{{ site.sa2c_site }}" class="pull-left">
+        <img class="navbar-logo" src="{{ relative_root_path }}{% link /assets/img/sa2c-logo.svg %}" alt="The SA2C logo" />
       </a>
       {% endif %}
 
