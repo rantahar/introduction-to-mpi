@@ -10,8 +10,6 @@ keypoints:
 - "Non-blocking functions allows interleaving communication and computation"
 ---
 
-<!-- Real time: challenges 20 minutes, all 30 minutes -->
-
 ## Non-Blocking Communication
 
 ### Send and Receive
@@ -34,7 +32,7 @@ the receiving buffer, but the program is free to continue with other operations.
 When it needs the data in the buffers, it needs to make sure the communication process
 is complete using the `MPI_Wait` and `MPI_Test` functions.
 
-> ## `MPI_Isend` and `MPI_Irecv` in C
+> ## `MPI_Isend`
 >
 >~~~
 > MPI_Isend(
@@ -54,7 +52,9 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `tag`:          | A message tag (integer) |
 > | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
 > | `request`:      | Pointer for writing the request structure |
->
+{: .callout .show-c}
+
+> ## `MPI_Irecv`
 >~~~
 > MPI_Irecv(
 >    void* data,
@@ -74,9 +74,9 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
 > | `request`:      | Pointer for writing the request structure |
 >
-{: .prereq .foldable}
+{: .callout .show-c}
 
-> ## `MPI_Isend` and `MPI_Irecv` in Fortran
+> ## `MPI_Isend`
 >
 >~~~
 > MPI_Isend(BUF, COUNT, DATATYPE, DEST, TAG, COMM, REQUEST, IERROR)
@@ -93,6 +93,9 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `REQUEST`:  | Request handle |
 > | `IERROR`:   | Error status |
 >
+{: .callout .show-fortran}
+
+> ## `MPI_Irecv`
 >~~~
 > MPI_Irecv(BUF, COUNT, DATATYPE, SOURCE, TAG, COMM, REQUEST, IERROR)
 >    <type>    BUF(*)
@@ -109,7 +112,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `REQUEST`:  | Request handle                                            |
 > | `IERROR`:   | Error status |
 >
-{: .prereq .foldable}
+{: .callout .show-fortran}
 
 There's one new parameter here, a request.
 This is used to keep track of each separate transfer started by the program.
@@ -117,13 +120,13 @@ You can use it to check the status of a transfer using the `MPI_Test` function,
 or call `MPI_Wait` to wait until the transfer is complete.
 
 
-### Test and Wait
+## Test and Wait
 
 `MPI_Test` will return the status of the transfer specified by a request and
 `MPI_Wait` will wait until the transfer is complete before returning.
 The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
 
-> ## `MPI_Test` and `MPI_Wait` in C
+> ## `MPI_Test`
 >
 >~~~
 > MPI_Test(
@@ -135,7 +138,9 @@ The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
 > | `request`:      | The request |
 > | `flag`:         | Pointer for writing the result of the test |
 > | `status`:       | A pointer for writing the exit status of the MPI command |
->
+{: .callout .show-c}
+
+> ## `MPI_Wait`
 >~~~
 > MPI_Wait(
 >    MPI_Request* request,
@@ -145,9 +150,9 @@ The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
 > | `request`:      | The request |
 > | `status`:       | A pointer for writing the exit status of the MPI command |
 >
-{: .prereq .foldable}
+{: .callout .show-c}
 
-> ## `MPI_Test` and `MPI_Wait` in Fortran
+> ## `MPI_Test`
 >
 >~~~
 > MPI_TEST(REQUEST, FLAG, STATUS, IERROR)
@@ -159,7 +164,9 @@ The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
 > | `FLAG`:     | Pointer for writing the result of the test |
 > | `STATUS`:   | A pointer for writing the exit status of the MPI command |
 > | `IERROR`:   | Error status |
->
+{: .callout .show-fortran}
+
+> ## `MPI_Wait`
 >~~~
 >MPI_WAIT(REQUEST, STATUS, IERROR)
 >    INTEGER    REQUEST, STATUS(MPI_STATUS_SIZE), IERROR
@@ -169,100 +176,98 @@ The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
 > | `STATUS`:   | A pointer for writing the exit status of the MPI command |
 > | `IERROR`:   | Error status |
 >
-{: .prereq .foldable}
+{: .callout .show-fortran}
 
 
 ### Examples
 
 These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
+Here is how you could replace MPI_Send and MPI_Recv in the program that
+sends the "Hello World!" string by MPI_ISend, MPI_IRecv and MPI_Wait.
 
-> ## Example in C
-> ~~~
-> #include <stdio.h>
-> #include <mpi.h>
->
-> int main(int argc, char** argv) {
->   int rank, n_ranks;
->   int my_first, my_last;
->   int numbers = 10;
->   MPI_Request request;
->
->   // First call MPI_Init
->   MPI_Init(&argc, &argv);
->
->   // Check that there are at least two ranks
->   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
->   if( n_ranks < 2 ){
->     printf("This example requires at least two ranks");
->     MPI_Finalize();
->     return(1);
->   }
->   
->   // Get my rank
->   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
->
->   if( rank == 0 ){
->      char *message = "Hello, world!\n";
->      MPI_Isend(message, 14, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &request);
->   }
->
->   if( rank == 1 ){
->      char message[14];
->      MPI_Status status;
->      MPI_Irecv(message, 14, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &request);
->      MPI_Wait( &request, &status );
->      printf("%s",message);
->   }
->   
->   // Call finalize at the end
->   MPI_Finalize();
-> }
-> ~~~
->{: .source .language-c}
-{: .prereq .foldable}
+~~~
+#include <stdio.h>
+#include <mpi.h>
 
-> ## Example in Fortran
-> ~~~
->program hello
->
->     use mpi
->     implicit none
->     
->     integer rank, n_ranks, request, ierr
->     integer status(MPI_STATUS_SIZE)
->     character(len=13)  message
->
->     ! First call MPI_Init
->     call MPI_Init(ierr)
->
->     ! Check that there are at least two ranks
->     call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
->     if (n_ranks < 2) then
->          write(6,*) "This example requires at least two ranks"
->          error stop
->     end if
->
->     ! Get my rank
->     call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
->
->     if (rank == 0) then
->          message = "Hello, world!"
->          call MPI_Isend( message, 13, MPI_CHARACTER, 1, 0, MPI_COMM_WORLD, request, ierr )
->     end if
->
->     if (rank == 1) then
->          call MPI_Irecv( message, 13, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, request, ierr )
->          call MPI_WAIT( request, status, ierr )
->          write(6,*) message
->     end if
->
->     ! Call MPI_Finalize at the end
->     call MPI_Finalize(ierr)
->end
-> ~~~
->{: .source .language-fortran}
->
-{: .prereq .foldable}
+int main(int argc, char** argv) {
+  int rank, n_ranks;
+  int my_first, my_last;
+  int numbers = 10;
+  MPI_Request request;
+
+  // First call MPI_Init
+  MPI_Init(&argc, &argv);
+
+  // Check that there are at least two ranks
+  MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
+  if( n_ranks < 2 ){
+    printf("This example requires at least two ranks");
+    MPI_Finalize();
+    return(1);
+  }
+   
+  // Get my rank
+  MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+
+  if( rank == 0 ){
+     char *message = "Hello, world!\n";
+     MPI_Isend(message, 14, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &request);
+  }
+
+  if( rank == 1 ){
+     char message[14];
+     MPI_Status status;
+     MPI_Irecv(message, 14, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &request);
+     MPI_Wait( &request, &status );
+     printf("%s",message);
+  }
+   
+  // Call finalize at the end
+  MPI_Finalize();
+}
+~~~
+{: .source .language-c .show-c}
+
+
+~~~
+program hello
+
+    use mpi
+    implicit none
+     
+    integer rank, n_ranks, request, ierr
+    integer status(MPI_STATUS_SIZE)
+    character(len=13)  message
+
+    ! First call MPI_Init
+    call MPI_Init(ierr)
+
+    ! Check that there are at least two ranks
+    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
+    if (n_ranks < 2) then
+        write(6,*) "This example requires at least two ranks"
+        error stop
+    end if
+
+    ! Get my rank
+    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+
+    if (rank == 0) then
+        message = "Hello, world!"
+        call MPI_Isend( message, 13, MPI_CHARACTER, 1, 0, MPI_COMM_WORLD, request, ierr )
+    end if
+
+    if (rank == 1) then
+        call MPI_Irecv( message, 13, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD, request, ierr )
+        call MPI_WAIT( request, status, ierr )
+        write(6,*) message
+    end if
+
+    ! Call MPI_Finalize at the end
+    call MPI_Finalize(ierr)
+end
+~~~
+{: .source .language-fortran .show-fortran}
 
 
 
@@ -271,104 +276,100 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 > Here is the blocking example again.
 > Fix the problem using `MPI_Isend`, `MPI_Irecv` and `MPI_Wait`.
 >
->> ## C
->> ~~~
->> #include <stdio.h>
->> #include <mpi.h>
->> 
->> int main(int argc, char** argv) {
->>    int rank, n_ranks, neighbour;
->>    int n_numbers = 524288;
->>    int send_message[n_numbers];
->>    int recv_message[n_numbers];
->>    MPI_Status status;
->> 
->>    // First call MPI_Init
->>    MPI_Init(&argc, &argv);
->> 
->>    // Get my rank and the number of ranks
->>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
->>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
->> 
->>    // Call the other rank the neighbour
->>    if( rank == 0 ){
->>       neighbour = 1;      
->>    } else {
->>       neighbour = 0;
->>    }
->> 
->>    // Generate numbers to send
->>    for( int i=0; i<n_numbers; i++){
->>       send_message[i] = i;
->>    }
->> 
->>    // Send the message to other rank
->>    MPI_Send(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
->> 
->>    // Receive the message from the other rank
->>    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
->>    printf("Message received by rank %d \n", rank);
->> 
->>    // Call finalize at the end
->>    MPI_Finalize();
->> }
->> ~~~
->> {: .source .language-c}
->{: .prereq .foldable}
+> ~~~
+> #include <stdio.h>
+> #include <mpi.h>
+> 
+> int main(int argc, char** argv) {
+>    int rank, n_ranks, neighbour;
+>    int n_numbers = 524288;
+>    int send_message[n_numbers];
+>    int recv_message[n_numbers];
+>    MPI_Status status;
+> 
+>    // First call MPI_Init
+>    MPI_Init(&argc, &argv);
+> 
+>    // Get my rank and the number of ranks
+>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+> 
+>    // Call the other rank the neighbour
+>    if( rank == 0 ){
+>       neighbour = 1;      
+>    } else {
+>       neighbour = 0;
+>    }
+> 
+>    // Generate numbers to send
+>    for( int i=0; i<n_numbers; i++){
+>       send_message[i] = i;
+>    }
+> 
+>    // Send the message to other rank
+>    MPI_Send(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
+> 
+>    // Receive the message from the other rank
+>    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
+>    printf("Message received by rank %d \n", rank);
+> 
+>    // Call finalize at the end
+>    MPI_Finalize();
+> }
+> ~~~
+> {: .source .language-c .show-c}
 >
 >
->> ## Fortran
->> ~~~
->>program hello
->>
->>    use mpi
->>    implicit none
->>     
->>    integer, parameter :: n_numbers=524288
->>    integer i
->>    integer rank, n_ranks, neighbour, ierr
->>    integer status(MPI_STATUS_SIZE)
->>    integer send_message(n_numbers)
->>    integer recv_message(n_numbers)
->>
->>    ! First call MPI_Init
->>    call MPI_Init(ierr)
->>
->>    ! Get my rank and the number of ranks
->>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
->>    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
->>
->>    ! Check that there are exactly two ranks
->>    if (n_ranks .NE. 2) then
->>         write(6,*) "This example requires exactly two ranks"
->>         error stop
->>    end if
->>
->>    ! Call the other rank the neighbour
->>    if (rank == 0) then
->>        neighbour = 1
->>    else
->>        neighbour = 0
->>    end if
->>
->>    ! Generate numbers to send
->>    do i = 1, n_numbers
->>        send_message(i) = i;
->>    end do
->>
->>    ! Send the message to other rank
->>    call MPI_Send( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
->>
->>    ! Receive the message from the other rank
->>    call MPI_Recv( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
->>    write(6,*) "Message received by rank", rank
->>
->>    ! Call MPI_Finalize at the end
->>    call MPI_Finalize(ierr)
->>end
->> ~~~
->>{: .source .language-fortran}
-> {: .prereq .foldable}
+>~~~
+>program hello
+>
+>    use mpi
+>    implicit none
+>     
+>    integer, parameter :: n_numbers=524288
+>    integer i
+>    integer rank, n_ranks, neighbour, ierr
+>    integer status(MPI_STATUS_SIZE)
+>    integer send_message(n_numbers)
+>    integer recv_message(n_numbers)
+>
+>    ! First call MPI_Init
+>    call MPI_Init(ierr)
+>
+>    ! Get my rank and the number of ranks
+>    call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+>    call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
+>
+>    ! Check that there are exactly two ranks
+>    if (n_ranks .NE. 2) then
+>         write(6,*) "This example requires exactly two ranks"
+>         error stop
+>    end if
+>
+>    ! Call the other rank the neighbour
+>    if (rank == 0) then
+>        neighbour = 1
+>    else
+>        neighbour = 0
+>    end if
+>
+>    ! Generate numbers to send
+>    do i = 1, n_numbers
+>        send_message(i) = i;
+>    end do
+>
+>    ! Send the message to other rank
+>    call MPI_Send( send_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
+>
+>    ! Receive the message from the other rank
+>    call MPI_Recv( recv_message, n_numbers, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, status, ierr )
+>    write(6,*) "Message received by rank", rank
+>
+>    ! Call MPI_Finalize at the end
+>    call MPI_Finalize(ierr)
+>end
+>~~~
+>{: .source .language-fortran .show-fortran}
 >
 >
 >> ## Solution in C
@@ -417,7 +418,7 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >> }
 >> ~~~
 >>{: .source .language-c}
->{: .solution}
+>{: .solution .show-c}
 >
 >
 >> ## Solution in Fortran
@@ -472,8 +473,8 @@ These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
 >>   call MPI_Finalize(ierr)
 >>end
 >> ~~~
->>{: .source .language-c}
->{: .solution}
+>>{: .source .language-fortran}
+>{: .solution .show-fortran}
 >
 >
 {: .challenge}
