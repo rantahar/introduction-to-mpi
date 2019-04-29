@@ -14,7 +14,6 @@ keypoints:
 - "The other main restriction is communication speed between the processes"
 ---
 
-<!-- Real timings: 3 minutes on challenge, 15 all together -->
 
 ## Serial and Parallel Execution
 
@@ -77,6 +76,7 @@ sum = 0
 for number in numbers
    sum = sum + number
 ~~~
+{: .source}
 This is a very bad parallel algorithm!
 Every step, or iteration of the for loop, uses the same sum variable.
 To execute a step, the program needs to know the sum from the previous step.
@@ -112,7 +112,7 @@ The program can never run faster than the sum of the serial regions.
 >    vector_3[i] = vector_2[i] + vector_1[i];
 >    print("The sum of the vectors is.", vector_3[i]);
 >~~~
->{: .output}
+>{: .source}
 >
 >>## Solution
 >>~~~
@@ -130,7 +130,7 @@ The program can never run faster than the sum of the serial regions.
 >>
 >> The first and the second loop could also run at the same time.
 >>~~~
->>{: .output}
+>>{: .source}
 >>
 >> In the first loop, every iteration depends on data from the previous two.
 >> In the second two loops, nothing in a step depens on any of the other steps.
@@ -185,6 +185,7 @@ Consider a part of a program such as
   if(y < x) then stop;
   otherwise continue;
 ~~~
+{: .source }
 
 In a one CPU situation, there is no problem executing this part of the program and the program runs without
 stopping since the `if` statement is always false. Now, what if there are multiple CPUs (or cores) and
