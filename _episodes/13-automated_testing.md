@@ -1,5 +1,5 @@
 ---
-title: "Testing Parallel Software"
+title: "Automated Testing"
 teaching: 20
 exercises: 30
 questions:
@@ -53,51 +53,50 @@ and test these separately.
 {: .callout}
 
 
-> ## Unit testing in C
->
+## Unit testing
+
 > In the following examples and challenges we use the Cmocka unit testing framework.
 > Testing frameworks in general use similar concepts and any lessons learned here
 > can be applied to any framework.
->
-> Make sure you have the Cmocka library installed. Take a look at the [setup]({{ page.root }}{% link setup.md %}) for details.
+> 
+> Make sure you have the Cmocka library installed. Take a look at the
+> [setup page]({{ page.root }}{% link setup.md %}) for details.
 > 
 > Here's an simple example of a test suite with a single test:
->
->~~~
->#include <stdarg.h>
->#include <stddef.h>
->#include <setjmp.h>
->#include <cmocka.h>
->
->/* A test that checks if 1 is true */
->static void test_1_true(void **state) {
->   assert_true(1);
->}
->
->/* In the main function create the list of the tests */
->int main(void) {
->   const struct CMUnitTest tests[] = {
->      cmocka_unit_test(test_1_true),
->   };
->
->   // Call a library function that will run the tests
->   return cmocka_run_group_tests(tests, NULL, NULL);
->}
->~~~
+> 
+> ~~~
+> #include <stdarg.h>
+> #include <stddef.h>
+> #include <setjmp.h>
+> #include <cmocka.h>
+> 
+> /* A test that checks if 1 is true */
+> static void test_1_true(void **state) {
+>    assert_true(1);
+> }
+> 
+> /* In the main function create the list of the tests */
+> int main(void) {
+>    const struct CMUnitTest tests[] = {
+>       cmocka_unit_test(test_1_true),
+>    };
+> 
+>    // Call a library function that will run the tests
+>    return cmocka_run_group_tests(tests, NULL, NULL);
+> }
+> ~~~
 > {: .source .language-c}
->
+> 
 > Try compiling this using
 > ~~~
 > gcc file_name.c -lcmocka
 > ~~~
->{: .language-bash}
+> {: .language-bash}
 > and running the resulting binary.
->
-{: .prereq .foldable}
+> 
+{: .noborder .show-c}
 
 
-> ## Unit testing in Fortran
->
 > In the following examples and challenges we use the FRUIT unit testing framework.
 > Testing frameworks in general use similar concepts and any lessons learned here
 > can be applied to any framework.
@@ -156,7 +155,7 @@ and test these separately.
 >
 > The program will run our little test and produce some statistics about it.
 >
-{: .prereq .foldable}
+{: .noborder .show-fortran}
 
 
 ## Test suites automate and simplify testing
@@ -174,68 +173,64 @@ This way you know exactly where in your code the problem is.
 
 > ## Tests
 >
-> This example code tests the find_sum function from a previous example.
+> The following example code tests the find_sum function from a previous example.
 >
->> ## C
->>~~~
->>#include <stdarg.h>
->>#include <stddef.h>
->>#include <setjmp.h>
->>#include <cmocka.h>
->>#include <stdio.h>
->>
->>// Calculate the sum of numbers in a vector
->>double find_sum( double * vector, int N ){
->>   double sum = 0;
->>   for( int i=0; i<N; i++){
->>      sum += vector[i];
->>   }
->>   return sum;
->>}
->>
->>// Find the maximum of numbers in a vector
->>double find_maximum( double * vector, int N ){
->>   double max = 0;
->>   for( int i=0; i<N; i++){
->>      if( vector[i] > max ){
->>         max = vector[i];
->>      }
->>   }
->>   return max;
->>}
->>
->>
->>/* Test the find_sum function */
->>static void test_find_sum(void **state) {
->>   int n_numbers = 1024;
->>   double vector[n_numbers];
->>   double sum;
->>
->>   // Generate a vector
->>   for( int i=0; i<n_numbers; i++){
->>      vector[i] = i;
->>   }
->>
->>   //Find the sum and check it's correct
->>   sum = find_sum( vector, n_numbers );
->>   assert_true( sum == 523776 );
->>}
->>
->>
->>int main(void) {
->>   const struct CMUnitTest tests[] = {
->>      cmocka_unit_test(test_find_sum),
->>   };
->>   return cmocka_run_group_tests(tests, NULL, NULL);
->>} 
->>~~~
->>{: .source .language-c}
->{: .prereq .foldable}
+>~~~
+>#include <stdarg.h>
+>#include <stddef.h>
+>#include <setjmp.h>
+>#include <cmocka.h>
+>#include <stdio.h>
+>
+>// Calculate the sum of numbers in a vector
+>double find_sum( double * vector, int N ){
+>   double sum = 0;
+>   for( int i=0; i<N; i++){
+>      sum += vector[i];
+>   }
+>   return sum;
+>}
+>
+>// Find the maximum of numbers in a vector
+>double find_maximum( double * vector, int N ){
+>   double max = 0;
+>   for( int i=0; i<N; i++){
+>      if( vector[i] > max ){
+>         max = vector[i];
+>      }
+>   }
+>   return max;
+>}
 >
 >
->>## Fortran
->>
->> Test module:
+>/* Test the find_sum function */
+>static void test_find_sum(void **state) {
+>   int n_numbers = 1024;
+>   double vector[n_numbers];
+>   double sum;
+>
+>   // Generate a vector
+>   for( int i=0; i<n_numbers; i++){
+>      vector[i] = i;
+>   }
+>
+>   //Find the sum and check it's correct
+>   sum = find_sum( vector, n_numbers );
+>   assert_true( sum == 523776 );
+>}
+>
+>
+>int main(void) {
+>   const struct CMUnitTest tests[] = {
+>      cmocka_unit_test(test_find_sum),
+>   };
+>   return cmocka_run_group_tests(tests, NULL, NULL);
+>} 
+>~~~
+>{: .source .language-c .show-c}
+>
+>
+>>Test module:
 >>~~~
 >>module example_test
 >>  use fruit
@@ -304,7 +299,7 @@ This way you know exactly where in your code the problem is.
 >>end program fruit_driver
 >>~~~
 >>{: .source .language-fortran}
->{: .prereq .foldable}
+>{: .noborder .show-fortran}
 >
 >
 >
@@ -381,7 +376,7 @@ This way you know exactly where in your code the problem is.
 >>}
 >>~~~
 >>{: .source .language-c}
->{: .solution}
+>{: .solution .show-c}
 >
 >
 >> ## Solution in Fortran
@@ -418,7 +413,7 @@ This way you know exactly where in your code the problem is.
 >>end program fruit_driver
 >>~~~
 >>{: .source .language-fortran}
->{: .solution}
+>{: .solution .show-fortran}
 >
 {: .challenge}
 
@@ -434,8 +429,6 @@ Doing these separately in each test results in a lot of repeated code.
 This can be avoided using setup and teardown routines, run before and after
 each test.
 
->## Setup and Teardown in Cmocka
->
 > The groups in Cmocka exist simplify running multiple tests with similar inputs
 > or environments.
 > In solution to the exercise we added both tests to the same group and
@@ -536,7 +529,7 @@ each test.
 > But in a longer set of tests, this can save a lot of coding
 > and allows you to change all of the tests at once.
 >
-{: .prereq .foldable}
+{: .noborder .show-c}
 
 >## Setup and Teardown in FRUIT
 >
@@ -623,7 +616,7 @@ each test.
 > It's well worth looking into the features of this tool if you plan to
 > develop in Fortran.
 >
-{: .prereq .foldable}
+{: .noborder .show-fortran}
 
 You will notice that most test consist of three parts.
 First they set up the inputs and the environment to mock how the function
@@ -642,129 +635,125 @@ If an assert is triggered, `MPI_Finalize` may not be run, which could in turn ru
 the rest of the tests.
 Instead call them either in the setup and teardown functions or in the main program.
 
-> ## Example in C
-> ~~~
->#include <stdarg.h>
->#include <stddef.h>
->#include <setjmp.h>
->#include <cmocka.h>
->#include <stdio.h>
->#include <mpi.h>
->#include <stdlib.h>
->
->// Calculate the sum of numbers in a vector
->double find_sum( double * vector, int N ){
->   double sum = 0;
->   double global_sum;
->
->   // Calculate the sum on this rank as befor
->   for( int i=0; i<N; i++){
->      sum += vector[i];
->   }
->
->   // Call MPI_Allreduce to find the full sum
->   MPI_Allreduce( &sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
->
->   return global_sum;
->}
->
->// Find the maximum of numbers in a vector
->double find_maximum( double * vector, int N ){
->   double max = 0;
->   double global_max;
->
->   // Calculate the maximum on this rank as before
->   for( int i=0; i<N; i++){
->      if( vector[i] > max ){
->         max = vector[i];
->      }
->   }
->
->   // Call MPI_Allreduce to find the maximum over all the ranks
->   MPI_Allreduce( &max, &global_max, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
->
->   return global_max;
->}
->
->
->/* Test the find_maximum function */
->static void test_find_maximum(void **state) {
->   double * state_vector, * vector;
->   state_vector = state[0];
->   vector = state_vector+1;
->   int n_numbers = state_vector[0];
->   double max;
->   int n_ranks;
->
->   //Find the sum and check it's correct
->   max = find_maximum( vector+1, n_numbers );
->
->   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
->
->   assert_true( max == n_ranks*n_numbers - 1 );
->}
->
->
->static int setup(void **state)
->{
->   int n_numbers = 1024;
->   int rank, my_first_number;
->   double * state_vector, * vector;
->   
->   // Start by calling MPI_Init with mocked input
->   char *argv[] = {"mpi_test"};
->   int argc = 1;
->   MPI_Init(&argc, (char ***) &argv);
->   
->   state_vector = malloc( (n_numbers+1)*sizeof(double) );
->   state[0] = (void *) state_vector;
->   vector = state_vector + 1;
->
->   // vector[0] will contain n_numbers
->   state_vector[0] = n_numbers;
->
->   // Each rank will have n_numbers numbers,
->   // starting from where the previous left
->   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
->   my_first_number = n_numbers*rank;
->
->   // Generate a vector
->   for( int i=0; i<n_numbers; i++){
->      vector[i] = my_first_number + i;
->   }
->
->   return 0;
->}
->
->static int teardown(void **state)
->{
->   free( state[0] );
->
->   // End by calling MPI_Finalize
->   MPI_Finalize();
->
->   return 0;
->}
->
->
->int main(int argc, char** argv) {
->   int cmocka_return_code;
->
->   const struct CMUnitTest tests[] = {
->      cmocka_unit_test(test_find_maximum),
->   };
->   
->   cmocka_return_code = cmocka_run_group_tests(tests, setup, teardown);
->
->   return cmocka_return_code;
->}
-> ~~~
->{: .source .language-c}
-{: .callout .foldable}
+~~~
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
+#include <stdio.h>
+#include <mpi.h>
+#include <stdlib.h>
+
+// Calculate the sum of numbers in a vector
+double find_sum( double * vector, int N ){
+   double sum = 0;
+   double global_sum;
+
+   // Calculate the sum on this rank as befor
+   for( int i=0; i<N; i++){
+      sum += vector[i];
+   }
+
+   // Call MPI_Allreduce to find the full sum
+   MPI_Allreduce( &sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD );
+
+   return global_sum;
+}
+
+// Find the maximum of numbers in a vector
+double find_maximum( double * vector, int N ){
+   double max = 0;
+   double global_max;
+
+   // Calculate the maximum on this rank as before
+   for( int i=0; i<N; i++){
+      if( vector[i] > max ){
+         max = vector[i];
+      }
+   }
+
+   // Call MPI_Allreduce to find the maximum over all the ranks
+   MPI_Allreduce( &max, &global_max, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
+
+   return global_max;
+}
 
 
-> ## Example in Fortran
->
+/* Test the find_maximum function */
+static void test_find_maximum(void **state) {
+   double * state_vector, * vector;
+   state_vector = state[0];
+   vector = state_vector+1;
+   int n_numbers = state_vector[0];
+   double max;
+   int n_ranks;
+
+   //Find the sum and check it's correct
+   max = find_maximum( vector+1, n_numbers );
+
+   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+
+   assert_true( max == n_ranks*n_numbers - 1 );
+}
+
+
+static int setup(void **state)
+{
+   int n_numbers = 1024;
+   int rank, my_first_number;
+   double * state_vector, * vector;
+   
+   // Start by calling MPI_Init with mocked input
+   char *argv[] = {"mpi_test"};
+   int argc = 1;
+   MPI_Init(&argc, (char ***) &argv);
+   
+   state_vector = malloc( (n_numbers+1)*sizeof(double) );
+   state[0] = (void *) state_vector;
+   vector = state_vector + 1;
+
+   // vector[0] will contain n_numbers
+   state_vector[0] = n_numbers;
+
+   // Each rank will have n_numbers numbers,
+   // starting from where the previous left
+   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   my_first_number = n_numbers*rank;
+
+   // Generate a vector
+   for( int i=0; i<n_numbers; i++){
+      vector[i] = my_first_number + i;
+   }
+
+   return 0;
+}
+
+static int teardown(void **state)
+{
+   free( state[0] );
+
+   // End by calling MPI_Finalize
+   MPI_Finalize();
+
+   return 0;
+}
+
+
+int main(int argc, char** argv) {
+   int cmocka_return_code;
+
+   const struct CMUnitTest tests[] = {
+      cmocka_unit_test(test_find_maximum),
+   };
+   
+   cmocka_return_code = cmocka_run_group_tests(tests, setup, teardown);
+
+   return cmocka_return_code;
+}
+ ~~~
+{: .source .language-c .show-c}
+
+
 > Test module:
 > ~~~
 >module example_test
@@ -885,14 +874,14 @@ Instead call them either in the setup and teardown functions or in the main prog
 >end program fruit_driver
 >~~~
 >{: .source .language-fortran}
-{: .callout .foldable}
+{: .noborder .show-fortran}
 
 > ## Testing MPI
 >
 > Implement a test of the `find_sum` function in the above example
 >
 >
->> ## Solution in C
+>> ## Solution
 >> The test function:
 >> ~~~
 >>/* Test the find_sum_ function */
@@ -935,10 +924,10 @@ Instead call them either in the setup and teardown functions or in the main prog
 >>}
 >> ~~~
 >>{: .source .language-c}
->{: .solution}
+>{: .solution .show-c}
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >>
 >>Add the test function to the test module
 >>~~~
@@ -989,7 +978,7 @@ Instead call them either in the setup and teardown functions or in the main prog
 >>end program fruit_driver
 >>~~~
 >>{: .source .language-fortran}
->{: .solution}
+>{: .solution .show-fortran}
 {: .challenge}
 
 Since all processes are running the tests, you will see multiple copies of the each of the
