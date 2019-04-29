@@ -20,10 +20,10 @@ keypoints:
 The examples used in the previous sections were perhaps not the most realistic.
 In this section we will look at a more complete code and take it from serial to
 parallel a couple of steps.
-First, download the serial code for solving the Poisson equation in
-[C]({{ page.root }}{% link code/poisson/poisson.c %})
-or in
-[Fortran]({{ page.root }}{% link code/poisson/poisson.f08 %})
+First, download the
+[serial code]({{ page.root }}{% link code/poisson/poisson.c %}){: .show-c}
+[serial code]({{ page.root }}{% link code/poisson/poisson.f08 %}){: .show-fortran}
+for solving the Poisson equation
 and familiarise yourself with what how it works.
 
 If you have your own serial code, it's advisable to choose a small
@@ -119,7 +119,7 @@ Use small units. Smaller units are easier to test.
 >
 > Write a test for one iteration of the Poisson solver.
 > 
->> ## Solution in C
+>> ## Solution
 >>  
 >> The Poisson step function could look like this:
 >> ~~~
@@ -218,9 +218,9 @@ Use small units. Smaller units are easier to test.
 >>}
 >> ~~~
 >> {:.source .language-c}
->{: .solution}
+>{: .solution .show-c }
 >
->> ## solution in Fortran
+>> ## solution
 >> Here we create a module for the poisson solver, including only the
 >> subroutine for performing a single step.
 >>~~~
@@ -315,7 +315,7 @@ Use small units. Smaller units are easier to test.
 >>end module poisson_test
 >>~~~
 >>{: .source .language-fortran}
->{: .solution}
+>{: .solution .show-fortran }
 >
 {: .challenge}
 
@@ -351,7 +351,7 @@ You can optimise later.
 > After this step the first test should succeed and the second test
 > should fail.
 >
->> ## Solution in C
+>> ## Solution
 >>
 >> In `poisson_step.c`:
 >> ~~~
@@ -482,11 +482,11 @@ You can optimise later.
 >>  return cmocka_return_value;
 >>}
 >>~~~
->>{: .source .language-c}
->{: .solution}
+>>{: .source .language-c }
+>{: .solution .show-c}
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >>
 >>~~~
 >>module poisson_solver
@@ -603,7 +603,7 @@ You can optimise later.
 >>end module poisson_test
 >>~~~
 >>{: .source .language-fortran}
->{: .solution}
+>{: .solution .show-fortran}
 >
 {: .challenge}
 
@@ -612,7 +612,7 @@ You can optimise later.
 > Add in the nearest neighbour communication and test the result after
 > 50 iterations.
 >
->> ## Solution in C
+>> ## Solution
 >> Each rank needs to send the values at `u[1]` down to `rank-1`B and
 >> the values at `u[my_j_max]` to `rank+1`.
 >> There needs to be an exception for the first and the last rank.
@@ -736,9 +736,9 @@ You can optimise later.
 >>}
 >>~~~
 >>{: .source .language-c}
->{: .solution}
+>{: .solution .show-c}
 >
->> ## Solution in Fortran
+>> ## Solution
 >> Each rank needs to send the values at `u(1)` down to `rank-1` and
 >> the values at `u(my_j_max)` to `rank+1`.
 >> There needs to be an exeption for the first and the last rank.
@@ -830,7 +830,7 @@ You can optimise later.
 >>~~~
 >>{: .source .language-fortran}
 >>
->{: .solution}
+>{: .solution .show-fortran}
 >
 {: .challenge}
 
