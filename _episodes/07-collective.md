@@ -36,46 +36,37 @@ The most commonly-used are:
 
 ### Barrier
 
-> ## Barrier in C
->
->~~~
-> MPI_Barrier( MPI_Comm communicator )
->~~~
->
-{: .prereq .foldable}
+~~~
+ MPI_Barrier( MPI_Comm communicator )
+~~~
+{: .language-c .show-c}
 
-> ## Barrier in Fortran
->
->~~~
-> MPI_Barrier(COMM)
->    INTEGER    COMM
->~~~
-{: .prereq .foldable}
+~~~
+ MPI_Barrier(COMM)
+    INTEGER    COMM
+~~~
+{: .language-fortran .show-fortran}
 
 Wait (doing nothing) until all ranks have reached this line.
 
 ### Broadcast
 
-> ## Broadcast in C
-> ~~~
->  MPI_Bcast(
->     void* data,
->     int count,
->     MPI_Datatype datatype,
->     int root,
->     MPI_Comm communicator)
-> ~~~
->
-{: .prereq .foldable}
+~~~
+ MPI_Bcast(
+    void* data,
+    int count,
+    MPI_Datatype datatype,
+    int root,
+    MPI_Comm communicator)
+~~~
+{: .language-c .show-c}
 
-> ## Broadcast in Fortran
->~~~
->MPI_Bcast(BUFFER, COUNT, DATATYPE, ROOT, COMM, IERROR)
->    <type>    BUFFER(*)
->    INTEGER    COUNT, DATATYPE, ROOT, COMM, IERROR
-> ~~~
->
-{: .prereq .foldable}
+~~~
+MPI_Bcast(BUFFER, COUNT, DATATYPE, ROOT, COMM, IERROR)
+    <type>    BUFFER(*)
+    INTEGER    COUNT, DATATYPE, ROOT, COMM, IERROR
+~~~
+{: .language-fortran .show-fortran}
 
 Very similar to `MPI_Send`, but the same data is sent from rank `root` to all ranks.
 This function will only return once all processes have reached it, 
@@ -83,31 +74,27 @@ meaning it has the side-effect of acting as a barrier.
 
 ### Scatter
 
-> ## Scatter in C
-> ~~~
->  MPI_Scatter(
->     void* send-buffer,
->     int send-count,
->     MPI_Datatype send-datatype,
->     void* receive-buffer,
->     int receive-count,
->     MPI_Datatype receive-datatype,
->     int root,
->     MPI_Comm communicator)
-> ~~~
->
-{: .prereq .foldable}
+~~~
+ MPI_Scatter(
+    void* send-buffer,
+    int send-count,
+    MPI_Datatype send-datatype,
+    void* receive-buffer,
+    int receive-count,
+    MPI_Datatype receive-datatype,
+    int root,
+    MPI_Comm communicator)
+~~~
+{: .language-c .show-c}
 
-> ## Scatter in Fortran
->~~~
->MPI_Scatter(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
->        RECVTYPE, ROOT, COMM, IERROR)
->    <type>    SENDBUF(*), RECVBUF(*)
->    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
->    INTEGER    COMM, IERROR
-> ~~~
->
-{: .prereq .foldable}
+~~~
+MPI_Scatter(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
+        RECVTYPE, ROOT, COMM, IERROR)
+    <type>    SENDBUF(*), RECVBUF(*)
+    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
+    INTEGER    COMM, IERROR
+~~~
+{: .language-fortran .show-fortran}
 
 The data in the `send-buffer` on rank `root` is split into chunks described by the `receive-count`,
 and each chunk is sent to a different rank.
@@ -116,31 +103,27 @@ needed by the root.
 
 ### Gather
 
-> ## Gather in C
-> ~~~
->  MPI_Gather(
->     void* send-buffer,
->     int send-count,
->     MPI_Datatype send-datatype,
->     void* receive-buffer,
->     int receive-count,
->     MPI_Datatype receive-datatype,
->     int root,
->     MPI_Comm communicator)
-> ~~~
->
-{: .prereq .foldable}
+~~~
+MPI_Gather(
+    void* send-buffer,
+    int send-count,
+    MPI_Datatype send-datatype,
+    void* receive-buffer,
+    int receive-count,
+    MPI_Datatype receive-datatype,
+    int root,
+    MPI_Comm communicator)
+~~~
+{: .language-c .show-c}
 
-> ## Gather in Fortran
->~~~
->MPI_Gather(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
->        RECVTYPE, ROOT, COMM, IERROR)
->    <type>    SENDBUF(*), RECVBUF(*)
->    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
->    INTEGER    COMM, IERROR
-> ~~~
->
-{: .prereq .foldable}
+~~~
+MPI_Gather(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
+        RECVTYPE, ROOT, COMM, IERROR)
+    <type>    SENDBUF(*), RECVBUF(*)
+    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
+    INTEGER    COMM, IERROR
+~~~
+{: .language-fortran .show-fortran}
 
 Each rank sends the data in the `send-buffer` to rank `root`.
 The `root` collects the data into the `receive-buffer` in order of the rank
@@ -153,7 +136,7 @@ numbers.
 > sends a message to rank 0.
 > Write this using a gather instead of send and receive.
 >
->> ## Solution in C
+>> ## Solution
 >> ~~~
 >>#include <stdio.h>
 >>#include <stdlib.h>
@@ -188,10 +171,10 @@ numbers.
 >>}
 >> ~~~
 >>{: .source .language-c}
->{: .prereq .foldable}
+>{: .solution .show-c }
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >> ~~~
 >>program hello
 >>
@@ -228,7 +211,7 @@ numbers.
 >>end
 >> ~~~
 >>{: .source .language-fortran}
->{: .prereq .foldable}
+>{: .solution .show-fortran }
 >
 >
 {: .challenge}
@@ -236,29 +219,25 @@ numbers.
 
 ### Reduce
 
-> ## Reduce in C
-> ~~~
->  MPI_Reduce(
->     void* send-buffer,
->     void* receive-buffer,
->     int count,
->     MPI_Datatype datatype,
->     MPI_Op operation,
->     int root,
->     MPI_Comm communicator)
-> ~~~
->
-{: .prereq .foldable}
+~~~
+MPI_Reduce(
+    void* send-buffer,
+    void* receive-buffer,
+    int count,
+    MPI_Datatype datatype,
+    MPI_Op operation,
+    int root,
+    MPI_Comm communicator)
+~~~
+{: .language-c .show-c}
 
-> ## Reduce in Fortran
->~~~
->MPI_Reduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, ROOT, COMM,
->        IERROR)
->    <type>    SENDBUF(*), RECVBUF(*)
->    INTEGER    COUNT, DATATYPE, OP, ROOT, COMM, IERROR
-> ~~~
->
-{: .prereq .foldable}
+~~~
+MPI_Reduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, ROOT, COMM,
+        IERROR)
+    <type>    SENDBUF(*), RECVBUF(*)
+    INTEGER    COUNT, DATATYPE, OP, ROOT, COMM, IERROR
+~~~
+{: .language-fortran .show-fortran}
 
 Each rank sends a piece of data, which are combined on their way to rank `root` into a single piece of data.
 For example, the function can calculate the sum of numbers distributed accross
@@ -283,185 +262,174 @@ of the ranks to do the calculation.
 
 ### Allreduce
 
-> ## Allreduce in C
-> ~~~
->  MPI_Allreduce(
->     void* send-buffer,
->     void* receive-buffer,
->     int count,
->     MPI_Datatype datatype,
->     MPI_Op operation,
->     MPI_Comm communicator)
-> ~~~
->
-{: .prereq .foldable}
+~~~
+MPI_Allreduce(
+     void* send-buffer,
+     void* receive-buffer,
+     int count,
+     MPI_Datatype datatype,
+     MPI_Op operation,
+     MPI_Comm communicator)
+~~~
+{: .language-c .show-c}
 
-> ## Allreduce in Fortran
->~~~
->MPI_Allreduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, COMM, IERROR)
->    <type>    SENDBUF(*), RECVBUF(*)
->    INTEGER    COUNT, DATATYPE, OP, COMM, IERROR
-> ~~~
->
-{: .prereq .foldable}
-
+~~~
+MPI_Allreduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, COMM, IERROR)
+    <type>    SENDBUF(*), RECVBUF(*)
+    INTEGER    COUNT, DATATYPE, OP, COMM, IERROR
+~~~
+{: .language-fortran .show-fortran}
 
 `MPI_Allreduce` is performs essentially the same operations as `MPI_Reduce`,
 but the result is sent to all the ranks.
-
 
 > ## Reductions
 >
 > Modify the `find_sum` and `find_max` functions to work correctly in parallel
 > using `MPI_Reduce` or `MPI_Allreduce`
 >
->> ## C
->> ~~~
->> #include <stdio.h>
->> #include <mpi.h>
->> 
->> // Calculate the sum of numbers in a vector
->> double find_sum( double * vector, int N ){
->>    double sum = 0;
->>    for( int i=0; i<N; i++){
->>       sum += vector[i];
->>    }
->>    return sum;
->> }
->> 
->> // Find the maximum of numbers in a vector
->> double find_maximum( double * vector, int N ){
->>    double max = 0;
->>    for( int i=0; i<N; i++){
->>       if( vector[i] > max ){
->>          max = vector[i];
->>       }
->>    }
->>    return max;
->> }
->> 
->> 
->> int main(int argc, char** argv) {
->>    int n_numbers = 1024;
->>    int rank;
->>    double vector[n_numbers];
->>    double sum, max;
->>    double my_first_number;
->> 
->>    // First call MPI_Init
->>    MPI_Init(&argc, &argv);
->> 
->>    // Get my rank
->>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
->> 
->>    // Each rank will have n_numbers numbers,
->>    // starting from where the previous left
->>    my_first_number = n_numbers*rank;
->> 
->>    // Generate a vector
->>    for( int i=0; i<n_numbers; i++){
->>       vector[i] = my_first_number + i;
->>    }
->> 
->>    //Find the sum and print
->>    sum = find_sum( vector, n_numbers );
->>    printf("The sum of the numbers is %f\n", sum);
->> 
->>    //Find the maximum and print
->>    max = find_maximum( vector, n_numbers );
->>    printf("The largest number is %f\n", max);
->> 
->>    // Call finalize at the end
->>    MPI_Finalize();
->> }
->> ~~~
->>{: .source .language-c}
->{: .prereq .foldable}
+> ~~~
+> #include <stdio.h>
+> #include <mpi.h>
+> 
+> // Calculate the sum of numbers in a vector
+> double find_sum( double * vector, int N ){
+>    double sum = 0;
+>    for( int i=0; i<N; i++){
+>       sum += vector[i];
+>    }
+>    return sum;
+> }
+> 
+> // Find the maximum of numbers in a vector
+> double find_maximum( double * vector, int N ){
+>    double max = 0;
+>    for( int i=0; i<N; i++){
+>       if( vector[i] > max ){
+>          max = vector[i];
+>       }
+>    }
+>    return max;
+> }
+> 
+> 
+> int main(int argc, char** argv) {
+>    int n_numbers = 1024;
+>    int rank;
+>    double vector[n_numbers];
+>    double sum, max;
+>    double my_first_number;
+> 
+>    // First call MPI_Init
+>    MPI_Init(&argc, &argv);
+> 
+>    // Get my rank
+>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+> 
+>    // Each rank will have n_numbers numbers,
+>    // starting from where the previous left
+>    my_first_number = n_numbers*rank;
+> 
+>    // Generate a vector
+>    for( int i=0; i<n_numbers; i++){
+>       vector[i] = my_first_number + i;
+>    }
+> 
+>    //Find the sum and print
+>    sum = find_sum( vector, n_numbers );
+>    printf("The sum of the numbers is %f\n", sum);
+> 
+>    //Find the maximum and print
+>    max = find_maximum( vector, n_numbers );
+>    printf("The largest number is %f\n", max);
+> 
+>    // Call finalize at the end
+>    MPI_Finalize();
+> }
+> ~~~
+>{: .source .language-c .show-c}
 >
 >
->> ## Fortran
->> 
->> ~~~
->>program sum_and_max
->>
->>   use mpi
->>   implicit none
->>
->>   integer rank, n_ranks, ierr
->>   
->>   integer, parameter :: n_numbers=10
->>   real vector(n_numbers)
->>   real sum, max, my_first_number
->>   integer i
->>
->>   ! First call MPI_Init
->>   call MPI_Init(ierr)
->>
->>   ! Get my rank and the number of ranks
->>   call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
->>
->>   ! Each rank will have n_numbers numbers,
->>   ! starting from where the previous left
->>   my_first_number = n_numbers*rank;
->>
->>   ! Set the vector
->>   do i = 1, n_numbers
->>      vector(i) = my_first_number + i
->>   end do
->>
->>
->>   ! Find the sum and print
->>   call find_sum( vector, n_numbers, sum )
->>   write(6,*) "Sum = ", sum
->>
->>   ! Find the maximum and print
->>   call find_max( vector, n_numbers, max )
->>   write(6,*) "Maximum = ", max
->>
->>
->>   ! Call MPI_Finalize at the end
->>   call MPI_Finalize(ierr)
->>
->>contains
->>
->>   ! Calculate the sum of numbers in a vector
->>   subroutine find_sum( vector, N, sum )
->>      real, intent(in) :: vector(:)
->>      real, intent(inout) :: sum
->>      integer, intent(in) :: N
->>      integer i
->>     
->>      sum = 0
->>      do i = 1, N
->>         sum = sum + vector(i)
->>      end do
->>
->>   end subroutine find_sum
->>
->>
->>   ! Find the maximum of numbers in a vector
->>   subroutine find_max( vector, N, max )
->>      real, intent(in) :: vector(:)
->>      real, intent(inout) :: max
->>      integer, intent(in) :: N
->>      integer i
->>     
->>      max = 0
->>      do i = 1, N
->>         if (max < vector(i)) then
->>            max = vector(i)
->>         end if
->>      end do
->>
->>   end subroutine find_max
->>end
->>~~~
->>{: .source .language-fortran}
->{: .prereq .foldable}
+> ~~~
+>program sum_and_max
+>
+>   use mpi
+>   implicit none
+>
+>   integer rank, n_ranks, ierr
+>   
+>   integer, parameter :: n_numbers=10
+>   real vector(n_numbers)
+>   real sum, max, my_first_number
+>   integer i
+>
+>   ! First call MPI_Init
+>   call MPI_Init(ierr)
+>
+>   ! Get my rank and the number of ranks
+>   call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+>
+>   ! Each rank will have n_numbers numbers,
+>   ! starting from where the previous left
+>   my_first_number = n_numbers*rank;
+>
+>   ! Set the vector
+>   do i = 1, n_numbers
+>      vector(i) = my_first_number + i
+>   end do
+>
+>
+>   ! Find the sum and print
+>   call find_sum( vector, n_numbers, sum )
+>   write(6,*) "Sum = ", sum
+>
+>   ! Find the maximum and print
+>   call find_max( vector, n_numbers, max )
+>   write(6,*) "Maximum = ", max
+>
+>
+>   ! Call MPI_Finalize at the end
+>   call MPI_Finalize(ierr)
+>
+>contains
+>
+>   ! Calculate the sum of numbers in a vector
+>   subroutine find_sum( vector, N, sum )
+>      real, intent(in) :: vector(:)
+>      real, intent(inout) :: sum
+>      integer, intent(in) :: N
+>      integer i
+>     
+>      sum = 0
+>      do i = 1, N
+>         sum = sum + vector(i)
+>      end do
+>
+>   end subroutine find_sum
+>
+>
+>   ! Find the maximum of numbers in a vector
+>   subroutine find_max( vector, N, max )
+>      real, intent(in) :: vector(:)
+>      real, intent(inout) :: max
+>      integer, intent(in) :: N
+>      integer i
+>     
+>      max = 0
+>      do i = 1, N
+>         if (max < vector(i)) then
+>            max = vector(i)
+>         end if
+>      end do
+>
+>   end subroutine find_max
+>end
+>~~~
+>{: .source .language-fortran .show-fortran}
 >
 >
 >
->> ## Solution in C
+>> ## Solution
 >> 
 >> ~~~
 >> // Calculate the sum of numbers in a vector
@@ -499,10 +467,10 @@ but the result is sent to all the ranks.
 >> }
 >> ~~~
 >> {: .source .language-c}
->{: .solution}
+>{: .solution .show-c}
 >
 >
->> ## Fortran
+>> ## Solution
 >> 
 >> ~~~
 >>contains
@@ -552,7 +520,7 @@ but the result is sent to all the ranks.
 >>end
 >>~~~
 >>{: .source .language-fortran}
->{: .solution}
+>{: .solution .show-fortran}
 >
 >
 {: .challenge}
