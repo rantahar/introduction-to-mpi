@@ -45,7 +45,11 @@ provided by the Score-P utility.
 ~~~
 scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
 ~~~
-{: .source .language-bash}
+{: .source .language-bash .show-c}
+~~~
+scorep mpifort -o poisson poisson_main_mpi.f90 poisson_step_mpi.f90
+~~~
+{: .source .language-bash .show-fortran}
 This will produce an instrumented binary.
 When you execute, it will track function calls and the time spent in each
 function.
@@ -71,6 +75,8 @@ to your computer and run the GUI there.
 >## Profile Your Poisson Code
 >
 > Compile, run and analyse your mpi version of the poisson code.
+> How closely does it match the performance below?
+> What are the main differences?
 >
 {: .challenge}
 
@@ -265,7 +271,12 @@ Once you are happy with the filter, it can then be passed to Score-P with the
 export SCOREP_FILTERING_FILE=poisson.filter
 scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
 ~~~
-{: .source .language-bash}
+{: .source .language-bash .show-c}
+~~~
+export SCOREP_FILTERING_FILE=poisson.filter
+scorep mpifort -o poisson poisson_main_mpi.f90 poisson_step_mpi.f90
+~~~
+{: .source .language-bash .show-fortran}
 Score-P will only instrument and measure the parts of the program not filtered out.
 This make profiling faster and the results easier to analyse.
 
@@ -288,36 +299,33 @@ waiting for data.
 In addition, you will see the number of MPI communications, and the time spent synchronising
 ranks.
 
-### User defined regions
-
-By default Score-P only collects information about functions.
-You can also define your own regions using annotations 
-in the code.
-
->## Score-P Annotations in C
+>## User defined regions
 >
-> Include the Score-P header file
+>By default Score-P only collects information about functions.
+>You can also define your own regions using annotations 
+>in the code.
+>
+>
+>Include the Score-P header file
 >~~~
 > #include "scorep/SCOREP_User.h"
-> ~~~
->{:.source .language-c}
+>~~~
+>{:.source .language-c }
 >
-> First you need to declare the region as a variable:
+>First you need to declare the region as a variable:
 >~~~
 > SCOREP_USER_REGION_DEFINE( region_name );
 >~~~
->{:.source .language-c}
+>{:.source .language-c }
 >
-> At the beginning of the region add
+> The region is then defined by the SCOREP_USER_REGION_BEGIN
+> and SCOREP_USER_REGION_END functions:
 >~~~
 > SCOREP_USER_REGION_BEGIN( region_name, "<region_name>", SCOREP_USER_REGION_TYPE_LOOP );
->~~~
->{:.source .language-c}
-> and at the end of the region add
->~~~
+> ...
 > SCOREP_USER_REGION_END( region_name );
 >~~~
->{:.source .language-c}
+>{:.source .language-c }
 >
 > Adding annotations to loops can be done in a single line
 >~~~
@@ -326,18 +334,16 @@ in the code.
 >  ...
 >}
 >~~~
->{:.source .language-c}
+>{:.source .language-c }
 >
 >When compiling with Score-P, add `--user` to enable user defined regions.
 >~~~
 >scorep --user mpicc poisson_main_mpi.c poisson_step_mpi.c
 >~~~
->{:.source .language-bash}
->
-{: .prereq .foldable}
+>{:.source .language-bash }
+{: .callout .show-c}
 
-
->## Score-P Annotations in Fortran
+>## User Defined Regions
 >
 > Using Score-P annotations requires processing the file
 > with the C preprocessor.
@@ -354,13 +360,11 @@ in the code.
 >~~~
 >{:.source .language-fortran}
 >
-> At the beginning of the region add
+> The region is then defined using the SCOREP_USER_REGION_BEGIN
+> and SCOREP_USER_REGION_END functions:
 >~~~
 > SCOREP_USER_REGION_BEGIN( region_name, "<region_name>", SCOREP_USER_REGION_TYPE_LOOP )
->~~~
->{:.source .language-fortran}
-> and at the end of the region add
->~~~
+> ...
 > SCOREP_USER_REGION_END( region_name )
 >~~~
 >{:.source .language-fortran}
@@ -370,11 +374,11 @@ in the code.
 >scorep --user mpifort poisson_mpi.f99
 >~~~
 >
-{: .prereq .foldable}
+{: .callout .show-fortran}
 
->## User Defined Regions
+>## Annotations
 >
-> Add a user defined region to `poisson_step_mpi.c`.
+> Add a user defined region to poisson step function.
 > Include the calculation of unorm, both the loop and
 > the reduction.
 >
