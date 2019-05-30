@@ -3,7 +3,7 @@ title: "Introduction to Parallel Computing"
 teaching: 25
 exercises: 20
 questions:
-- "How do I run a program in parallel?"
+- "How does MPI work?"
 objectives:
 - "Introduce parallel computing."
 - "Use `mpicc`/`mpifort` and `mpirun`."
