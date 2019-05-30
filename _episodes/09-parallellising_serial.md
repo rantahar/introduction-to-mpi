@@ -1,7 +1,7 @@
 ---
 title: "Parallelising a Serial Code"
-teaching: 60
-exercises: 60
+teaching: 30
+exercises: 90
 questions:
 - "What is the best way to write a parallel code?"
 - "How do I parallelise my serial code?"
