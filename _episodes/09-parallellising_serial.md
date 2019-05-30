@@ -116,9 +116,8 @@ This is really only a problem if done in a tight loop, many times per second.
 
 ### Set Up Tests
 
-In a larger program individual tasks should already be
-separated into functions.
 Write a set of tests for the function you are planning to edit.
+
 Use small units. Smaller units are easier to test.
 
 > ## Automated Testing
