@@ -117,8 +117,10 @@ This is really only a problem if done in a tight loop, many times per second.
 ### Set Up Tests
 
 Write a set of tests for the function you are planning to edit.
-
-Use small units. Smaller units are easier to test.
+The tests should be sufficient to make sure each function performs correctly
+in any situation when all tests pass.
+You should test all combinations of different types of parameters and preferably use random input.
+Here the habit of modular programming is very useful. When the functions are small and have a small amount of possible input types, they are easy to test.
 
 > ## Automated Testing
 >
@@ -127,6 +129,18 @@ Use small units. Smaller units are easier to test.
 > verifying that the entire program is correct.
 > The program here is still relatively simple, we are testing a single function,
 > so writing a main function with a test case is enough.
+>
+>Check out the
+>[cmocka](https://cmocka.org/)
+>or 
+>[cunit](http://cunit.sourceforge.net/)
+>unit testing frameworks.
+> {: .show-c}
+>
+> Check out the
+> [fortran-unit-test](https://github.com/dongli/fortran-unit-test)
+> unit testing frameworks.
+> {: .show-fortran}
 >
 {: .callout}
 
