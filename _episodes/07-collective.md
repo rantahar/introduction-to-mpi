@@ -62,9 +62,9 @@ Wait (doing nothing) until all ranks have reached this line.
 {: .language-c .show-c}
 
 ~~~
-MPI_Bcast(BUFFER, COUNT, DATATYPE, ROOT, COMM, IERROR)
-    <type>    BUFFER(*)
-    INTEGER    COUNT, DATATYPE, ROOT, COMM, IERROR
+MPI_Bcast(buffer, count, datatype, root, COMM, IERROR)
+    <type>    buffer(*)
+    INTEGER    count, datatype, root, COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
 
@@ -76,57 +76,63 @@ meaning it has the side-effect of acting as a barrier.
 
 ~~~
  MPI_Scatter(
-    void* send-buffer,
-    int send-count,
-    MPI_Datatype send-datatype,
-    void* receive-buffer,
-    int receive-count,
-    MPI_Datatype receive-datatype,
+    void* sendbuf,
+    int sendcount,
+    MPI_Datatype sendtype,
+    void* recvbuffer,
+    int recvcount,
+    MPI_Datatype recvtype,
     int root,
     MPI_Comm communicator)
 ~~~
 {: .language-c .show-c}
 
 ~~~
-MPI_Scatter(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
-        RECVTYPE, ROOT, COMM, IERROR)
-    <type>    SENDBUF(*), RECVBUF(*)
-    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
+MPI_Scatter(sendbuf, sendcount, sendtype, recvbuffer, recvcount,
+        recvcount, root, COMM, IERROR)
+    <type>    sendbuf(*), recvbuf(*)
+    INTEGER    sendcount, sendtype, recvcount, recvtype, root
     INTEGER    COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
 
-The data in the `send-buffer` on rank `root` is split into chunks described by the `receive-count`,
+The data in the `sendbuf` on rank `root` is split into chunks
 and each chunk is sent to a different rank.
-The received data is written to the `receive-buffer`, so the `send-buffer` is only
+Each chunk contains `sendcount` elements of type `sendtype`.
+So if `sendtype` is `MPI_Int`, and `sendcount`, each is 2,
+each rank will receive 2 integers.
+The received data is written to the `recvbuf`, so the `sendbuf` is only
 needed by the root.
+The next two parameters, `recvcount` and `recvtype` describe receive buffer.
+Usually `recvtype` is the same as `sendtype` and `recvcount` is `Nranks*sendcount`.
+
 
 ### Gather
 
 ~~~
 MPI_Gather(
-    void* send-buffer,
-    int send-count,
-    MPI_Datatype send-datatype,
-    void* receive-buffer,
-    int receive-count,
-    MPI_Datatype receive-datatype,
+    void* sendbuf,
+    int sendcount,
+    MPI_Datatype sendtype,
+    void* recvbuffer,
+    int sendcount,
+    MPI_Datatype recvtype,
     int root,
     MPI_Comm communicator)
 ~~~
 {: .language-c .show-c}
 
 ~~~
-MPI_Gather(SENDBUF, SENDCOUNT, SENDTYPE, RECVBUF, RECVCOUNT,
-        RECVTYPE, ROOT, COMM, IERROR)
-    <type>    SENDBUF(*), RECVBUF(*)
-    INTEGER    SENDCOUNT, SENDTYPE, RECVCOUNT, RECVTYPE, ROOT
+MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount,
+        recvtype, root, COMM, IERROR)
+    <type>    sendbuf(*), recvbuf(*)
+    INTEGER    sendcount, sendtype, recvcount, recvtype, root
     INTEGER    COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
 
-Each rank sends the data in the `send-buffer` to rank `root`.
-The `root` collects the data into the `receive-buffer` in order of the rank
+Each rank sends the data in the `sendbuf` to rank `root`.
+The `root` collects the data into the `recvbuffer` in order of the rank
 numbers.
 
 
@@ -221,21 +227,21 @@ numbers.
 
 ~~~
 MPI_Reduce(
-    void* send-buffer,
-    void* receive-buffer,
+    void* sendbuf,
+    void* recvbuffer,
     int count,
     MPI_Datatype datatype,
-    MPI_Op operation,
+    MPI_Op op,
     int root,
     MPI_Comm communicator)
 ~~~
 {: .language-c .show-c}
 
 ~~~
-MPI_Reduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, ROOT, COMM,
+MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, COMM,
         IERROR)
-    <type>    SENDBUF(*), RECVBUF(*)
-    INTEGER    COUNT, DATATYPE, OP, ROOT, COMM, IERROR
+    <type>    sendbuf(*), recvbuf(*)
+    INTEGER    count, datatype, op, root, COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
 
@@ -264,19 +270,19 @@ of the ranks to do the calculation.
 
 ~~~
 MPI_Allreduce(
-     void* send-buffer,
-     void* receive-buffer,
+     void* sendbuf,
+     void* recvbuffer,
      int count,
      MPI_Datatype datatype,
-     MPI_Op operation,
+     MPI_Op op,
      MPI_Comm communicator)
 ~~~
 {: .language-c .show-c}
 
 ~~~
-MPI_Allreduce(SENDBUF, RECVBUF, COUNT, DATATYPE, OP, COMM, IERROR)
-    <type>    SENDBUF(*), RECVBUF(*)
-    INTEGER    COUNT, DATATYPE, OP, COMM, IERROR
+MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, COMM, IERROR)
+    <type>    sendbuf(*), recvbuf(*)
+    INTEGER    count, datatype, op, COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
 
