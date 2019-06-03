@@ -42,14 +42,22 @@ we need to run a summary of the whole program.
 
 Start by recompiling the application, replacing `mpicc` with the version
 provided by the Score-P utility.
+We will use the Poisson solver from the previous lesson as an example.
+
+Assuming the final version is saved into `poisson.c` it is compiled with
+{: .show-c}
 ~~~
-scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
+scorep mpicc -o poisson poisson.c
 ~~~
 {: .source .language-bash .show-c}
+
+Assuming the final version is saved into `poisson.f08` it is compiled with
+{: .show-fortran}
 ~~~
-scorep mpifort -o poisson poisson_main_mpi.f90 poisson_step_mpi.f90
+scorep mpifort -o poisson poisson.f08
 ~~~
 {: .source .language-bash .show-fortran}
+
 This will produce an instrumented binary.
 When you execute, it will track function calls and the time spent in each
 function.
@@ -65,10 +73,10 @@ Finally, you can examine the results in the GUI
 scalasca -examine scorep_poisson_2_sum
 ~~~
 {: .source .language-bash}
-This will open the cubeGUI.
 
+This will open the cubeGUI.
 If you are running the GUI on a cluster over a normal internet connection,
-it may feel slow and unresponsive.
+it may be slow and unresponsive.
 It's usually faster to copy the data folder (here `scorep_poisson_2_sum`)
 to your computer and run the GUI there.
 
@@ -93,7 +101,7 @@ The system view displays data on the chosen function on a deeper level.
 Right clicking on the view and choosing "Info" replaces the system view with an info view.
 This gives information on the chosen metric.
 
-If your running on a cluster you may wish to use the command line instead.
+If you are running on a cluster you may wish to use the command line instead.
 To supress the GUI, use the `-s` parameter.
 ~~~
 scalasca -examine -s scorep_poisson_2_sum
