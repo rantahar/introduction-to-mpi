@@ -1,13 +1,12 @@
 ---
-title: "Parallelising a Serial Code"
+title: "Serial to Parallel"
 teaching: 30
-exercises: 90
+exercises: 30
 questions:
 - "What is the best way to write a parallel code?"
 - "How do I parallelise my serial code?"
 objectives:
 - "Go through practical steps for going from a serial code to a parallel code"
-- "Allow students to work on their own code or on example codes"
 keypoints:
 - "Start from a working serial code"
 - "Write a parallel implementation for each function or parallel region"
@@ -33,8 +32,6 @@ The exercises and solutions are based on the following code:
 ~~~
 {: .language-fortran .show-fortran }
 
-If you have your own serial code, it's advisable to choose a small
-section of the code and go through the same steps.
 
 ### Parallel regions
 
