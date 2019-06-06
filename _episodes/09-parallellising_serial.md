@@ -160,7 +160,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >> Here we create a module for the poisson solver, including only the
 >> subroutine for performing a single step.
 >>~~~
-{%comment%}{% include code/poisson_test.f08 %}{%endcomment%}
+>>{%comment%}{% include code/poisson_test.f08 %}{%endcomment%}
 >>~~~
 >>{: .source .language-fortran}
 >{: .solution .show-fortran }
