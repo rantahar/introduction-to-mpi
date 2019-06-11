@@ -183,7 +183,7 @@ The point is to write a simple code that works correctly.
 You can optimise later.
 
 > ## Parallel Execution
-> 
+>
 > Let's split the outer loop across the ranks.
 > Write a program that performs the iterations from
 > `j=rank*(MAX/n_ranks)` to `j=(rank+1)*(MAX/n_ranks)`.
@@ -329,6 +329,8 @@ You can optimise later.
 >
 {: .challenge}
 
+
+
 > ## Communication
 > 
 > Add in the nearest neighbour communication.
@@ -455,7 +457,8 @@ In most cases it can be made as fast as a serial code
 using the same algorithm.
 
 When making changes to improve performance, keep running the test suite.
-A fast but incorrect program is useless.
+There is no reason to write a program that is fast but produces wrong
+results.
 
 > ## Strong Scaling
 >
@@ -467,7 +470,7 @@ A fast but incorrect program is useless.
 > There are no real problems where you can achieve perfect strong scaling
 > but some do get close.
 >
-> Write a main function that calls the poisson step 100 times and set `MAX=512`.
+> Modify the main function to call the poisson step 100 times and set `MAX=512`.
 >
 > Try running your program with an increasing number of ranks.
 > Measure the time taken using the Unix `time` utility.
@@ -487,7 +490,7 @@ A fast but incorrect program is useless.
 >> In the example, which runs on a machine with two 20-core Intel Xeon Scalable CPUs,
 >> using 32 ranks actually takes more time.
 >> The 32 ranks don't fit on one CPU and communicating between
->> the the two CPUs takes more time, even though they are within the same machine.
+>> the the two CPUs takes more time, even though they are in the same machine.
 >>
 >> The communication could be made more efficient.
 >> We could use non-blocking communication and do some of the computation
