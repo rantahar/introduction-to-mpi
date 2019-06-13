@@ -177,8 +177,8 @@ int main(int argc, char** argv) {
 ~~~
 program hello
 
-     use mpi
      implicit none
+     include "mpif.h" 
      
      integer rank, n_ranks, ierr
      integer status(MPI_STATUS_SIZE)
@@ -278,8 +278,8 @@ end
 >> ~~~
 >>program hello
 >>
->>     use mpi
 >>     implicit none
+>>     include "mpif.h" 
 >>     
 >>     integer rank, n_ranks, my_pair, ierr
 >>     integer status(MPI_STATUS_SIZE)
@@ -353,8 +353,8 @@ end
 >~~~
 >program hello
 >
->    use mpi
 >    implicit none
+>    include "mpif.h" 
 >     
 >    integer rank, ierr
 >
@@ -412,12 +412,12 @@ end
 >>{: .source .language-c}
 >{: .solution .show-c}
 >
->> ## Solution in Fortran
+>> ## Solution
 >> ~~~
 >>program hello
 >>
->>    use mpi
 >>    implicit none
+>>    include "mpif.h" 
 >>     
 >>    integer rank, n_ranks, ierr
 >>    integer sender
@@ -516,8 +516,8 @@ end
 >~~~
 >program hello
 >
->    use mpi
 >    implicit none
+>    include "mpif.h" 
 >     
 >    integer, parameter :: n_numbers=524288
 >    integer i
@@ -630,7 +630,7 @@ end
 >{: .solution .show-c}
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >> 
 >> `MPI_Send` will block execution until until the receiving process has called
 >> `MPI_Recv`. This prevents the sender from unintentionally modifying the message
@@ -645,8 +645,8 @@ end
 >> ~~~
 >>program hello
 >>
->>   use mpi
 >>   implicit none
+>>   include "mpif.h" 
 >>    
 >>   integer, parameter :: n_numbers=524288
 >>   integer i
@@ -775,13 +775,13 @@ end
 > {: .solution .show-c}
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >> 
 >> ~~~
 >>program pingpong
 >>
->>    use mpi
 >>    implicit none
+>>    include "mpif.h" 
 >>     
 >>    integer ball, max_count, counter
 >>    logical bored
