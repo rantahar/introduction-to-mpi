@@ -184,8 +184,8 @@ numbers.
 >> ~~~
 >>program hello
 >>
->>    use mpi
 >>    implicit none
+>>    include "mpif.h" 
 >>     
 >>    integer n_ranks, rank, sender, ierr
 >>    character(len=40) send_message
@@ -291,6 +291,14 @@ but the result is sent to all the ranks.
 
 > ## Reductions
 >
+> The following program creates an array called `vector` that contains a list
+> of `n_numbers` numbers on each rank. The first rank contains the numbers from
+> 1 to n_numbers, the second rank from n_numbers to 2*n_numbers2 and so on.
+> It then calls the `find_max` and `find_sum` functions that should calculate the
+> sum and maximum of the vector.
+> 
+> These functions are not implemented in parallel and only return the sum and the
+> maximum of the local vectors.
 > Modify the `find_sum` and `find_max` functions to work correctly in parallel
 > using `MPI_Reduce` or `MPI_Allreduce`
 >
@@ -333,7 +341,7 @@ but the result is sent to all the ranks.
 >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 > 
 >    // Each rank will have n_numbers numbers,
->    // starting from where the previous left
+>    // starting from where the previous left off
 >    my_first_number = n_numbers*rank;
 > 
 >    // Generate a vector
@@ -359,14 +367,14 @@ but the result is sent to all the ranks.
 > ~~~
 >program sum_and_max
 >
->   use mpi
 >   implicit none
+>   include "mpif.h" 
 >
 >   integer rank, n_ranks, ierr
 >   
 >   integer, parameter :: n_numbers=10
 >   real vector(n_numbers)
->   real sum, max, my_first_number
+>   real vsum, vmax, my_first_number
 >   integer i
 >
 >   ! First call MPI_Init
@@ -386,12 +394,12 @@ but the result is sent to all the ranks.
 >
 >
 >   ! Find the sum and print
->   call find_sum( vector, n_numbers, sum )
->   write(6,*) "Sum = ", sum
+>   call find_sum( vector, n_numbers, vsum )
+>   write(6,*) "Sum = ", vsum
 >
 >   ! Find the maximum and print
->   call find_max( vector, n_numbers, max )
->   write(6,*) "Maximum = ", max
+>   call find_max( vector, n_numbers, vmax )
+>   write(6,*) "Maximum = ", vmax
 >
 >
 >   ! Call MPI_Finalize at the end
@@ -400,31 +408,31 @@ but the result is sent to all the ranks.
 >contains
 >
 >   ! Calculate the sum of numbers in a vector
->   subroutine find_sum( vector, N, sum )
+>   subroutine find_sum( vector, N, vsum )
 >      real, intent(in) :: vector(:)
->      real, intent(inout) :: sum
+>      real, intent(inout) :: vsum
 >      integer, intent(in) :: N
 >      integer i
 >     
->      sum = 0
+>      vsum = 0
 >      do i = 1, N
->         sum = sum + vector(i)
+>         vsum = vsum + vector(i)
 >      end do
 >
 >   end subroutine find_sum
 >
 >
 >   ! Find the maximum of numbers in a vector
->   subroutine find_max( vector, N, max )
+>   subroutine find_max( vector, N, vmax )
 >      real, intent(in) :: vector(:)
->      real, intent(inout) :: max
+>      real, intent(inout) :: vmax
 >      integer, intent(in) :: N
 >      integer i
 >     
->      max = 0
+>      vmax = 0
 >      do i = 1, N
->         if (max < vector(i)) then
->            max = vector(i)
+>         if (vmax < vector(i)) then
+>            vmax = vector(i)
 >         end if
 >      end do
 >
@@ -483,44 +491,46 @@ but the result is sent to all the ranks.
 >>
 >>   ! Calculate the sum of numbers in a vector
 >>   subroutine find_sum( vector, N, global_sum )
->>      use mpi
+>>      implicit none
+>>      include "mpif.h" 
 >>
 >>      real, intent(in) :: vector(:)
 >>      real, intent(inout) :: global_sum
->>      real sum
+>>      real vsum
 >>      integer, intent(in) :: N
 >>      integer i, ierr
 >>     
->>      sum = 0
+>>      vsum = 0
 >>      do i = 1, N
->>         sum = sum + vector(i)
+>>         vsum = vsum + vector(i)
 >>      end do
 >>
 >>      ! Call MPI_Allreduce to find the full sum
->>      call MPI_Allreduce( sum, global_sum, 1, MPI_REAL, MPI_SUM, MPI_COMM_WORLD, ierr )
+>>      call MPI_Allreduce( vsum, global_sum, 1, MPI_REAL, MPI_SUM, MPI_COMM_WORLD, ierr )
 >>
 >>   end subroutine find_sum
 >>
 >>
 >>   ! Find the maximum of numbers in a vector
 >>   subroutine find_max( vector, N, global_max )
->>      use mpi
+>>      implicit none
+>>      include "mpif.h" 
 >>
 >>      real, intent(in) :: vector(:)
 >>      real, intent(inout) :: global_max
->>      real max
+>>      real vmax
 >>      integer, intent(in) :: N
 >>      integer i, ierr
 >>     
->>      max = 0
+>>      vmax = 0
 >>      do i = 1, N
->>         if (max < vector(i)) then
->>            max = vector(i)
+>>         if (vmax < vector(i)) then
+>>            vmax = vector(i)
 >>         end if
 >>      end do
 >>
->>      ! Call MPI_Allreduce to find the full sum
->>      call MPI_Allreduce( max, global_max, 1, MPI_REAL, MPI_MAX, MPI_COMM_WORLD, ierr )
+>>      ! Call MPI_Allreduce to find the full maximum
+>>      call MPI_Allreduce( vmax, global_max, 1, MPI_REAL, MPI_MAX, MPI_COMM_WORLD, ierr )
 >>
 >>   end subroutine find_max
 >>end
