@@ -131,8 +131,8 @@ Here's a more complete example:
 ~~~
 program hello
 
-    use mpi
     implicit none
+    include "mpif.h" 
      
     integer rank, ierr
 
@@ -152,8 +152,15 @@ end
 >The standard can be specified to the compiler in two ways:
 >* using the .f08 file extention
 >* adding -std=f2008 on the command line.
+>
 >Fortran 2008 should be readable to those familiar with an earlier standard.
->If using Fortran 90 or earlier, the "use mpi" statement should be replaced by >`include "mpif.h"`, which should be after `implicit none`.
+>
+>The Fortan 2008 standard contains the `use` statement, which is a more native
+>way of referring to modules and can replace the `include` statement borrowed from C.
+>You can try replacing `include "mpi.h"` with `use mpi`, which should come before the
+>`implicit none` statement.
+>However, as some versions of the MPI library do no support Fortran modules, we will
+>stick with the `include` statement in the examples.
 >
 {: .callout .show-fortran}
 
@@ -170,16 +177,16 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
 > ## Compile
 >
-> Compile the above code with `mpicc` or `mpifort`, and run it with `mpirun`.
+> Compile the above code with `mpicc`{: .show-c} `mpifort`{: .show-fortran}, and run it with `mpirun`.
 >
 {: .challenge}
 
 > ## Communicators
 >
 > The `MPI_COMM_WORLD` parameter is an _MPI communicator_, which was created by `MPI_Init`.
-> It labels the set of cores, called ranks, we are working with, and provides a context for
-> communications between them. You are also able to create your own communicators, which contain
-> a subset of the MPI ranks executing. Because of this, most MPI functions require you to specify
+> It labels the set of cores we are working with, called ranks, and provides a context for
+> communications between them. You can also create your own communicators, which contain
+> a subset of the MPI ranks. Because of this, most MPI functions require you to specify
 > the communicator you want them to operate on---for this lesson, this will always be `MPI_COMM_WORLD`.
 {: .callout}
 
@@ -236,12 +243,12 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>{: .source .language-c}
 >{: .solution .show-c}
 > 
->> ## Solution in Fortran
+>> ## Solution
 >> ~~~
 >>program hello
 >>
->>     use mpi
 >>     implicit none
+>>     include "mpif.h" 
 >>     
 >>     integer rank, n_ranks, ierr
 >>
@@ -337,8 +344,8 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> ~~~
 >>program print_numbers
 >>
->>    use mpi
 >>    implicit none
+>>    include "mpif.h" 
 >>
 >>    integer numbers, number
 >>    integer rank, n_ranks, ierr
