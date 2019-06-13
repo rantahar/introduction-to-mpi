@@ -232,8 +232,8 @@ int main(int argc, char** argv) {
 ~~~
 program hello
 
-    use mpi
     implicit none
+    include "mpif.h" 
      
     integer rank, n_ranks, request, ierr
     integer status(MPI_STATUS_SIZE)
@@ -323,8 +323,8 @@ end
 >~~~
 >program hello
 >
->    use mpi
 >    implicit none
+>    include "mpif.h" 
 >     
 >    integer, parameter :: n_numbers=524288
 >    integer i
@@ -421,13 +421,13 @@ end
 >{: .solution .show-c}
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >> 
 >> ~~~
 >>program hello
 >>
->>   use mpi
 >>   implicit none
+>>   include "mpif.h" 
 >>    
 >>   integer, parameter :: n_numbers=524288
 >>   integer i
