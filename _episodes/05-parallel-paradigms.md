@@ -62,7 +62,6 @@ To understand what data parallel means, let's consider the following bit of Open
 
 ~~~
 !$omp parallel do
-
 do i=1,N
 
   a(i) = b(i) + c(i)
@@ -73,7 +72,6 @@ enddo
 
 ~~~
 #pragma omp parallel for
-
 for(i=0; i<N; i++) {
 
   a[i] = b[i] + c[i];
@@ -103,7 +101,7 @@ do i=1,m
   
 enddo
 ~~~
-{: .language-c .show-c}
+{: .language-fortran .show-fortran}
 
 ~~~
 for(i=0; i<m; i++) {
@@ -112,7 +110,7 @@ for(i=0; i<m; i++) {
 
 }
 ~~~
-{: .language-fortran .show-fortran}
+{: .language-c .show-c}
 
 Other than changing the number of loops from `N` to `m`, the code is exactly the same. Here, `m`
 is the reduced number of loops each CPU (or core) needs to do (if there are `N` CPUs (or cores), `m` is 1 (= `N`/`N`)).
