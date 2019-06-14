@@ -305,7 +305,7 @@ This way you know exactly where in your code the problem is.
 >
 > Write a test for the find_maximum function as well and run both tests.
 >
->> ## Solution in C
+>> ## Solution
 >>~~~
 >>#include <stdarg.h>
 >>#include <stddef.h>
@@ -379,7 +379,7 @@ This way you know exactly where in your code the problem is.
 >{: .solution .show-c}
 >
 >
->> ## Solution in Fortran
+>> ## Solution
 >>
 >> Add a second test subroutine to the test module
 >>~~~
@@ -758,8 +758,8 @@ int main(int argc, char** argv) {
 > ~~~
 >module example_test
 >  use fruit
->  use mpi
 >  implicit none
+>  include "mpif.h" 
 >
 >contains
 >

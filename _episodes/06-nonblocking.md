@@ -372,7 +372,7 @@ end
 >{: .source .language-fortran .show-fortran}
 >
 >
->> ## Solution in C
+>> ## Solution
 >> 
 >> ~~~
 >> #include <stdio.h>

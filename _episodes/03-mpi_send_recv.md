@@ -372,7 +372,7 @@ end
 >~~~
 >{: .source .language-fortran .show-fortran}
 >
->> ## Solution in C
+>> ## Solution
 >> ~~~
 >> #include <stdio.h>
 >> #include <mpi.h>
@@ -565,7 +565,7 @@ end
 >{: .source .language-fortran .show-fortran}
 >
 >
->> ## Solution in C
+>> ## Solution
 >> 
 >> `MPI_Send` will block execution until until the receiving process has called
 >> `MPI_Recv`. This prevents the sender from unintentionally modifying the message
@@ -719,7 +719,7 @@ end
 > * There are no misses or points
 >
 >
->> ## Solution in C
+>> ## Solution
 >> 
 >> ~~~
 >> #include <stdio.h>
