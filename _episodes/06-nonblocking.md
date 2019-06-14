@@ -278,14 +278,18 @@ end
 >
 > ~~~
 > #include <stdio.h>
+> #include <stdlib.h>
 > #include <mpi.h>
 > 
 > int main(int argc, char** argv) {
 >    int rank, n_ranks, neighbour;
->    int n_numbers = 524288;
->    int send_message[n_numbers];
->    int recv_message[n_numbers];
+>    int n_numbers = 10000000;
+>    int *send_message;
+>    int *recv_message;
 >    MPI_Status status;
+>
+>    send_message = malloc(n_numbers*sizeof(int));
+>    recv_message = malloc(n_numbers*sizeof(int));
 > 
 >    // First call MPI_Init
 >    MPI_Init(&argc, &argv);
@@ -293,6 +297,13 @@ end
 >    // Get my rank and the number of ranks
 >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>
+>    // Check that there are exactly two ranks
+>    if( n_ranks != 2 ){
+>         printf("This example requires exactly two ranks\n");
+>         MPI_Finalize();
+>         return(1);
+>    }
 > 
 >    // Call the other rank the neighbour
 >    if( rank == 0 ){
@@ -312,6 +323,9 @@ end
 >    // Receive the message from the other rank
 >    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
 >    printf("Message received by rank %d \n", rank);
+>
+>    free(send_message);
+>    free(recv_message);
 > 
 >    // Call finalize at the end
 >    MPI_Finalize();
@@ -326,7 +340,7 @@ end
 >    implicit none
 >    include "mpif.h" 
 >     
->    integer, parameter :: n_numbers=524288
+>    integer, parameter :: n_numbers=10000000
 >    integer i
 >    integer rank, n_ranks, neighbour, ierr
 >    integer status(MPI_STATUS_SIZE)
@@ -376,15 +390,18 @@ end
 >> 
 >> ~~~
 >> #include <stdio.h>
+>> #include <stdlib.h>
 >> #include <mpi.h>
 >> 
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
->>    int n_numbers = 524288;
->>    int send_message[n_numbers];
->>    int recv_message[n_numbers];
+>>    int n_numbers = 10000000;
+>>    int *send_message;
+>>    int *recv_message;
 >>    MPI_Status status;
->>    MPI_Request request;
+>>
+>>    send_message = malloc(n_numbers*sizeof(int));
+>>    recv_message = malloc(n_numbers*sizeof(int));
 >> 
 >>    // First call MPI_Init
 >>    MPI_Init(&argc, &argv);
@@ -412,6 +429,9 @@ end
 >>    MPI_Irecv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
 >>    MPI_Wait( &request, &status );
 >>    printf("Message received by rank %d \n", rank);
+>>
+>>    free(send_message);
+>>    free(recv_message);
 >> 
 >>    // Call finalize at the end
 >>    MPI_Finalize();
@@ -429,7 +449,7 @@ end
 >>   implicit none
 >>   include "mpif.h" 
 >>    
->>   integer, parameter :: n_numbers=524288
+>>   integer, parameter :: n_numbers=10000000
 >>   integer i
 >>   integer rank, n_ranks, neighbour, request, ierr
 >>   integer status(MPI_STATUS_SIZE)

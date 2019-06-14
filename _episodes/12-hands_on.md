@@ -36,7 +36,7 @@ keypoints:
 > 5. Profile when the program runs correclty.
 > 6. Optimise, making sure the tests still succeed. Go to 5.
 >
-{. :challenge}
+{: .challenge}
 
 
 {% include links.md %}

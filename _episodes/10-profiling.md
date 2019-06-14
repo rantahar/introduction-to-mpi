@@ -3,7 +3,7 @@ title: "Profiling Parallel Applications"
 teaching: 30
 exercises: 30
 questions:
-- "It works, what is taking time?"
+- "It works, but what is taking time?"
 objectives:
 - "Use a profiler to find bottlenecks and hotspots and diagnose problems."
 keypoints:
