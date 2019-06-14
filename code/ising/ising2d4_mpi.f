@@ -29,10 +29,10 @@ c     a divisor of n2 and n2/numtask is an even integer for convenience
       integer*2 seed(3)
       common/seeds/seed
 
-      call MPI_INIT(ierr)
+      call MPI_Init(ierr)
 
-      call MPI_COMM_RANK(MPI_COMM_WORLD,node,ierr)
-      call MPI_COMM_SIZE(MPI_COMM_WORLD,numtask,ierr)
+      call MPI_Comm_rank(MPI_COMM_WORLD,node,ierr)
+      call MPI_Comm_size(MPI_COMM_WORLD,numtask,ierr)
 
       seed(1) = 1225 + node
       seed(2) = 4739 + node
@@ -120,10 +120,10 @@ c     j = 1 boundary
                sendbuf(i) = s(i+ip2d2sub-n1+ioe*ip2d2sub)
             enddo
             
-            call MPI_IRECV(recvbuf,n1,MPI_REAL,nextdn,itag,
+            call MPI_Irecv(recvbuf,n1,MPI_REAL,nextdn,itag,
      #           MPI_COMM_WORLD,ireq,ierr)
             
-            call MPI_SEND(sendbuf,n1,MPI_REAL,nextup,itag,
+            call MPI_Send(sendbuf,n1,MPI_REAL,nextup,itag,
      #           MPI_COMM_WORLD,ierr)
 
             call MPI_WAIT(ireq,istatus,ierr)
@@ -169,10 +169,10 @@ c     j = n2sub boundary
                sendbuf(i) = s(i+ioe*ip2d2sub)
             enddo
 
-            call MPI_IRECV(recvbuf,n1,MPI_REAL,nextup,itag,
+            call MPI_Irecv(recvbuf,n1,MPI_REAL,nextup,itag,
      #           MPI_COMM_WORLD,ireq,ierr)
             
-            call MPI_SEND(sendbuf,n1,MPI_REAL,nextdn,itag,
+            call MPI_Send(sendbuf,n1,MPI_REAL,nextdn,itag,
      #           MPI_COMM_WORLD,ierr)
             
             call MPI_WAIT(ireq,istatus,ierr)
@@ -193,9 +193,9 @@ c     j = n2sub boundary
                esumsub = esumsub + energy0
             enddo
          
-            call MPI_REDUCE(magsub,mag,1,MPI_DOUBLE_PRECISION,
+            call MPI_Reduce(magsub,mag,1,MPI_DOUBLE_PRECISION,
      #           MPI_SUM,iroot,MPI_COMM_WORLD,ierr)
-            call MPI_REDUCE(esumsub,esum,1,MPI_DOUBLE_PRECISION,
+            call MPI_Reduce(esumsub,esum,1,MPI_DOUBLE_PRECISION,
      #           MPI_SUM,iroot,MPI_COMM_WORLD,ierr)
          enddo
          if (node .eq. 0) then 
@@ -218,7 +218,7 @@ c     j = n2sub boundary
      #        ,magt
       endif
 
-      call MPI_FINALIZE(ierr)
+      call MPI_Finalize(ierr)
 
       stop
       end

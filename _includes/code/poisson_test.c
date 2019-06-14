@@ -1,7 +1,7 @@
 >>int main(int argc, char** argv) {
 >>
 >>   int i, j;
->>   float u[MAX+2][MAX+2], unew[MAX+2][MAX+2], rho[MAX+2][MAX+2];
+>>   float u[GRIDSIZE+2][GRIDSIZE+2], unew[GRIDSIZE+2][GRIDSIZE+2], rho[GRIDSIZE+2][GRIDSIZE+2];
 >>   float h, hsq;
 >>   double unorm;
 >> 
@@ -12,8 +12,8 @@
 >>   hsq = h*h;
 >> 
 >>   // Initialise the u and rho field to 0 
->>   for( int j=0; j <= MAX+1; j++ ){
->>      for( int i=0; i <= MAX+1; i++ ) {
+>>   for( int j=0; j <= GRIDSIZE+1; j++ ){
+>>      for( int i=0; i <= GRIDSIZE+1; i++ ) {
 >>         u[j][i] = 0.0;
 >>         rho[j][i] = 0.0;
 >>      }
