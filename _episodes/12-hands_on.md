@@ -46,7 +46,7 @@ keypoints:
 >>
 >> [ising2d4.c](../code/ising/ising2d4_mpi.c){: .show-c} 
 >> [ising2d4.f](../code/ising/ising2d4_mpi.f){: .show-fortran}
->>
+>{: .solution}
 >
 {: .challenge}
 
