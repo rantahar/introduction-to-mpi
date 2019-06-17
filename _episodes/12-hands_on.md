@@ -33,8 +33,20 @@ keypoints:
 >    and communicate with the others.
 >    If you can, split this into multiple parts for
 >    for different kinds on input.
-> 5. Profile when the program runs correclty.
+> 5. Profile when the program runs correctly.
 > 6. Optimise, making sure the tests still succeed. Go to 5.
+>
+> ### Serial code for the Ising Model
+>
+> [ising2d4.c](../code/ising/ising2d4.c){: .show-c} 
+> [ising2d4.f](../code/ising/ising2d4.f){: .show-fortran}
+>
+>
+>>## solution
+>>
+>> [ising2d4.c](../code/ising/ising2d4_mpi.c){: .show-c} 
+>> [ising2d4.f](../code/ising/ising2d4_mpi.f){: .show-fortran}
+>>
 >
 {: .challenge}
 
