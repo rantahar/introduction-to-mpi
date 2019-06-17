@@ -38,7 +38,9 @@ You may be able to reduce the problem size or required precision,
 as long as this does not change the algorithm itself.
 We will use the Poisson solver from the previous lesson as an example.
 The example program used here (and at the end of the previous section)
-is [here](../code/poisson/poisson_scaling.c){: .show-c}.
+is
+[here](../code/poisson/poisson_profiling.c){: .show-c} 
+[here](../code/poisson/poisson_profiling.f08){: .show-fortran}.
 
 Later we will see how we can limit the scope of the profiler, but first
 we need to run a summary of the whole program.
