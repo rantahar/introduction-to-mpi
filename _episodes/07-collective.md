@@ -68,6 +68,8 @@ MPI_Bcast(buffer, count, datatype, root, COMM, IERROR)
 ~~~
 {: .language-fortran .show-fortran}
 
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link files/broadcast.png %})
+
 Very similar to `MPI_Send`, but the same data is sent from rank `root` to all ranks.
 This function will only return once all processes have reached it, 
 meaning it has the side-effect of acting as a barrier.
@@ -95,6 +97,8 @@ MPI_Scatter(sendbuf, sendcount, sendtype, recvbuffer, recvcount,
     INTEGER    COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
+
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link files/scatter.png %})
 
 The data in the `sendbuf` on rank `root` is split into chunks
 and each chunk is sent to a different rank.
@@ -130,6 +134,8 @@ MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount,
     INTEGER    COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
+
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link files/gather.png %})
 
 Each rank sends the data in the `sendbuf` to rank `root`.
 The `root` collects the data into the `recvbuffer` in order of the rank
@@ -245,6 +251,8 @@ MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, COMM,
 ~~~
 {: .language-fortran .show-fortran}
 
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link files/reduction.png %})
+
 Each rank sends a piece of data, which are combined on their way to rank `root` into a single piece of data.
 For example, the function can calculate the sum of numbers distributed accross
 all the ranks.
@@ -285,6 +293,8 @@ MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, COMM, IERROR)
     INTEGER    count, datatype, op, COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
+
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link files/allreduce.png %})
 
 `MPI_Allreduce` is performs essentially the same operations as `MPI_Reduce`,
 but the result is sent to all the ranks.
