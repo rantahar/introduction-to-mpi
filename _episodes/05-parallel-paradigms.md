@@ -261,7 +261,7 @@ The data received from neighbours forms a "halo" around the ranks own data.
 
 ### Reduction
 
-![Reduction]({{ page.root }}{% link files/reduction.png %}){:height="150px"}
+![Reduction]({{ page.root }}{% link fig/reduction.png %}){:height="150px"}
 
 A reduction is an operation that reduces a large amount of data, a vector or a matrix,
 to a single number.
