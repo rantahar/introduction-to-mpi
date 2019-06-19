@@ -22,13 +22,14 @@ int main(int argc, char** argv) {
   int xup[VOLUME], yup[VOLUME], xdn[VOLUME], ydn[VOLUME];
   float beta,esum,mag;
   int s[VOLUME];
+  FILE *fp;
 
   double esumt, magt;
 
   /* Ask for parameters. Beta is the inverse of the temperature */
   fp = fopen("parameter","r");
-  fscanf(fp,"beta %f %d",&beta);
-  fscanf(fp,"iter %d",&iter);
+  fscanf(fp,"beta %f\n",&beta);
+  fscanf(fp,"iter %d\n",&iter);
   fclose(fp);
 
   /* Set random seed for erand */
