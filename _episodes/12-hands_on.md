@@ -36,11 +36,45 @@ keypoints:
 > 5. Profile when the program runs correctly.
 > 6. Optimise, making sure the tests still succeed. Go to 5.
 >
-> ### Serial code for the Ising Model
+> <br/>
+> **Serial code for the Ising Model**
 >
-> [ising2d4.c](../code/ising/ising2d4.c){: .show-c} 
-> [ising2d4.f](../code/ising/ising2d4.f){: .show-fortran}
+> As an example, here is as 
+> [code](../code/ising/ising2d4.c){: .show-c} 
+> [code](../code/ising/ising2d4.f){: .show-fortran}
+> for simulating the Ising model.
 >
+> The Ising model describes the behaviour of a ferromagnetic
+> material. The material is formed of atoms arranged in a
+> 2 dimensional square lattice. Each atom has a magnetic field
+> pointing either up or down. The atoms only interact with their
+> immeadiate neighbours. When neighbouring atoms point in 
+> different directions, they increase the energy of the system
+> a bit. Similarly when they point to different directions, they
+> decrease the energy by a bit.
+>
+> At zero temperature the system would just fall to the state with
+> lowest energy, but with a nonzero temperature it will sample
+> states with different energies. Increasing energy is still
+> alway less likely than decreasing it. Presicely, the propability
+> of changing the direction of an atom is
+>
+> $$ P = \min\left( e^{-\frac 1T \Delta_E}, 1 \right), $$
+>
+> Where $$\Delta_E$$ is the change in energy.
+> The code runs multiple iterations of a loop over all atoms in the
+> lattice and attempts to flip the direction of each one at a time.
+> After enough iterations, the system should find a natural equilibrium
+> for the given temperature.
+>
+> The code reads parameters from a file called `parameter`. It needs
+> to contain two lines for two parameters, `beta` and `iter`.
+> For example:
+> ~~~
+> beta 0.5
+> iter 100
+> ~~~
+> 
 >
 >>## solution
 >>
