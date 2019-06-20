@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
   subVOLUMEd2 = subVOLUME/2;
   nextup = (rank+1)%n_ranks; nextdn = (rank-1+n_ranks)%n_ranks;
 
-  /* Read parameters from a file. Beta is the inverse of the temperature. */
+  /* Read parameters. Beta is the inverse of the temperature. */
   if(rank == 0){
     FILE *fp = fopen("parameter","r");
     fscanf(fp,"beta %f\n", &beta);

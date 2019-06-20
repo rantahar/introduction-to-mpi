@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 
   double esumt, magt;
 
-  /* Ask for parameters. Beta is the inverse of the temperature */
+  /* Read parameters. Beta is the inverse of the temperature */
   fp = fopen("parameter","r");
   fscanf(fp,"beta %f\n",&beta);
   fscanf(fp,"iter %d\n",&iter);
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
   /* Initialize each point randomly */
   for(i = 0;i < VOLUME;i++) {
     if(erand48(seed) < 0.5){
-      s[i] = 1.0; 
+      s[i] = 1.0;
     }
     else {
       s[i] = -1.0;
