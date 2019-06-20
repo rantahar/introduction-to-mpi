@@ -87,7 +87,6 @@ int main(int argc, char** argv) {
       deltae = new_energy-energy_now;
       
       /* Accept or reject the change */
-      float random = erand48(seed);
       if( exp(-beta*deltae) > erand48(seed) ){
 	      s[i] = stmp;
 	      energy_now = new_energy;

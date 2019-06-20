@@ -8,10 +8,11 @@
 
 #include <mpi.h>
 
-#define N1 160
+#define N1 320
+#define N1d2 (N1/2)
 #define N2 320
 
-#define VOLUME N1*N2*2
+#define VOLUME N1*N2
 #define VOLUMEd2 N1*N2
 
 /*  2d Ising model using Metropolis update algorithm
@@ -27,8 +28,8 @@ int main(int argc, char** argv) {
   int n,i,j,is,ii,itag,iter;
   int xup[VOLUME], yup[VOLUME], xdn[VOLUME], ydn[VOLUME];
   int rank, n_ranks, nextup, nextdn, iroot, subN2, subVOLUME, subVOLUMEd2;
+  float s[VOLUME], stmp, sendbuf[N1d2], recvbuf[N1d2];
   float beta, new_energy, energy_now, deltae;
-  float s[VOLUME], stmp, sendbuf[N1], recvbuf[N1];
 
   double esumt,magt,esum,mag,esumsub,magsub;
 
@@ -60,7 +61,7 @@ int main(int argc, char** argv) {
   MPI_Bcast( &iter, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   /* Set random seed for erand. Needs to be different for each rank */
-  seed[0]=13+rank; seed[1]=35+rank; seed[2]=17+rank;
+  seed[0]=12+rank; seed[1]=35+rank; seed[2]=17+rank;
 
   /* Initialize each point randomly */
   for(i = 0;i < subVOLUME;i++) {
@@ -73,21 +74,21 @@ int main(int argc, char** argv) {
   /* Create and index of neighbours
      The sites are partitioned to even an odd,
      with even sites first in the array */
-  for(j = 0;j < subN2;j++) for(i = 0;i < N1*2;i++) {
+  for(j = 0;j < subN2;j++) for(i = 0;i < N1;i++) {
     int ij = i + j;
     int i2 = i/2;
-    int is = i2 + j*N1;
+    int is = i2 + j*N1d2;
     if(ij == (2*(ij/2))) {
-	    xup[is] = ((i+1)/2)%N1 + j*N1 + subVOLUMEd2;
-	    yup[is] = i2 + ((j+1)%subN2)*N1 + subVOLUMEd2;
-	    xdn[is] = ((i-1+N1*2)/2)%N1 + j*N1 + subVOLUMEd2;
-	    ydn[is] = i2 + ((j-1+N2)%subN2)*N1 + subVOLUMEd2;
+	    xup[is] = ((i+1)/2)%N1d2 + j*N1d2 + subVOLUMEd2;
+	    yup[is] = i2 + ((j+1)%subN2)*N1d2 + subVOLUMEd2;
+	    xdn[is] = ((i-1+N1*2)/2)%N1d2 + j*N1d2 + subVOLUMEd2;
+	    ydn[is] = i2 + ((j-1+N2)%subN2)*N1d2 + subVOLUMEd2;
     }
     else {
-	    xup[is+subVOLUMEd2] = ((i+1)/2)%N1 + j*N1;
-	    yup[is+subVOLUMEd2] = i2 + ((j+1)%subN2)*N1;
-	    xdn[is+subVOLUMEd2] = ((i-1+N1*2)/2)%N1 + j*N1;
-	    ydn[is+subVOLUMEd2] = i2 + ((j-1+N2)%subN2)*N1;
+	    xup[is+subVOLUMEd2] = ((i+1)/2)%N1d2 + j*N1d2;
+	    yup[is+subVOLUMEd2] = i2 + ((j+1)%subN2)*N1d2;
+	    xdn[is+subVOLUMEd2] = ((i-1+N1)/2)%N1d2 + j*N1d2;
+	    ydn[is+subVOLUMEd2] = i2 + ((j-1+N2)%subN2)*N1d2;
     }
   }
 
@@ -109,14 +110,14 @@ int main(int argc, char** argv) {
       /* Communicate and update the j=0 boundary */
       itag = 11;
       ii = parity*subVOLUMEd2;
-      for(i = 0;i < N1;i++) {
-	      sendbuf[i] = s[i+subVOLUMEd2-N1+other_parity*subVOLUMEd2];
+      for(i = 0;i < N1d2;i++) {
+	      sendbuf[i] = s[i+subVOLUMEd2-N1d2+other_parity*subVOLUMEd2];
       }
-      MPI_Irecv(&recvbuf,N1,MPI_FLOAT,nextdn,itag,MPI_COMM_WORLD,&request);
-      MPI_Send(&sendbuf,N1,MPI_FLOAT,nextup,itag,MPI_COMM_WORLD);
+      MPI_Irecv(&recvbuf,N1d2,MPI_FLOAT,nextdn,itag,MPI_COMM_WORLD,&request);
+      MPI_Send(&sendbuf,N1d2,MPI_FLOAT,nextup,itag,MPI_COMM_WORLD);
       MPI_Wait(&request,&status);
 
-      for(i=0; i<N1; i++){
+      for(i=0; i<N1d2; i++){
         float neighbours = s[xup[i+ii]] + s[yup[i+ii]]
 	                     + s[xdn[i+ii]] + recvbuf[i];
 	      stmp = -s[i+ii];
@@ -133,10 +134,10 @@ int main(int argc, char** argv) {
 
       /* Update the bulk of the lattice, everything but the boundaries */
       for(j = 1;j < (subN2-1);j++) 
-	      for(i = 0;i < N1;i++) {
-	        is = i + N1*j + ii;
-	        float neighbours = s[xup[i]] + s[yup[i]]
-                         + s[xdn[i]] + s[ydn[i]];
+	      for(i = 0;i < N1d2;i++) {
+	        is = i + N1d2*j + ii;
+	        float neighbours = s[xup[is]] + s[yup[is]]
+                         + s[xdn[is]] + s[ydn[is]];
 	        stmp = -s[is];
           energy_now = -s[is]*neighbours;
           new_energy = -stmp*neighbours;
@@ -151,15 +152,15 @@ int main(int argc, char** argv) {
       
       /* Update the j = subN2-1 boundary */
       itag = 22;
-      for(i = 0;i < N1;i++) {
+      for(i = 0;i < N1d2;i++) {
 	      sendbuf[i] = s[i+other_parity*subVOLUMEd2];
       }
-      MPI_Irecv(&recvbuf,N1,MPI_FLOAT,nextup,itag,MPI_COMM_WORLD,&request);
-      MPI_Send(&sendbuf,N1,MPI_FLOAT,nextdn,itag,MPI_COMM_WORLD);
+      MPI_Irecv(&recvbuf,N1d2,MPI_FLOAT,nextup,itag,MPI_COMM_WORLD,&request);
+      MPI_Send(&sendbuf,N1d2,MPI_FLOAT,nextdn,itag,MPI_COMM_WORLD);
       MPI_Wait(&request,&status);
 
-      ii = ii+subVOLUMEd2-N1;
-      for(i = 0;i < N1;i++) {
+      ii = ii+subVOLUMEd2-N1d2;
+      for(i = 0;i < N1d2;i++) {
 	      float neighbours = s[xup[i+ii]] + recvbuf[i]
 	                     + s[xdn[i+ii]] + s[ydn[i+ii]];
 	      stmp = -s[i+ii];
