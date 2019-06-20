@@ -16,7 +16,7 @@ keypoints:
 >## Going from Serial to Parallel
 >
 >Choose a working serial code to work on. It can be your own research code
->of one of the two examples below. Choose a function or a compact region
+>the example below. Choose a function or a compact region
 >of the code write a parallel version of it.
 >
 >Follow the same steps as in lesson 9:
@@ -78,7 +78,7 @@ keypoints:
 >
 >>## solution
 >> 
->> A possible MPI implementation: 
+>> A possible MPI implementation for reference: 
 >> [ising2d4.c](../code/ising/ising2d4_mpi.c){: .show-c} 
 >> [ising2d4.f08](../code/ising/ising2d4_mpi.f08){: .show-fortran}
 >{: .solution}
