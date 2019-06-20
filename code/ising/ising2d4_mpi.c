@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 	        esumsub = esumsub + energy_now;
 	      }
       
-      /* update the j = subN2-1 boundary */
+      /* Update the j = subN2-1 boundary */
       itag = 22;
       for(i = 0;i < N1;i++) {
 	      sendbuf[i] = s[i+other_parity*subVOLUMEd2];
@@ -194,7 +194,8 @@ int main(int argc, char** argv) {
   esumt = esumt/iter;
   magt = magt/iter;
   if(rank == 0){
-    printf("over whole iterations \n average energy = %f, average magnetization = %f\n", esumt, magt);
+    printf("Over the whole simulation:\n")
+    printf("average energy = %f, average magnetization = %f\n", esumt, magt);
   }
 
   MPI_Finalize();
