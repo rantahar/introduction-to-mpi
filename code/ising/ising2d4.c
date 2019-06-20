@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
   int n,i,j,iter;
   int xup[VOLUME], yup[VOLUME], xdn[VOLUME], ydn[VOLUME];
   float beta,esum,mag;
-  int s[VOLUME];
+  float s[VOLUME];
   FILE *fp;
 
   double esumt, magt;
@@ -77,16 +77,17 @@ int main(int argc, char** argv) {
     /* Loop over the lattice and try to flip each atom */
     for(i = 0;i < VOLUME;i++) {
       float new_energy, energy_now, deltae;
-      int stmp;
-      int neighbours = s[xup[i]] + s[yup[i]] + s[xdn[i]] + s[ydn[i]];
+      float stmp;
+      float neighbours = s[xup[i]] + s[yup[i]] + s[xdn[i]] + s[ydn[i]];
       stmp = -s[i];
 
       /* Find the energy before and after the flip */
-      energy_now = s[i]*neighbours;
-      new_energy = stmp*neighbours;
-      deltae = energy_now-new_energy;
+      energy_now = -s[i]*neighbours;
+      new_energy = -stmp*neighbours;
+      deltae = new_energy-energy_now;
       
       /* Accept or reject the change */
+      float random = erand48(seed);
       if( exp(-beta*deltae) > erand48(seed) ){
 	      s[i] = stmp;
 	      energy_now = new_energy;
@@ -108,7 +109,8 @@ int main(int argc, char** argv) {
 
   esumt = esumt/iter;
   magt = magt/iter;
-  printf("over whole iterations \n average energy = %f, average magnetization = %f\n", esumt, magt);
+  printf("Over the whole simulation:\n");
+  printf("average energy = %f, average magnetization = %f\n", esumt, magt);
 
   return 0;
 }

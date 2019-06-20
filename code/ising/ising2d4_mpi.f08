@@ -152,9 +152,9 @@ program ising2d
             neighbours = s(iup(i+ii,1))+s(iup(i+ii,2))+s(idn(i+ii,1))+recvbuf(i)
             stmp = -s(i+ii)
 
-            energy_now = s(i+ii)*neighbours
-            new_energy = stmp*neighbours
-            deltae = energy_now-new_energy
+            energy_now = -s(i+ii)*neighbours
+            new_energy = -stmp*neighbours
+            deltae = new_energy-energy_now
 
             call RANDOM_NUMBER(random)
             if(exp(-beta*deltae) .gt. random) then
@@ -173,9 +173,9 @@ program ising2d
                neighbours = s(iup(is,1))+s(iup(is,2))+s(idn(is,1))+s(idn(is,2))
                stmp = -s(is)
                
-               energy_now = s(is)*neighbours
-               new_energy = stmp*neighbours
-               deltae = energy_now-new_energy
+               energy_now = -s(is)*neighbours
+               new_energy = -stmp*neighbours
+               deltae = new_energy-energy_now
 
                call RANDOM_NUMBER(random)
                if(exp(-beta*deltae) .gt. random) then
@@ -201,9 +201,9 @@ program ising2d
             neighbours = s(iup(i+ii,1))+recvbuf(i)+s(idn(i+ii,1))+s(idn(i+ii,2))
             stmp = -s(i+ii)
             
-            energy_now = s(i+ii)*neighbours
-            new_energy = stmp*neighbours
-            deltae = energy_now-new_energy
+            energy_now = -s(i+ii)*neighbours
+            new_energy = -stmp*neighbours
+            deltae = new_energy-energy_now
 
             call RANDOM_NUMBER(random)
             if(exp(-beta*deltae) .gt. random) then

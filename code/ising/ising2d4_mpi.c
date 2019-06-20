@@ -117,13 +117,12 @@ int main(int argc, char** argv) {
       MPI_Wait(&request,&status);
 
       for(i=0; i<N1; i++){
-        int neighbours = s[xup[i+ii]] + s[yup[i+ii]]
+        float neighbours = s[xup[i+ii]] + s[yup[i+ii]]
 	                     + s[xdn[i+ii]] + recvbuf[i];
 	      stmp = -s[i+ii];
-        energy_now = s[i+ii]*neighbours;
-        new_energy = stmp*neighbours;
-        deltae = energy_now-new_energy;
-
+        energy_now = -s[i+ii]*neighbours;
+        new_energy = -stmp*neighbours;
+        deltae = new_energy-energy_now;
 	      if(exp(-beta*deltae) > erand48(seed)) {
 	        s[i+ii] = stmp;
 	        energy_now = new_energy;
@@ -136,12 +135,12 @@ int main(int argc, char** argv) {
       for(j = 1;j < (subN2-1);j++) 
 	      for(i = 0;i < N1;i++) {
 	        is = i + N1*j + ii;
-	        int neighbours = s[xup[i]] + s[yup[i]]
+	        float neighbours = s[xup[i]] + s[yup[i]]
                          + s[xdn[i]] + s[ydn[i]];
 	        stmp = -s[is];
-          energy_now = s[is]*neighbours;
-          new_energy = stmp*neighbours;
-          deltae = energy_now-new_energy;
+          energy_now = -s[is]*neighbours;
+          new_energy = -stmp*neighbours;
+          deltae = new_energy-energy_now;
 	        if(exp(-beta*deltae) > erand48(seed)) {
 	          s[is] = stmp;
 	          energy_now = new_energy;
@@ -161,12 +160,12 @@ int main(int argc, char** argv) {
 
       ii = ii+subVOLUMEd2-N1;
       for(i = 0;i < N1;i++) {
-	      int neighbours = s[xup[i+ii]] + recvbuf[i]
+	      float neighbours = s[xup[i+ii]] + recvbuf[i]
 	                     + s[xdn[i+ii]] + s[ydn[i+ii]];
 	      stmp = -s[i+ii];
-        energy_now = s[i+ii]*neighbours;
-        new_energy = stmp*neighbours;
-        deltae = energy_now-new_energy;
+        energy_now = -s[i+ii]*neighbours;
+        new_energy = -stmp*neighbours;
+        deltae = new_energy-energy_now;
 	      if(exp(-beta*deltae) > erand48(seed)) {
 	        s[i+ii] = stmp;
 	        energy_now = new_energy;
@@ -194,7 +193,7 @@ int main(int argc, char** argv) {
   esumt = esumt/iter;
   magt = magt/iter;
   if(rank == 0){
-    printf("Over the whole simulation:\n")
+    printf("Over the whole simulation:\n");
     printf("average energy = %f, average magnetization = %f\n", esumt, magt);
   }
 

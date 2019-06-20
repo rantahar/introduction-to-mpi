@@ -96,9 +96,9 @@ program ising2d
          stmp = -s(i)
 
          ! Find the energy before and after the flip
-         energy_now = s(i)*neighbours
-         new_energy = stmp*neighbours
-         deltae = energy_now-new_energy
+         energy_now = -s(i)*neighbours
+         new_energy = -stmp*neighbours
+         deltae = new_energy-energy_now
 
          ! Accept or reject the change
          CALL RANDOM_NUMBER(random)
