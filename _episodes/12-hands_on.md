@@ -74,6 +74,7 @@ keypoints:
 > beta 0.5
 > iter 100
 > ~~~
+> {: .source}
 > 
 >
 >>## solution
