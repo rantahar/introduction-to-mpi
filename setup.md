@@ -61,41 +61,6 @@ Other option include installing Open MPI under [Cygwin](https://www.cygwin.com/)
 using the Windows Subsystem for Linux on Windows 10.
 Under Cygwin, install the `gcc`, `openmpi` and the `openmpi-devel` packages.
 
-## Install Cmocka or FRUIT
-
-### Cmocka
-Cmocka is a unit testing framework for C. You can find it at the [Cmocka website](https://cmocka.org/).
-
-#### Ubuntu / Linux
-On Ubuntu, all you need to do is install `libcmocka-dev`. Other distributions may have a similar package,
-or may require a source installation (see below).
-
-#### macOS
-Run
-```
-brew install clib
-clib install cmocka
-```
-{: .source .language-bash}
-
-#### Windows / Source Installation
-In Cygwin, first install git, make and cmake using the Cygwin package manager. Then run
-```
-git clone git://git.cryptomilk.org/projects/cmocka.git
-mkdir cmocka-build
-cd cmocka-build
-cmake ../cmocka
-make
-make install
-```
-{: .source .language-bash}
-
-
-### FRUIT
-FRUIT is a similar unit testing framework for Fortran. It can be downloaded from
-[sourcefourge](http://sourceforge.net/projects/fortranxunit/).
-For the examples in this workshop, you will need the `src/fruit.f90` file from the ZIP archive.
-
 
 ## Installing Scalasca
 
