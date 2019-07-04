@@ -3,18 +3,18 @@ title: "MPI_Send and MPI_Recv"
 teaching: 5
 exercises: 20
 questions:
-- "How do I send data from one rank to another"
+- "How do I send data from one rank to another?"
 objectives:
 - "Introduce the `MPI_Send` and `MPI_Recv` functions"
 keypoints:
-- "Use `MPI_Send` to send messages"
-- "And `MPI_Recv` to receive them"
-- "`MPI_Recv` will block the program until the message is received"
+- "Use `MPI_Send` to send messages."
+- "And `MPI_Recv` to receive them."
+- "`MPI_Recv` will block the program until the message is received."
 ---
 
 
 ## Communication
-In this section we will use two MPI library functions functions to send data from one rank to another.
+In this section we will use two MPI library functions to send data from one rank to another.
 These are `MPI_Send` and `MPI_Recv`.
 They are the basic building blocks for essentially all of the more
 specialized MPI commands described later.
@@ -34,8 +34,8 @@ Rank B must know that it is about to receive a message and acknowledge this
 by calling `MPI_Recv`.
 This sets up a buffer for writing the incoming data
 and instructs the communication device to listen for the message.
-The message will not actually be sent before the receiving rank call MPI_Recv,
-even if MPI_Send has been called.
+The message will not actually be sent before the receiving rank calls `MPI_Recv`,
+even if `MPI_Send` has been called.
 
 > ## MPI_Send
 >
@@ -54,7 +54,7 @@ even if MPI_Send has been called.
 > | `datatype`:     | The type of the data being sent |
 > | `destination`:  | The rank number of the rank the data will be sent to |
 > | `tag`:          | A message tag (integer) |
-> | `communicator`: | The communicator (we have used `MPI_COMM_WORLD` in earlier) |
+> | `communicator`: | The communicator (we have used `MPI_COMM_WORLD` in earlier examples) |
 >
 {: .callout .show-c}
 
@@ -75,7 +75,7 @@ even if MPI_Send has been called.
 > | `datatype`:     | The type of the data being received |
 > | `source`:       | The rank number of the rank sending the data |
 > | `tag`:          | A message tag (integer) |
-> | `communicator`: | The communicator (we have used `MPI_COMM_WORLD` in earlier) |
+> | `communicator`: | The communicator (we have used `MPI_COMM_WORLD` in earlier examples) |
 > | `status`:       | A pointer for writing the exit status of the MPI command |
 >
 {: .callout .show-c}
@@ -93,7 +93,7 @@ even if MPI_Send has been called.
 > | `DATATYPE`: | The type of the data being sent |
 > | `DEST`:     | The rank number of the rank the data will be sent to |
 > | `TAG`:      | A message tag (integer) |
-> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier examples) |
 > | `IERROR`:   | Error status |
 {: .callout .show-fortran}
 
@@ -111,7 +111,7 @@ even if MPI_Send has been called.
 > | `DATATYPE`: | The type of the data being received                       |
 > | `SOURCE`:   | The rank number of the rank sending the data              |
 > | `TAG`:      | A message tag (integer)                                   |
-> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier examples) |
 > | `STATUS`:   | A pointer for writing the exit status of the MPI command  |
 >
 {: .callout .show-fortran}
@@ -132,8 +132,8 @@ It specifies information about the system and where each rank actually is.
 The status parameter in `MPI_Recv` will give information about any possible problems
 in transit.
 
-Here's an example program that uses MPI_Send and MPI_Recv to send the string "Hello World!"
-from rank 0 to rank 1.
+Here's an example program that uses `MPI_Send` and `MPI_Recv` to send the string "Hello World!"
+from rank 0 to rank 1:
 
 ~~~
 #include <stdio.h>
@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
     MPI_Finalize();
     return(1);
   }
-  
+
   // Get my rank
   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 
@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
      MPI_Recv(message, 14, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
      printf("%s",message);
   }
-  
+
   // Call finalize at the end
   return MPI_Finalize();
 }
@@ -178,8 +178,8 @@ int main(int argc, char** argv) {
 program hello
 
      implicit none
-     include "mpif.h" 
-     
+     include "mpif.h"
+
      integer rank, n_ranks, ierr
      integer status(MPI_STATUS_SIZE)
      character(len=13)  message
@@ -279,7 +279,7 @@ end
 >>program hello
 >>
 >>     implicit none
->>     include "mpif.h" 
+>>     include "mpif.h"
 >>     
 >>     integer rank, n_ranks, my_pair, ierr
 >>     integer status(MPI_STATUS_SIZE)
@@ -332,7 +332,7 @@ end
 >~~~
 > #include <stdio.h>
 > #include <mpi.h>
-> 
+>
 > int main(int argc, char** argv) {
 >   int rank;
 >
@@ -354,7 +354,7 @@ end
 >program hello
 >
 >    implicit none
->    include "mpif.h" 
+>    include "mpif.h"
 >     
 >    integer rank, ierr
 >
@@ -376,7 +376,7 @@ end
 >> ~~~
 >> #include <stdio.h>
 >> #include <mpi.h>
->> 
+>>
 >> int main(int argc, char** argv) {
 >>     int rank, n_ranks, numbers_per_rank;
 >>  
@@ -417,7 +417,7 @@ end
 >>program hello
 >>
 >>    implicit none
->>    include "mpif.h" 
+>>    include "mpif.h"
 >>     
 >>    integer rank, n_ranks, ierr
 >>    integer sender
@@ -459,14 +459,14 @@ end
 
 > ## Blocking
 >
-> * Try this code and see what happens
+> * Try this code and see what happens.
 > * How would you change the code to fix the problem?
 >
 >~~~
 > #include <stdio.h>
 > #include <stdlib.h>
 > #include <mpi.h>
-> 
+>
 > int main(int argc, char** argv) {
 >    int rank, n_ranks, neighbour;
 >    int n_numbers = 10000000;
@@ -476,10 +476,10 @@ end
 >
 >    send_message = malloc(n_numbers*sizeof(int));
 >    recv_message = malloc(n_numbers*sizeof(int));
-> 
+>
 >    // First call MPI_Init
 >    MPI_Init(&argc, &argv);
-> 
+>
 >    // Get my rank and the number of ranks
 >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
@@ -490,29 +490,29 @@ end
 >         MPI_Finalize();
 >         return(1);
 >    }
-> 
+>
 >    // Call the other rank the neighbour
 >    if( rank == 0 ){
 >       neighbour = 1;      
 >    } else {
 >       neighbour = 0;
 >    }
-> 
+>
 >    // Generate numbers to send
 >    for( int i=0; i<n_numbers; i++){
 >       send_message[i] = i;
 >    }
-> 
+>
 >    // Send the message to other rank
 >    MPI_Send(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
-> 
+>
 >    // Receive the message from the other rank
 >    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
 >    printf("Message received by rank %d \n", rank);
 >
 >    free(send_message);
 >    free(recv_message);
-> 
+>
 >    // Call finalize at the end
 >    MPI_Finalize();
 > }
@@ -524,7 +524,7 @@ end
 >program hello
 >
 >    implicit none
->    include "mpif.h" 
+>    include "mpif.h"
 >     
 >    integer, parameter :: n_numbers=10000000
 >    integer i
@@ -573,62 +573,62 @@ end
 >
 >
 >> ## Solution
->> 
+>>
 >> `MPI_Send` will block execution until until the receiving process has called
 >> `MPI_Recv`. This prevents the sender from unintentionally modifying the message
 >> buffer before the message is actually sent.
->> Above, both ranks call `MPI_Send` and just wait for the other respond.
->> The solution is to have one of the ranks receive it's message before sending.
+>> Above, both ranks call `MPI_Send` and just wait for the other to respond.
+>> The solution is to have one of the ranks receive its message before sending.
 >>
 >> Sometimes `MPI_Send` will actually make a copy of the buffer and return immediately.
 >> This generally happens only for short messages.
 >> Even when this happens, the actual transfer will not start before the receive is posted.
->> 
+>>
 >> ~~~
 >> #include <stdio.h>
 >> #include <mpi.h>
->> 
+>>
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
 >>    int n_numbers = 524288;
 >>    int send_message[n_numbers];
 >>    int recv_message[n_numbers];
 >>    MPI_Status status;
->> 
+>>
 >>    // First call MPI_Init
 >>    MPI_Init(&argc, &argv);
->> 
+>>
 >>    // Get my rank and the number of ranks
 >>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 >>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
->> 
+>>
 >>    // Generate numbers to send
 >>    for( int i=0; i<n_numbers; i++){
 >>       send_message[i] = i;
 >>    }
->> 
+>>
 >>    if( rank == 0 ){
 >>       // Rank 0 will send first
 >>       MPI_Send(send_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD);
 >>    }
->> 
+>>
 >>    if( rank == 1 ){
 >>       // Rank 1 will receive it's message before sending
 >>       MPI_Recv(recv_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
 >>       printf("Message received by rank %d \n", rank);
 >>    }
->> 
+>>
 >>    if( rank == 1 ){
 >>       // Now rank 1 is free to send
 >>       MPI_Send(send_message, n_numbers, MPI_INT, 0, 0, MPI_COMM_WORLD);
 >>    }
->> 
+>>
 >>    if( rank == 0 ){
 >>       // And rank 0 will receive the message
 >>       MPI_Recv(recv_message, n_numbers, MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
 >>       printf("Message received by rank %d \n", rank);
 >>    }
->> 
+>>
 >>    // Call finalize at the end
 >>    MPI_Finalize();
 >> }
@@ -638,7 +638,7 @@ end
 >
 >
 >> ## Solution
->> 
+>>
 >> `MPI_Send` will block execution until until the receiving process has called
 >> `MPI_Recv`. This prevents the sender from unintentionally modifying the message
 >> buffer before the message is actually sent.
@@ -648,12 +648,12 @@ end
 >> Sometimes `MPI_Send` will actually make a copy of the buffer and return immediately.
 >> This generally happens only for short messages.
 >> Even when this happens, the actual transfer will not start before the receive is posted.
->> 
+>>
 >> ~~~
 >>program hello
 >>
 >>   implicit none
->>   include "mpif.h" 
+>>   include "mpif.h"
 >>    
 >>   integer, parameter :: n_numbers=524288
 >>   integer i
@@ -727,11 +727,11 @@ end
 >
 >
 >> ## Solution
->> 
+>>
 >> ~~~
 >> #include <stdio.h>
 >> #include <mpi.h>
->> 
+>>
 >> int main(int argc, char** argv) {
 >>    int rank, neighbour;
 >>    int max_count = 1000000;
@@ -739,25 +739,25 @@ end
 >>    int bored;
 >>    int ball = 1; // A dummy message to simulate the ball
 >>    MPI_Status status;
->> 
+>>
 >>    // First call MPI_Init
 >>    MPI_Init(&argc, &argv);
->> 
+>>
 >>    // Get my rank
 >>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
->> 
+>>
 >>    // Call the other rank the neighbour
 >>    if( rank == 0 ){
 >>        neighbour = 1;
 >>    } else {
 >>        neighbour = 0;
 >>    }
->> 
+>>
 >>    if( rank == 0 ){
 >>       // Rank 0 starts with the ball. Send it to rank 1
 >>       MPI_Send(&ball, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
 >>    }
->> 
+>>
 >>    // Now run a send and receive in a loop untill someone gets bored
 >>    counter = 0;
 >>    bored = 0;
@@ -768,12 +768,12 @@ end
 >>       
 >>       // Increment the counter and send the ball back
 >>       MPI_Send(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
->> 
+>>
 >>       // Check if the rank is bored
 >>       bored = counter < max_count;
 >>    }
 >>    printf("rank %d is bored and giving up \n", rank);
->> 
+>>
 >>    // Call finalize at the end
 >>    MPI_Finalize();
 >> }
@@ -783,12 +783,12 @@ end
 >
 >
 >> ## Solution
->> 
+>>
 >> ~~~
 >>program pingpong
 >>
 >>    implicit none
->>    include "mpif.h" 
+>>    include "mpif.h"
 >>     
 >>    integer ball, max_count, counter
 >>    logical bored
@@ -846,4 +846,3 @@ end
 
 
 {% include links.md %}
-
