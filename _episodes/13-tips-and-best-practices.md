@@ -5,7 +5,7 @@ exercises: 0
 questions:
 - "What best practices should I know before I write my program?"
 objectives:
-- "Useful tips and best practices"
+- "Useful tips and best practices."
 keypoints:
 ---
 
@@ -25,7 +25,7 @@ parallel regions and less need for communication.
 How will I split the work? Will different ranks work on different tasks?
 Will I split the data between the tasks, and if I do, how should I split it?
 The way the task is distributed will determine how efficient the resulting
-program can be and how well the run time scales with the number of ranks.
+program can be, and how well the run time scales with the number of ranks.
 
 
 * **Start With a Working Serial Code**
@@ -54,13 +54,13 @@ Optimisation usually makes the code less readable can lead to mistakes.
 Once you have a working code only optimise the important parts.
 Use a profiler to determine where the program spends its time.
 Spend your time on the same lines of code.
-Keep everything else nice, clean and readable.
+Keep everything else nice, clean, and readable.
 
 
 * **Optimise Communication Over Computation**
 
-Especially when running on a large system, it is more important to reduce 
-communication than it is to avoid computation. The processor can run quite a 
+Especially when running on a large system, it is more important to reduce
+communication than it is to avoid computation. The processor can run quite a
 few floating point operations in the time it takes for the network to send
 a number from one rank to the other.
 
@@ -104,11 +104,10 @@ You can only post the send once you have the data, but
 you can post a receive when ever you want.
 This allows the communication device to set up a buffer and prepare
 to receive the message.
-It also avoid the other rank waiting for the receive when it already
+It also avoids the other rank waiting for the receive when it already
 has the data.
-receive to be posted.
+<!-- receive to be posted. -->
 
 Do this within reason. Don't start all your transfers at the beginning of the program.
 
 {% include links.md %}
-
