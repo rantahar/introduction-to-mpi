@@ -24,9 +24,9 @@ Scalasca is an open source application developed by three German research center
 
 It is used together with the [Score-P](https://www.vi-hps.org/projects/score-p/) utility, the Cube library
 and the Cube viewer.
-Since it is open source, you can install it in your home directory on any HPC cluster 
+Since it is open source, you can install it in your home directory on any HPC cluster
 that does not already have it.
-The process is as described in [setup](setup), but you need to add 
+The process is as described in [setup](setup), but you need to add
 `--prefix=$HOME/scalasca/` to the `./configure` command to install in
 your home folder.
 
@@ -39,7 +39,7 @@ as long as this does not change the algorithm itself.
 We will use the Poisson solver from the previous lesson as an example.
 The example program used here (and at the end of the previous section)
 is
-[here](../code/poisson/poisson_profiling.c){: .show-c} 
+[here](../code/poisson/poisson_profiling.c){: .show-c}
 [here](../code/poisson/poisson_profiling.f08){: .show-fortran}.
 
 Later we will see how we can limit the scope of the profiler, but first
@@ -47,14 +47,14 @@ we need to run a summary of the whole program.
 Start by recompiling the application, replacing `mpicc` with the version
 provided by the Score-P utility.
 
-Assuming the final version is saved into `poisson.c` it is compiled with
+Assuming the final version is saved into `poisson.c` it is compiled with:
 {: .show-c}
 ~~~
 scorep mpicc -o poisson poisson.c
 ~~~
 {: .source .language-bash .show-c}
 
-Assuming the final version is saved into `poisson.f08` it is compiled with
+Assuming the final version is saved into `poisson.f08` it is compiled with:
 {: .show-fortran}
 ~~~
 scorep mpifort -o poisson poisson.f08
@@ -62,22 +62,22 @@ scorep mpifort -o poisson poisson.f08
 {: .source .language-bash .show-fortran}
 
 This will produce an instrumented binary.
-When you execute, it will track function calls and the time spent in each
+When you execute it, it will track function calls and the time spent in each
 function.
 
-Next, run the new executable using Scalasca to analyse the data gathered
+Next, run the new executable using Scalasca to analyse the data gathered:
 ~~~
 scalasca -analyze mpirun -n 2 poisson
 ~~~
 {: .source .language-bash}
 
-Finally, you can examine the results in the GUI
+Finally, you can examine the results in the GUI:
 ~~~
 scalasca -examine scorep_poisson_2_sum
 ~~~
 {: .source .language-bash}
 
-This will open the cubeGUI.
+This will open cubeGUI.
 If you are running the GUI on a cluster over a normal internet connection,
 it may be slow and unresponsive.
 It's usually faster to copy the data folder (here `scorep_poisson_2_sum`)
@@ -85,7 +85,7 @@ to your computer and run the GUI there.
 
 >## Profile Your Poisson Code
 >
-> Compile, run and analyse your mpi version of the poisson code.
+> Compile, run and analyse your MPI version of the poisson code.
 > How closely does it match the performance below?
 > What are the main differences?
 >
@@ -97,7 +97,7 @@ The GUI has three panels: a metric view, a function view and a system view.
 In the metric view you can pick a metric to be displayed.
 You can dig into the details of some of the metrics in a tree view.
 The second panels shows functions either as a call tree, displaying
-which functions have called which, or as a flat view.
+which functions have called what, or as a flat view.
 It also displays the metric you have chosen on a function level.
 The system view displays data on the chosen function on a deeper level.
 
@@ -105,7 +105,7 @@ Right clicking on the view and choosing "Info" replaces the system view with an 
 This gives information on the chosen metric.
 
 If you are running on a cluster you may wish to use the command line instead.
-To supress the GUI, use the `-s` parameter.
+To supress the GUI, use the `-s` parameter:
 ~~~
 scalasca -examine -s scorep_poisson_2_sum
 cat scorep_poisson_2_sum/scorep.score
@@ -165,10 +165,10 @@ INCL(main)          28.531245
 The INCL(main) includes function calls inside the main function, while
 EXCL(main) counts only the time spent in the main function itself.
 
-This tells us clearly that poisson_step is the most important function
+This tells us clearly that `poisson_step` is the most important function
 to optimise.
 
-You can also print a call tree using
+You can also print a call tree using:
 ~~~
 cube_calltree -m time scorep_poisson_2_sum/summary.cubex
 ~~~
@@ -198,14 +198,14 @@ The numbers on the left give the amount of time spent in each function.
 >> ## Solution
 >> The percentages have changed to inclusive ones.
 >> They now report the whole time spent in the function,
->> including in subfunction calls.
+>> including in sub-function calls.
 >{: .solution}
 >
 {: .challenge}
 
 >## Note on the Windows Subsystem for Linux
 >
-> Unfortunately the kernel interface provided by the Windows Subsystem for Linux 
+> Unfortunately the kernel interface provided by the Windows Subsystem for Linux
 > does not support hardware level profiling.
 > If you are running inside the Subsystem you have significantly less information.
 > In a moment we will see ways of getting more information even in this case,
@@ -225,7 +225,7 @@ the code or to restrict measurements to the most interesting parts
 of the code.
 The filter needs to be saved as a file.
 The following will filter out everything except `poisson_step`, effectively
-restricting the measurements to this function.
+restricting the measurements to this function:
 ~~~
 SCOREP_REGION_NAMES_BEGIN
   EXCLUDE
@@ -236,14 +236,14 @@ SCOREP_REGION_NAMES_END
 ~~~
 {: .source}
 
-Save this to a file called `poisson.filter` and run
+Save this to a file called `poisson.filter` and run:
 ~~~
 scalasca -examine -s -f poisson.filter scorep_poisson_2_sum
 cat scorep_poisson_2_sum/scorep.score_poisson.filter
 ~~~
 {: .source .language-bash}
 
-The output is similar to before, but it now includes a filter column
+The output is similar to before, but it now includes a filter column:
 ~~~
 Estimated aggregate size of event trace:                   813kB
 Estimated requirements for largest trace buffer (max_buf): 407kB
@@ -273,11 +273,11 @@ flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
 
 ~~~
 {: .output}
-The `+` and `-` sign denote that are included and filtered out.
+The `+` and `-` sign denote what's included and what's filtered out.
 The `*` character denotes a region that is partially filtered.
 
 Once you are happy with the filter, it can then be passed to Score-P with the
-`SCOREP_FILTERING_FILE` environment variable
+`SCOREP_FILTERING_FILE` environment variable:
 ~~~
 export SCOREP_FILTERING_FILE=poisson.filter
 scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
@@ -293,12 +293,12 @@ This make profiling faster and the results easier to analyse.
 
 ### Trace Analysis
 
-Let's now run the application with the full trace using the `-t` flag
+Let's now run the application with the full trace using the `-t` flag:
 ~~~
 scalasca -analyze -t mpirun -n 2 poisson
 ~~~
 {: .source .language-bash}
-And examine the results written to the `scorep_poisson_2_trace` directory
+And examine the results written to the `scorep_poisson_2_trace` directory:
 ~~~
 scalasca -examine scorep_poisson_2_trace
 ~~~
@@ -313,11 +313,11 @@ ranks.
 >## User defined regions
 >
 >By default Score-P only collects information about functions.
->You can also define your own regions using annotations 
+>You can also define your own regions using annotations
 >in the code.
 >
 >
->Include the Score-P header file
+>Include the Score-P header file:
 >~~~
 > #include "scorep/SCOREP_User.h"
 >~~~
@@ -338,7 +338,7 @@ ranks.
 >~~~
 >{:.source .language-c }
 >
-> Adding annotations to loops can be done in a single line
+> Adding annotations to loops can be done in a single line:
 >~~~
 >SCOREP_USER_REGION( "<loop_name>", SCOREP_USER_REGION_TYPE_LOOP )
 >for(i = 0; i < 100; i++) {
@@ -347,7 +347,7 @@ ranks.
 >~~~
 >{:.source .language-c }
 >
->When compiling with Score-P, add `--user` to enable user defined regions.
+>When compiling with Score-P, add `--user` to enable user defined regions:
 >~~~
 >scorep --user mpicc poisson_main_mpi.c poisson_step_mpi.c
 >~~~
@@ -359,7 +359,7 @@ ranks.
 > Using Score-P annotations requires processing the file
 > with the C preprocessor.
 > The Score-P compiler will do this automatically.
-> Include the Score-P header file
+> Include the Score-P header file:
 >~~~
 > #include "scorep/SCOREP_User.inc"
 > ~~~
@@ -380,7 +380,7 @@ ranks.
 >~~~
 >{:.source .language-fortran}
 >
->When compiling with Score-P, add `--user` to enable user defined regions.
+>When compiling with Score-P, add `--user` to enable user defined regions:
 >~~~
 >scorep --user mpifort poisson_mpi.f99
 >~~~
@@ -390,14 +390,14 @@ ranks.
 >## Annotations
 >
 > Add a user defined region to poisson step function.
-> Include the calculation of unorm, both the loop and
+> Include the calculation of `unorm`, both the loop and
 > the reduction.
 >
 > Use Scalasca to produce a call tree.
 >
 >>## Solution
 >>
->>Here we have used `<norm>` as the region name.
+>>Here we have used `<norm>` as the region name:
 >>
 >>~~~
 >>Reading scorep_a_4_sum/summary.cubex... done.
@@ -431,12 +431,12 @@ ranks.
 ## Optimisation Workflow
 
 The general workflow for optimising a code, wether parallel or serial
-is as follows
-1. Profile
-2. Optimise
-3. Test correctness
-4. Measure efficiency
-5. Go to 1.
+is as follows:
+1. Profile.
+2. Optimise.
+3. Test correctness.
+4. Measure efficiency.
+5. Goto: 1.
 
 
 > ## Iterative Improvement
@@ -447,4 +447,3 @@ is as follows
 {: .challenge}
 
 {% include links.md %}
-
