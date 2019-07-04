@@ -6,19 +6,19 @@ questions:
 - "What is the best way to write a parallel code?"
 - "How do I parallelise my serial code?"
 objectives:
-- "Go through practical steps for going from a serial code to a parallel code"
+- "Go through practical steps for going from a serial code to a parallel code."
 keypoints:
-- "Start from a working serial code"
-- "Write a parallel implementation for each function or parallel region"
-- "Connect the parallel regions with a minimal amount of communication"
-- "Continuously compare with the working serial code"
+- "Start from a working serial code."
+- "Write a parallel implementation for each function or parallel region."
+- "Connect the parallel regions with a minimal amount of communication."
+- "Continuously compare with the working serial code."
 ---
 
 ## Going from Serial to Parallel
 
 The examples used in the previous sections were perhaps not the most realistic.
 In this section we will look at a more complete code and take it from serial to
-parallel a couple of steps.
+parallel in a couple of steps.
 
 The exercises and solutions are based on the following code:
 
@@ -33,7 +33,7 @@ The exercises and solutions are based on the following code:
 {: .language-fortran .show-fortran }
 
 
-### Parallel regions
+### Parallel Regions
 
 The first step is to identify parts of the code that
 can be written in parallel.
@@ -54,12 +54,12 @@ Can you replace the serial parts with a different, more parallel algorithm?
 >> ## Solution
 >>
 >> The loops over space can be run in parallel.
->> There are parallisable loops in
->> * the setup, when initialising the fields
->> * the calculation of the time step, `unew`
->> * the difference, `unorm`
->> * overwriting the field `u`
->> * writing the files could be done in parallel
+>> There are parallisable loops in:
+>> * the setup, when initialising the fields.
+>> * the calculation of the time step, `unew`.
+>> * the difference, `unorm`.
+>> * overwriting the field `u`.
+>> * writing the files could be done in parallel.
 >>
 >> The best strategy would seem to be parallelising the loops.
 >> This will lead to a domain decomposed implementation with the
@@ -77,7 +77,7 @@ This should be done for each region separately, but taking into account the time
 
 The parallelisation strategy is often based on the
 underlying problem the algorithm is dealing with.
-For example in materials science, it makes sense
+For example, in materials science it makes sense
 to decompose the data into domains by splitting the
 physical volume of the material.
 
@@ -122,14 +122,14 @@ Here the habit of modular programming is very useful. When the functions are sma
 > ## Automated Testing
 >
 > There are automated unit testing frameworks for almost any programming language.
-> Automated testing creatly simplifies the workflow of running your tests and
+> Automated testing greatly simplifies the workflow of running your tests and
 > verifying that the entire program is correct.
 > The program here is still relatively simple, we are testing a single function,
 > so writing a main function with a test case is enough.
 >
 >Check out the
 >[cmocka](https://cmocka.org/)
->or 
+>or
 >[cunit](http://cunit.sourceforge.net/)
 >unit testing frameworks.
 > {: .show-c}
@@ -143,12 +143,12 @@ Here the habit of modular programming is very useful. When the functions are sma
 
 > ## Write a Test
 >
-> Change the main function of the poisson code to check that the poisson_step function
+> Change the main function of the poisson code to check that the `poisson_step` function
 > produces the correct result.
 > Test at least the output after 1 step and after 10 steps.
 >
 > What would you need to check to make sure the function is absolutely correct?
-> 
+>
 >> ## Solution
 >> ~~~
 {% include code/poisson_test.c %}
@@ -169,24 +169,24 @@ Here the habit of modular programming is very useful. When the functions are sma
 
 > ## Make the test work in parallel
 >
-> Modify the test so that it runs correctly with multiple mpi ranks.
+> Modify the test so that it runs correctly with multiple MPI ranks.
 > The tests should succeed when run with a single rank and fail with any
 > other number of ranks.
 >
 > At this point you will need to decide how the data is arranged before the
 > function is called.
-> Will it be distributed before the function is called or you split and 
+> Will it be distributed before the function is called, or will you split and
 > distribute the data each time the function is called?
 > In this case the `poisson_step` function is called many times and splitting
 > the data up each time would take a lot of time, so we assume it is
 > distributed before the function call.
 >
-> Let's split the outer loop, indexed with j, across the ranks.
+> Let's split the outer loop, indexed with `j`, across the ranks.
 > Each rank will have a slice of `GRIDSIZE/n_ranks` points in the `j`
 > direction.
 > Modify the main function so that it works properly with MPI and
-> each rank only initializes it's own data.
-> 
+> each rank only initializes its own data.
+>
 >> ## Solution
 >> ~~~
 {% include code/poisson_test.c %}
@@ -211,7 +211,7 @@ What does this rank need to to and what information does it need to do it?
 
 Communicate data in the simplest possible way
 just after it's created or just before it's needed.
-Use blocking or non-blocking communication, which ever you feel is simpler.
+Use blocking or non-blocking communication, whichever you feel is simpler.
 If you use non-blocking functions, call wait immediately.
 
 The point is to write a simple code that works correctly.
@@ -250,7 +250,7 @@ You can optimise later.
 
 
 > ## Communication
-> 
+>
 > Add in the nearest neighbour communication.
 > The second test should then succeed.
 >
@@ -269,7 +269,7 @@ You can optimise later.
 >> ## Solution
 >> Each rank needs to send the values at `u(1)` down to `rank-1` and
 >> the values at `u(my_j_max)` to `rank+1`.
->> There needs to be an exeption for the first and the last rank.
+>> There needs to be an exception for the first and the last rank.
 >>
 >>~~~
 {% include code/poisson_mpi_step2.f08 %}
@@ -306,15 +306,15 @@ results.
 > There are no real problems where you can achieve perfect strong scaling
 > but some do get close.
 >
-> Modify the main function to call the poisson step 100 times and set `GRIDSIZE=512`.
+> Modify the main function to call the `poisson_step` 100 times and set `GRIDSIZE=512`.
 >
 > Try running your program with an increasing number of ranks.
 > Measure the time taken using the Unix `time` utility.
 > What are the limitations on scaling?
 >
->> ## Solution 
+>> ## Solution
 >>
->> Exact numbers depend on the machine you're running on, 
+>> Exact numbers depend on the machine you're running on,
 >> but with a small number of ranks (up to 4) you should
 >> see the time decrease with the number of ranks.
 >> At 8 ranks the result is a bit worse and doubling again to 16 has little effect.
@@ -354,8 +354,8 @@ results.
 > How does it behave?
 >
 >> ## Solution
->> 
->> Depending on the machine you're running on, the 
+>>
+>> Depending on the machine you're running on, the
 >> runtime should be relatively constant.
 >> Runtime increase if you need to use nodes that are
 >> further away from each other in the network.
@@ -374,4 +374,3 @@ results.
 {: .challenge}
 
 {% include links.md %}
-
