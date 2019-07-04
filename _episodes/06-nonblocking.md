@@ -5,9 +5,9 @@ exercises: 20
 questions:
 - "How do I interleave communication and computation?"
 objectives:
-- "Introduce `MPI_Isend`, `MPI_Irecv`, `MPI_Test` and `MPI_Wait`"
+- "Introduce `MPI_Isend`, `MPI_Irecv`, `MPI_Test` and `MPI_Wait`."
 keypoints:
-- "Non-blocking functions allows interleaving communication and computation"
+- "Non-blocking functions allows interleaving communication and computation."
 ---
 
 ## Non-Blocking Communication
@@ -50,7 +50,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `datatype`:     | The type of the data being sent |
 > | `destination`:  | The rank number of the rank the data will be sent to |
 > | `tag`:          | A message tag (integer) |
-> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier examples) |
 > | `request`:      | Pointer for writing the request structure |
 {: .callout .show-c}
 
@@ -71,7 +71,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `datatype`:     | The type of the data being received |
 > | `source`:       | The rank number of the rank sending the data |
 > | `tag`:          | A message tag (integer) |
-> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `communicator`: | The communicator (we have used MPI_COMM_WORLD in earlier examples) |
 > | `request`:      | Pointer for writing the request structure |
 >
 {: .callout .show-c}
@@ -89,7 +89,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `DATATYPE`: | The type of the data being sent |
 > | `DEST`:     | The rank number of the rank the data will be sent to |
 > | `TAG`:      | A message tag (integer) |
-> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier examples) |
 > | `REQUEST`:  | Request handle |
 > | `IERROR`:   | Error status |
 >
@@ -108,7 +108,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > | `DATATYPE`: | The type of the data being received                       |
 > | `SOURCE`:   | The rank number of the rank sending the data              |
 > | `TAG`:      | A message tag (integer)                                   |
-> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier) |
+> | `COMM`:     | The communicator (we have used MPI_COMM_WORLD in earlier examples) |
 > | `REQUEST`:  | Request handle                                            |
 > | `IERROR`:   | Error status |
 >
@@ -124,7 +124,7 @@ or call `MPI_Wait` to wait until the transfer is complete.
 
 `MPI_Test` will return the status of the transfer specified by a request and
 `MPI_Wait` will wait until the transfer is complete before returning.
-The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
+The request can be created by either `MPI_Isend` or `MPI_Irecv`.
 
 > ## `MPI_Test`
 >
@@ -182,8 +182,8 @@ The request can be created by either an `MPI_Isend` or an `MPI_Irecv`.
 ### Examples
 
 These functions can be used similarly to `MPI_Send` and `MPI_Recv`.
-Here is how you could replace MPI_Send and MPI_Recv in the program that
-sends the "Hello World!" string by MPI_ISend, MPI_IRecv and MPI_Wait.
+Here is how you could replace `MPI_Send` and `MPI_Recv` in the program that
+sends the "Hello World!" string by `MPI_ISend`, `MPI_IRecv` and `MPI_Wait`:
 
 ~~~
 #include <stdio.h>
@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
     MPI_Finalize();
     return(1);
   }
-   
+
   // Get my rank
   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
 
@@ -221,7 +221,7 @@ int main(int argc, char** argv) {
      MPI_Wait( &request, &status );
      printf("%s",message);
   }
-   
+
   // Call finalize at the end
   MPI_Finalize();
 }
@@ -233,8 +233,8 @@ int main(int argc, char** argv) {
 program hello
 
     implicit none
-    include "mpif.h" 
-     
+    include "mpif.h"
+
     integer rank, n_ranks, request, ierr
     integer status(MPI_STATUS_SIZE)
     character(len=13)  message
@@ -280,7 +280,7 @@ end
 > #include <stdio.h>
 > #include <stdlib.h>
 > #include <mpi.h>
-> 
+>
 > int main(int argc, char** argv) {
 >    int rank, n_ranks, neighbour;
 >    int n_numbers = 10000000;
@@ -290,10 +290,10 @@ end
 >
 >    send_message = malloc(n_numbers*sizeof(int));
 >    recv_message = malloc(n_numbers*sizeof(int));
-> 
+>
 >    // First call MPI_Init
 >    MPI_Init(&argc, &argv);
-> 
+>
 >    // Get my rank and the number of ranks
 >    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 >    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
@@ -304,29 +304,29 @@ end
 >         MPI_Finalize();
 >         return(1);
 >    }
-> 
+>
 >    // Call the other rank the neighbour
 >    if( rank == 0 ){
 >       neighbour = 1;      
 >    } else {
 >       neighbour = 0;
 >    }
-> 
+>
 >    // Generate numbers to send
 >    for( int i=0; i<n_numbers; i++){
 >       send_message[i] = i;
 >    }
-> 
+>
 >    // Send the message to other rank
 >    MPI_Send(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
-> 
+>
 >    // Receive the message from the other rank
 >    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
 >    printf("Message received by rank %d \n", rank);
 >
 >    free(send_message);
 >    free(recv_message);
-> 
+>
 >    // Call finalize at the end
 >    MPI_Finalize();
 > }
@@ -338,7 +338,7 @@ end
 >program hello
 >
 >    implicit none
->    include "mpif.h" 
+>    include "mpif.h"
 >     
 >    integer, parameter :: n_numbers=10000000
 >    integer i
@@ -387,12 +387,12 @@ end
 >
 >
 >> ## Solution
->> 
+>>
 >> ~~~
 >> #include <stdio.h>
 >> #include <stdlib.h>
 >> #include <mpi.h>
->> 
+>>
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
 >>    int n_numbers = 10000000;
@@ -402,10 +402,10 @@ end
 >>
 >>    send_message = malloc(n_numbers*sizeof(int));
 >>    recv_message = malloc(n_numbers*sizeof(int));
->> 
+>>
 >>    // First call MPI_Init
 >>    MPI_Init(&argc, &argv);
->> 
+>>
 >>    // Get my rank and the number of ranks
 >>    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 >>    MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
@@ -416,15 +416,15 @@ end
 >>    } else {
 >>       neighbour = 0;
 >>    }
->> 
+>>
 >>    // Generate numbers to send
 >>    for( int i=0; i<n_numbers; i++){
 >>       send_message[i] = i;
 >>    }
->> 
+>>
 >>    // Send the message to other rank
 >>    MPI_Isend(send_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
->> 
+>>
 >>    // Receive the message from the other rank
 >>    MPI_Irecv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &request);
 >>    MPI_Wait( &request, &status );
@@ -432,7 +432,7 @@ end
 >>
 >>    free(send_message);
 >>    free(recv_message);
->> 
+>>
 >>    // Call finalize at the end
 >>    MPI_Finalize();
 >> }
@@ -442,12 +442,12 @@ end
 >
 >
 >> ## Solution
->> 
+>>
 >> ~~~
 >>program hello
 >>
 >>   implicit none
->>   include "mpif.h" 
+>>   include "mpif.h"
 >>    
 >>   integer, parameter :: n_numbers=10000000
 >>   integer i
@@ -502,4 +502,3 @@ end
 
 
 {% include links.md %}
-
