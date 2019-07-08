@@ -389,18 +389,18 @@ end
 >>     if( rank != 0 ){
 >>        // All ranks other than 0 should send a message
 >>  
->>        char message[20];
+>>        char message[30];
 >>        sprintf(message, "Hello World, I'm rank %d\n", rank);
->>        MPI_Send(message, 20, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+>>        MPI_Send(message, 30, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
 >>  
 >>     } else {
 >>        // Rank 0 will receive each message and print them
 >>  
->>        for( int sender=1; sender<n_ranks; r++ ){
->>           char message[20];
+>>        for( int sender=1; sender<n_ranks; sender++ ){
+>>           char message[30];
 >>           MPI_Status status;
 >>  
->>           MPI_Recv(message, 13, MPI_CHAR, sender, 0, MPI_COMM_WORLD, &status);
+>>           MPI_Recv(message, 30, MPI_CHAR, sender, 0, MPI_COMM_WORLD, &status);
 >>           printf("%s",message);
 >>        }
 >>     }
