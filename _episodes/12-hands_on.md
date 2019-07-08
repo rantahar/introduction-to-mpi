@@ -3,21 +3,21 @@ title: "Serial to Parallel"
 teaching: 0
 exercises: 70
 questions:
-- 
+- "What is the best way to write parallel code from serial?"
 objectives:
 - "Work on a second example, possibly your own research code."
 keypoints:
-- "Start from a working serial code"
-- "Write a parallel implementation for each function or parallel region"
-- "Connect the parallel regions with a minimal amount of communication"
-- "Continuously compare with the working serial code"
+- "Start from a working serial code."
+- "Write a parallel implementation for each function or parallel region."
+- "Connect the parallel regions with a minimal amount of communication."
+- "Continuously compare with the working serial code."
 ---
 
 >## Going from Serial to Parallel
 >
->Choose a working serial code to work on. It can be your own research code
+>Choose a working serial code to work on. It can be your own research code, or
 >the example below. Choose a function or a compact region
->of the code write a parallel version of it.
+>of the code and write a parallel version of it.
 >
 >Follow the same steps as in lesson 9:
 > 1. Identify parallel and serial regions.
@@ -27,20 +27,20 @@ keypoints:
 >    and how often.
 > 3. Set up tests. Write a program that runs the function
 >    with different parameters and checks that it's
->    running corectly.
+>    running correctly.
 > 4. Write the parallel code. When using MPI, this means
 >    writing the function that will run on a single rank
 >    and communicate with the others.
->    If you can, split this into multiple parts for
+>    If you can, split this into multiple parts
 >    for different kinds on input.
 > 5. Profile when the program runs correctly.
-> 6. Optimise, making sure the tests still succeed. Go to 5.
+> 6. Optimise, making sure the tests still succeed. Goto: 5.
 >
 > <br/>
 > **Serial code for the Ising Model**
 >
-> As an example, here is as 
-> [code](../code/ising/ising2d4.c){: .show-c} 
+> As an example, here is the
+> [code](../code/ising/ising2d4.c){: .show-c}
 > [code](../code/ising/ising2d4.f08){: .show-fortran}
 > for simulating the Ising model.
 >
@@ -48,7 +48,7 @@ keypoints:
 > material. The material is formed of atoms arranged in a
 > 2 dimensional square lattice. Each atom has a magnetic field
 > pointing either up or down. The atoms only interact with their
-> immeadiate neighbours. When neighbouring atoms point in 
+> immediate neighbours. When neighbouring atoms point in
 > different directions, they increase the energy of the system
 > a bit. Similarly when they point to different directions, they
 > decrease the energy by a bit.
@@ -56,8 +56,8 @@ keypoints:
 > At zero temperature the system would just fall to the state with
 > lowest energy, but with a nonzero temperature it will sample
 > states with different energies. Increasing energy is still
-> alway less likely than decreasing it. Presicely, the propability
-> of changing the direction of an atom is
+> alway less likely than decreasing it. Precisely, the probability
+> of changing the direction of an atom is:
 >
 > $$ P = \min\left( e^{-\frac 1T \Delta_E}, 1 \right), $$
 >
@@ -75,12 +75,12 @@ keypoints:
 > iter 100
 > ~~~
 > {: .source}
-> 
+>
 >
 >>## solution
->> 
->> A possible MPI implementation for reference: 
->> [ising2d4.c](../code/ising/ising2d4_mpi.c){: .show-c} 
+>>
+>> A possible MPI implementation for reference:
+>> [ising2d4.c](../code/ising/ising2d4_mpi.c){: .show-c}
 >> [ising2d4.f08](../code/ising/ising2d4_mpi.f08){: .show-fortran}
 >{: .solution}
 >
@@ -88,4 +88,3 @@ keypoints:
 
 
 {% include links.md %}
-

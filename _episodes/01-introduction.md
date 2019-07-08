@@ -8,24 +8,24 @@ objectives:
 - "Introduce parallel computing."
 - "Use `mpicc`/`mpifort` and `mpirun`."
 keypoints:
-- "Many problems can be distributed across several processors and solved faster"
-- "Mpirun runs copies of the program."
-- "The copies are separated MPI rank"
+- "Many problems can be distributed across several processors and solved faster."
+- "`mpirun` runs copies of the program."
+- "The copies are separated MPI rank."
 ---
 
 ## Parallel Computing
 
 In many fields of science we need more computational power than a single core on a single processor can provide.
-In essence, parallel computing means simply using more than one computer or more than one core to solve a problem faster.
+In essence, parallel computing means simply using more than one computer (or more than one core) to solve a problem faster.
 
 Naively, using more CPUs (or cores) means that one can solve a problem much faster, in time scales that make sense for research projects or study programs.
-However, how efficiently a problem can be solved in parallel depends on how the problem is divided among each CPUs (or cores) and the data and memory needs of the algorithm. This determines how much the cores need to communicate with each other while working together.
+However, how efficiently a problem can be solved in parallel depends on how the problem is divided among available CPUs (or cores), and the data and memory needs of the algorithm. This determines how much the cores need to communicate with each other while working together.
 The number of cores we can efficiently use also depends on the problem.
 You probably have two or four cores on your laptop, and many problems can be run very efficiently on all of those cores.
 As a researcher, you probably have access to a High-Performance Computing (HPC) system with thousands or hundreds of thousands of cores.
 To use them all efficiently would be challenging in almost any field.
 
-Also, if not careful, sometimes running in parallel can give a wrong result. Consider the sum, 1 - 1 + 1 - 1 + 1 ... Depending on how this summing is performed on multiple CPUs (or cores), the final answer is different. In practice, since there are always round-off errors in numerical calculations and the order of numerical calculations in parallel computing can be different, the result from running on a serial program on one CPU can be different from the result from running a parallel program on multple CPUs.
+Also, if not careful, sometimes running in parallel can give a wrong result. Consider the sum, 1 - 1 + 1 - 1 + 1 ... Depending on how this summing is performed on multiple CPUs (or cores), the final answer is different. In practice, since there are always round-off errors in numerical calculations and the order of numerical calculations in parallel computing can be different, the result from running on a serial program on one CPU can be different from the result from running a parallel program on multiple CPUs.
 
 During this course you will learn to design parallel algorithms and write parallel programs using the MPI library.
 MPI stands for Message Passing Interface, and is a low level, extremely flexible and simple set of commands for communicating between copies of a program.
@@ -34,7 +34,7 @@ MPI stands for Message Passing Interface, and is a low level, extremely flexible
 
 > ## Running with mpirun
 >
-> Let's get our hands dirty from the start and make sure MPI is installed. Open a bash command line and run the simple command.
+> Let's get our hands dirty from the start and make sure MPI is installed. Open a bash command line and run the simple command:
 > ~~~
 > echo Hello World!
 > ~~~
@@ -65,16 +65,16 @@ MPI stands for Message Passing Interface, and is a low level, extremely flexible
 
 Just running a program with `mpirun` starts several copies of it.
 The number of copies is decided by the `-n` parameter.
-In the example above, the program does not know it was started by mpirun
+In the example above, the program does not know it was started by `mpirun`
 and each copy just works as if they were the only one.
 
-For the copies to work together, they need to know about their role in the compution.
+For the copies to work together, they need to know about their role in the computation.
 This usually also requires knowing the total number of tasks running at the same time.
 
-To achieve this, the program needs to call the 
+To achieve this, the program needs to call the
 `MPI_Init` function.
 This will set up the environment for MPI, and assign a number (called the _rank_) to each process.
-At the end, each process should also cleanup by calling `MPI_Finalize`.
+At the end, each process should also cleanup by calling `MPI_Finalize`:
 
 ~~~
 MPI_Init(&argc, &argv);
@@ -91,7 +91,7 @@ call MPI_Finalize(ierr);
 
 
 
-Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function.
+Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function:
 
 ~~~
 int rank;
@@ -111,7 +111,7 @@ Here's a more complete example:
 ~~~
  #include <stdio.h>
  #include <mpi.h>
- 
+
  int main(int argc, char** argv) {
    int rank;
 
@@ -132,8 +132,8 @@ Here's a more complete example:
 program hello
 
     implicit none
-    include "mpif.h" 
-     
+    include "mpif.h"
+
     integer rank, ierr
 
     call MPI_Init(ierr)
@@ -147,15 +147,15 @@ end
 
 > ## Fortran Standard
 >
->Fortran examples, exercises and solutions in this workshop will conform to the 
+>Fortran examples, exercises and solutions in this workshop will conform to the
 >Fortran 2008 standard.
 >The standard can be specified to the compiler in two ways:
->* using the .f08 file extention
->* adding -std=f2008 on the command line.
+>* using the `.f08` file extension.
+>* adding `-std=f2008` on the command line.
 >
 >Fortran 2008 should be readable to those familiar with an earlier standard.
 >
->The Fortan 2008 standard contains the `use` statement, which is a more native
+>The Fortran 2008 standard contains the `use` statement, which is a more native
 >way of referring to modules and can replace the `include` statement borrowed from C.
 >You can try replacing `include "mpi.h"` with `use mpi`, which should come before the
 >`implicit none` statement.
@@ -223,7 +223,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> ~~~
 >> #include <stdio.h>
 >> #include <mpi.h>
->> 
+>>
 >> int main(int argc, char** argv) {
 >>   int rank, n_ranks;
 >>
@@ -242,13 +242,13 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >> ~~~
 >>{: .source .language-c}
 >{: .solution .show-c}
-> 
+>
 >> ## Solution
 >> ~~~
 >>program hello
 >>
 >>     implicit none
->>     include "mpif.h" 
+>>     include "mpif.h"
 >>     
 >>     integer rank, n_ranks, ierr
 >>
@@ -272,10 +272,10 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 > Modify the following code to split the iterations of the loop among processes.
 > Each iteration of the loop should be run by only one rank.
 > Each rank should also have more or less the same amount of work.
-> 
+>
 > ~~~
 > #include <stdio.h>
-> 
+>
 > int main(int argc, char** argv) {
 >   int numbers = 10;
 >
@@ -296,7 +296,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >
 >    do number = 0, numbers - 1
 >         write(6,*) "I'm printing the number", number
->    end do 
+>    end do
 >end
 > ~~~
 > {: .source .language-fortran .show-fortran}
@@ -345,7 +345,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>program print_numbers
 >>
 >>    implicit none
->>    include "mpif.h" 
+>>    include "mpif.h"
 >>
 >>    integer numbers, number
 >>    integer rank, n_ranks, ierr
