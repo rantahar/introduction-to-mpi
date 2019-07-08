@@ -139,7 +139,7 @@ The program can never run faster than the sum of the serial regions.
 
 ### Amdahl's Law
 
-Using $N$ CPUs (or cores) doesn't result in an $N$-times speedup. There is a theoretical limit in what parallelization can achieve, and it is encapsulated in "Amdahl's Law".
+Using $$N$$ CPUs (or cores) doesn't result in an $$N$$-times speedup. There is a theoretical limit in what parallelization can achieve, and it is encapsulated in "Amdahl's Law".
 
 The time it takes to execute the program is roughly:
 
