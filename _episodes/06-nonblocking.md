@@ -399,6 +399,7 @@ end
 >>    int *send_message;
 >>    int *recv_message;
 >>    MPI_Status status;
+>>    MPI_Request request;
 >>
 >>    send_message = malloc(n_numbers*sizeof(int));
 >>    recv_message = malloc(n_numbers*sizeof(int));
@@ -430,11 +431,11 @@ end
 >>    MPI_Wait( &request, &status );
 >>    printf("Message received by rank %d \n", rank);
 >>
->>    free(send_message);
->>    free(recv_message);
->>
 >>    // Call finalize at the end
 >>    MPI_Finalize();
+>>
+>>    free(send_message);
+>>    free(recv_message);
 >> }
 >> ~~~
 >>{: .source .language-c}
