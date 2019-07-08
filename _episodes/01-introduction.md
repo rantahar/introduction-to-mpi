@@ -321,14 +321,20 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>  MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
 >>
 >>  // Calculate the number of iterations for each rank
->>  numbers_per_rank = floor(numbers/n_ranks) + 1;
->>  my_first = rank * numbers_per_rank + 1;
+>>  numbers_per_rank = floor(numbers/n_ranks);
+>>  if( numbers%n_ranks > 0 ){
+>>     // Add 1 in case the number of ranks doesn't divide the number of numbers
+>>     numbers_per_rank += 1;
+>>  }
+>>
+>>  // Figure out the first and the last iteration for this rank
+>>  my_first = rank * numbers_per_rank;
 >>  my_last = my_first + numbers_per_rank;
 >>
 >>  // Run only the part of the loop this rank needs to run
 >>  // The if statement makes sure we don't go over
 >>  for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
->>    printf("I'm printing the number %d.\n", i);
+>>    printf("I'm rank %d and I'm printing the number %d.\n", rank, i);
 >>  }
 >>
 >>  // Call finalize at the end
@@ -361,8 +367,8 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>
 >>    ! Calculate the number of iterations for each rank
 >>    numbers_per_rank = numbers/n_ranks
->>    if (MOD(numbers, numbers_per_rank) > 0) then
->>         ! add 1 in case the number of ranks doesn't divide numbers
+>>    if (MOD(numbers, n_ranks) > 0) then
+>>         ! add 1 in case the number of ranks doesn't divide the number of numbers
 >>         numbers_per_rank = numbers_per_rank + 1
 >>    end if
 >>
@@ -373,7 +379,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>    ! Run only the necessary part of the loop, making sure we don't go over
 >>    do number = my_first, my_last - 1
 >>         if (number < numbers) then
->>              write(6,*) "I'm printing the number", number
+>>              write(6,*) "I'm rank", rank, " and I'm printing the number", number
 >>         end if
 >>    end do
 >>
