@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
    
    // Create a start configuration with the field
    // u=10 at x=0
-   for(j = 0;j <= GRIDSIZE+1; j++){}
+   for(j = 0;j <= GRIDSIZE+1; j++){
       u[j][0] = 10.0;
    }
  
