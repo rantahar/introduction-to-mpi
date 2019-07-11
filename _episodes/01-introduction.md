@@ -186,7 +186,7 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
 > ## Communicators
 >
-> The `MPI_COMM_WORLD` parameter is an _MPI communicator_, which was created by `MPI_Init`.
+> The `MPI_COMM_WORLD` parameter is an `MPI communicator`, which was created by `MPI_Init`.
 > It labels the set of cores we are working with, called ranks, and provides a context for
 > communications between them. You can also create your own communicators, which contain
 > a subset of the MPI ranks. Because of this, most MPI functions require you to specify
