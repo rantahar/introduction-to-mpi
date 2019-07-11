@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
   // Check that there are two ranks
   MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
   if( n_ranks != 2 ){
-    printf("This example requires two ranks\n");
+    printf("This example requires exactly two ranks\n");
     MPI_Finalize();
     return(1);
   }
@@ -190,7 +190,7 @@ program hello
      ! Check that there are two ranks
      call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
      if (n_ranks .ne. 2) then
-          write(6,*) "This example requires two ranks"
+          write(6,*) "This example exactly requires two ranks"
           error stop
      end if
 
