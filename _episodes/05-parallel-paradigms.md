@@ -179,7 +179,7 @@ The manager can also perform any serial parts of the program like generating ran
 
 In an MPI implementation, the main function will usually contain an `if`
 statement that determines whether the rank is the manager or a worker.
-The manager can execute a completely different code from the workers, or the manager can execute the same partial code as the workers once the managerial part of the code is done. It depends whether the managerial load takes a lot of time to finish or not. Idling is a waste in parallel computing!
+The manager can execute a completely different code from the workers, or the manager can execute the same partial code as the workers once the managerial part of the code is done. It depends on whether the managerial load takes a lot of time to finish or not. Idling is a waste in parallel computing!
 
 Because every worker rank needs to communicate with the manager, the bandwidth of the manager rank
 can become a bottleneck if administrative work needs a lot of information (as we can observe in real life).
