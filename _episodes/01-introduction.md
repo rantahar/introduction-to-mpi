@@ -177,7 +177,10 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
 > ## Compile
 >
-> Compile the above code with `mpicc`{: .show-c} `mpifort`{: .show-fortran}, and run it with `mpirun`.
+> Compile the above code with
+>`mpicc`{: .show-c}
+>`mpifort`{: .show-fortran}
+>, and run it with `mpirun`.
 >
 {: .challenge}
 
