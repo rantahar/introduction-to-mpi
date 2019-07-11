@@ -391,8 +391,15 @@ ranks.
 > Add a user defined region to poisson step function.
 > Include the calculation of `unorm`, both the loop and
 > the reduction.
->
 > Use Scalasca to produce a call tree.
+>
+> To make sure you are not filtering out the new region, you can
+> redefine the filter file:
+> 
+> ~~~
+> export SCOREP_FILTERING_FILE=poisson.filter
+> ~~~
+> {: .source .language-bash}
 >
 >>## Solution
 >>
