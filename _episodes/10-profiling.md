@@ -154,14 +154,17 @@ cube_stat -t 20 -p scorep_poisson_2_sum/profile.cubex
 {: .source .language-bash}
 This outputs
 ~~~
-Routine                  time
-INCL(main)          28.531245
-  EXCL(main)         0.013468
-  MPI_Init           0.055302
-  MPI_Comm_rank      0.000004
-  MPI_Comm_size      0.000002
-  poisson_step      28.460277
-  MPI_Finalize       0.002192
+cube::Region   NumberOfCalls ExclusiveTime InclusiveTime
+poisson_step             200      0.551116      0.727231
+MPI_Init                   2      0.221584      0.221584
+MPI_Allreduce            200      0.154211      0.154211
+MPI_Recv                 200      0.020997      0.020997
+poisson                    2      0.003256      0.952162
+MPI_Send                 200      0.000827      0.000827
+poisson                    2      0.000088      0.952250
+MPI_Finalize               2      0.000073      0.000073
+MPI_Comm_rank            202      0.000057      0.000057
+MPI_Comm_size            202      0.000041      0.000041
 ~~~
 {: .output}
 
