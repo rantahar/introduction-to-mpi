@@ -80,8 +80,8 @@ for(i=0; i<N; i++) {
 ~~~
 {: .language-c .show-c}
 
-In both languages, parallelization is achieved by just one additional line which is handled by the preprocessor
-(`!$` in Fortran and `#` in C) in the compile stage. This is possible since the computer system architecture
+Parallelization is achieved by just one additional line which is handled by the preprocessor
+ in the compile stage. This is possible since the computer system architecture
 supports OpenMP and all the complicated mechanisms for parallelization are hidden. Actually, this means that
 the system architecture has a shared memory view of variables and each CPU (or core) can access all of the
 memory address. So, the compiler "calculates" the address off-set for each CPU (or core) and let each one
