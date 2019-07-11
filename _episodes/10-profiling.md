@@ -402,7 +402,7 @@ ranks.
 > redefine the filter file:
 > 
 > ~~~
-> export SCOREP_FILTERING_FILE=poisson.filter
+> export SCOREP_FILTERING_FILE=
 > ~~~
 > {: .source .language-bash}
 >
