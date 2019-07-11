@@ -61,7 +61,7 @@ All of these steps have the same input, a car without tires,
 and they work together to create an output, a car with tires.
 ![Input -> Step 1 / Step 2 / Step 3 -> Output]({{ page.root }}{% link files/parallel_simple_flow.png %})
 The crucial thing that allows us to add the tires in parallel is that they are independent.
-Adding one tire does not prevent you from adding another, or requires that any of the other tires are added.
+Adding one tire does not prevent you from adding another, or require that any of the other tires are added.
 The workers operate on different parts of the car.
 
 ### Data Dependency
