@@ -113,40 +113,43 @@ cat scorep_poisson_2_sum/scorep.score
 {: .source .language-bash}
 The command line version will produce output that looks something like this:
 ~~~
-Estimated aggregate size of event trace:                   608200 bytes
-Estimated requirements for largest trace buffer (max_tbc): 304100 bytes
-(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid intermediate flushes
- or reduce requirements using file listing names of USR regions to be filtered.)
+Estimated aggregate size of event trace:                   501kB
+Estimated requirements for largest trace buffer (max_buf): 251kB
+Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
+(hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
+ or reduce requirements using USR regions filters.)
 
-flt type         max_tbc         time      % region
-     ALL          304100        28.53  100.0 ALL
-     MPI          264080         0.96    3.4 MPI
-     COM           40020        27.57   96.6 COM
+flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
+         ALL    256,161 12,012    4.03   100.0         335.60  ALL
+         MPI    232,096 10,008    0.52    12.9          52.03  MPI
+         COM     24,024  2,002    3.51    87.1        1753.48  COM
+      SCOREP         41      2    0.00     0.0          39.56  SCOREP
 
-     MPI          100000         0.83    2.9 MPI_Allreduce
-     MPI           82000         0.06    0.2 MPI_Recv
-     MPI           82000         0.01    0.0 MPI_Send
-     COM           40000        27.56   96.6 poisson_step
-     COM              20         0.01    0.0 main
-     MPI              20         0.06    0.2 MPI_Init
-     MPI              20         0.00    0.0 MPI_Finalize
-     MPI              20         0.00    0.0 MPI_Comm_size
-     MPI              20         0.00    0.0 MPI_Comm_rank
+         MPI     66,000  2,000    0.30     7.5         151.18  MPI_Allreduce
+         MPI     59,000  2,000    0.01     0.3           5.86  MPI_Recv
+         MPI     59,000  2,000    0.01     0.1           2.97  MPI_Send
+         MPI     24,024  2,002    0.00     0.0           0.11  MPI_Comm_size
+         MPI     24,024  2,002    0.00     0.0           0.14  MPI_Comm_rank
+         COM     24,000  2,000    3.51    87.0        1753.84  poisson_step
+      SCOREP         41      2    0.00     0.0          39.56  poisson
+         MPI         24      2    0.00     0.0          42.81  MPI_Finalize
+         COM         24      2    0.00     0.1        1392.03  main
+         MPI         24      2    0.20     5.0      100037.07  MPI_Init
 ~~~
 {: .output}
 
 Either way we find that in our case, the program is waiting for MPI
-communication for 36% of the total runtime.
-This is not completely out of the ordinary, but we could do better.
-53% of the time is spent in `poisson_step`.
+communication for 13% of the total runtime.
+This is not great for only two cores, so we would like to know if we can do better.
+87% of the time is spent in `poisson_step`.
 This is not counting the time spent in functions called by poisson step.
-This essentially means that 53% of the time is spent in actual computation.
+This essentially means that 87% of the time is spent in actual computation.
 
 If you are working on a terminal and prefer not to use the GUI, Cube
 can print most of the information for you
 For example the following will print out the time spent in each function:
 ~~~
-cube_stat -t 20 -p scorep_poisson_2_sum/summary.cubex
+cube_stat -t 20 -p scorep_poisson_2_sum/profile.cubex
 ~~~
 {: .source .language-bash}
 This outputs
@@ -175,16 +178,19 @@ cube_calltree -m time scorep_poisson_2_sum/summary.cubex
 {: .source .language-bash}
 This will print a tree view of function calls with timings:
 ~~~
-Reading scorep_poisson_2_sum/summary.cubex... done.
-0.013468        main
-0.0553023         + MPI_Init
-3.848e-06         + MPI_Comm_rank
-1.858e-06         + MPI_Comm_size
-27.5588           + poisson_step
-0.832237          |   + MPI_Allreduce
-0.0568715         |   + MPI_Recv
-0.0123662         |   + MPI_Send
-0.00219179        + MPI_Finalize
+Reading scorep_poisson_2_sum/profile.cubex... done.
+7.91242e-05     poisson
+0.00278406        + main
+0.200074          |   + MPI_Init
+1.02831e-05       |   + MPI_Comm_rank
+3.21992e-06       |   + MPI_Comm_size
+3.50769           |   + poisson_step
+0.000271832       |   |   + MPI_Comm_rank
+0.000207859       |   |   + MPI_Comm_size
+0.302362          |   |   + MPI_Allreduce
+0.0117208         |   |   + MPI_Recv
+0.00593548        |   |   + MPI_Send
+8.56184e-05       |   + MPI_Finalize
 ~~~
 {: .output}
 
@@ -244,36 +250,41 @@ scorep-score -f poisson.filter -r scorep_poisson_2_sum/profile.cubex
 
 The output is similar to before, but it now includes a filter column:
 ~~~
-Estimated aggregate size of event trace:                   813kB
-Estimated requirements for largest trace buffer (max_buf): 407kB
+Estimated aggregate size of event trace:                   501kB
+Estimated requirements for largest trace buffer (max_buf): 251kB
 Estimated memory requirements (SCOREP_TOTAL_MEMORY):       4097kB
 (hint: When tracing set SCOREP_TOTAL_MEMORY=4097kB to avoid intermediate flushes
  or reduce requirements using USR regions filters.)
 
 flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
- -       ALL    416,120 16,010   28.53   100.0        1782.09  ALL
- -       MPI    368,096 12,008    0.96     3.4          79.86  MPI
- -       COM     48,024  4,002   27.57    96.6        6889.62  COM
+ -       ALL    256,161 12,012    4.03   100.0         335.60  ALL
+ -       MPI    232,096 10,008    0.52    12.9          52.03  MPI
+ -       COM     24,024  2,002    3.51    87.1        1753.48  COM
+ -    SCOREP         41      2    0.00     0.0          39.56  SCOREP
 
- *       ALL    416,096 16,008   28.52   100.0        1781.47  ALL-FLT
- -       MPI    368,096 12,008    0.96     3.4          79.86  MPI-FLT
- *       COM     48,000  4,000   27.56    96.6        6889.70  COM-FLT
- +       FLT         24      2    0.01     0.0        6734.00  FLT
+ *       ALL    256,137 12,010    4.03    99.9         335.42  ALL-FLT
+ -       MPI    232,096 10,008    0.52    12.9          52.03  MPI-FLT
+ *       COM     24,000  2,000    3.51    87.0        1753.84  COM-FLT
+ -    SCOREP         41      2    0.00     0.0          39.56  SCOREP-FLT
+ +       FLT         24      2    0.00     0.1        1392.03  FLT
 
- -       MPI    132,000  4,000    0.83     2.9         208.06  MPI_Allreduce
- -       MPI    118,000  4,000    0.06     0.2          14.22  MPI_Recv
- -       MPI    118,000  4,000    0.01     0.0           3.09  MPI_Send
- -       COM     48,000  4,000   27.56    96.6        6889.70  poisson_step
- +       COM         24      2    0.01     0.0        6734.00  main
- -       MPI         24      2    0.06     0.2       27651.13  MPI_Init
- -       MPI         24      2    0.00     0.0        1095.89  MPI_Finalize
- -       MPI         24      2    0.00     0.0           0.93  MPI_Comm_size
- -       MPI         24      2    0.00     0.0           1.92  MPI_Comm_rank
-
+ -       MPI     66,000  2,000    0.30     7.5         151.18  MPI_Allreduce
+ -       MPI     59,000  2,000    0.01     0.3           5.86  MPI_Recv
+ -       MPI     59,000  2,000    0.01     0.1           2.97  MPI_Send
+ -       MPI     24,024  2,002    0.00     0.0           0.11  MPI_Comm_size
+ -       MPI     24,024  2,002    0.00     0.0           0.14  MPI_Comm_rank
+ -       COM     24,000  2,000    3.51    87.0        1753.84  poisson_step
+ -    SCOREP         41      2    0.00     0.0          39.56  poisson
+ -       MPI         24      2    0.00     0.0          42.81  MPI_Finalize
+ +       COM         24      2    0.00     0.1        1392.03  main
+ -       MPI         24      2    0.20     5.0      100037.07  MPI_Init
 ~~~
 {: .output}
 The `+` and `-` sign denote what is filtered out and what is not.
 The `*` character denotes a region that is partially filtered.
+In this case, only the main function is filtered out. Unfortunately we cannot
+remove the MPI_Init function. Normally we would run for longer and it would
+not matter.
 
 Once you are happy with the filter, it can then be passed to Score-P with the
 `SCOREP_FILTERING_FILE` environment variable:
@@ -337,15 +348,6 @@ ranks.
 >~~~
 >{:.source .language-c }
 >
-> Adding annotations to loops can be done in a single line:
->~~~
->SCOREP_USER_REGION( "<loop_name>", SCOREP_USER_REGION_TYPE_LOOP )
->for(i = 0; i < 100; i++) {
->  ...
->}
->~~~
->{:.source .language-c }
->
 >When compiling with Score-P, add `--user` to enable user defined regions:
 >~~~
 >scorep --user mpicc poisson.c
@@ -406,17 +408,20 @@ ranks.
 >>Here we have used `<norm>` as the region name:
 >>
 >>~~~
->>Reading scorep_a_4_sum/summary.cubex... done.
->>0.0203862       main                         /main
->>0.136475          + MPI_Init                 /main/MPI_Init
->>8.259e-06         + MPI_Comm_rank            /main/MPI_Comm_rank
->>4.191e-06         + MPI_Comm_size            /main/MPI_Comm_size
->>20.4657           + poisson_step             /main/poisson_step
->>7.8862            |   + <norm>               /main/poisson_step/<norm>
->>2.69831           |   |   + MPI_Allreduce    /main/poisson_step/<norm>/MPI_Allreduce
->>0.311995          |   + MPI_Recv             /main/poisson_step/MPI_Recv
->>0.0263682         |   + MPI_Send             /main/poisson_step/MPI_Send
->>0.00338705        + MPI_Finalize             /main/MPI_Finalize
+>>Reading scorep_poisson_2_sum/profile.cubex... done.
+>>4.01312         poisson
+>>4.01303           + main
+>>0.202641          |   + MPI_Init
+>>1.07346e-05       |   + MPI_Comm_rank
+>>3.19605e-06       |   + MPI_Comm_size
+>>3.80768           |   + poisson_step
+>>0.000293364       |   |   + MPI_Comm_rank
+>>0.000219558       |   |   + MPI_Comm_size
+>>1.29923           |   |   + <norm>
+>>0.295555          |   |   |   + MPI_Allreduce
+>>0.0118989         |   |   + MPI_Recv
+>>0.00645931        |   |   + MPI_Send
+>>9.72905e-05       |   + MPI_Finalize
 >>~~~
 >>{: .output}
 >{: .solution}
