@@ -146,7 +146,7 @@ If you are working on a terminal and prefer not to use the GUI, Cube
 can print most of the information for you
 For example the following will print out the time spent in each function:
 ~~~
-cube_stat -p scorep_poisson_2_sum/summary.cubex
+cube_stat -t 20 -p scorep_poisson_2_sum/summary.cubex
 ~~~
 {: .source .language-bash}
 This outputs
@@ -238,8 +238,7 @@ SCOREP_REGION_NAMES_END
 
 Save this to a file called `poisson.filter` and run:
 ~~~
-scalasca -examine -s -f poisson.filter scorep_poisson_2_sum
-cat scorep_poisson_2_sum/scorep.score_poisson.filter
+scorep-score -f poisson.filter -r scorep_poisson_2_sum/profile.cubex
 ~~~
 {: .source .language-bash}
 
@@ -273,7 +272,7 @@ flt     type max_buf[B] visits time[s] time[%] time/visit[us]  region
 
 ~~~
 {: .output}
-The `+` and `-` sign denote what's included and what's filtered out.
+The `+` and `-` sign denote what is filtered out and what is not.
 The `*` character denotes a region that is partially filtered.
 
 Once you are happy with the filter, it can then be passed to Score-P with the
