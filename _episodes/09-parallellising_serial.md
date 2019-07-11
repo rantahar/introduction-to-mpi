@@ -28,7 +28,7 @@ The exercises and solutions are based on the following code:
 {: .language-c .show-c }
 
 ~~~
-{% include code/poisson.f08 %}
+{% include code/poisson.F08 %}
 ~~~
 {: .language-fortran .show-fortran }
 
@@ -160,7 +160,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >> Here we create a module for the poisson solver, including only the
 >> subroutine for performing a single step.
 >>~~~
-{% include code/poisson_test.f08 %}
+{% include code/poisson_test.F08 %}
 >>~~~
 >>{: .source .language-fortran}
 >{: .solution .show-fortran }
@@ -196,7 +196,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >
 >> ## Solution
 >>~~~
-{% include code/poisson_test2.f08 %}
+{% include code/poisson_test2.F08 %}
 >>~~~
 >>{: .source .language-fortran}
 >{: .solution .show-fortran }
@@ -240,7 +240,7 @@ You can optimise later.
 >> ## Solution
 >>
 >>~~~
-{% include code/poisson_mpi_step1.f08 %}
+{% include code/poisson_mpi_step1.F08 %}
 >>~~~
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
@@ -272,7 +272,7 @@ You can optimise later.
 >> There needs to be an exception for the first and the last rank.
 >>
 >>~~~
-{% include code/poisson_mpi_step2.f08 %}
+{% include code/poisson_mpi_step2.F08 %}
 >>~~~
 >>{: .source .language-fortran}
 >>

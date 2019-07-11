@@ -41,7 +41,7 @@ keypoints:
 >
 > As an example, here is the
 > [code](../code/ising/ising2d4.c){: .show-c}
-> [code](../code/ising/ising2d4.f08){: .show-fortran}
+> [code](../code/ising/ising2d4.F08){: .show-fortran}
 > for simulating the Ising model.
 >
 > The Ising model describes the behaviour of a ferromagnetic
@@ -81,7 +81,7 @@ keypoints:
 >>
 >> A possible MPI implementation for reference:
 >> [ising2d4.c](../code/ising/ising2d4_mpi.c){: .show-c}
->> [ising2d4.f08](../code/ising/ising2d4_mpi.f08){: .show-fortran}
+>> [ising2d4.F08](../code/ising/ising2d4_mpi.F08){: .show-fortran}
 >{: .solution}
 >
 {: .challenge}

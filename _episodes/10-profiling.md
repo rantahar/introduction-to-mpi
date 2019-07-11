@@ -40,7 +40,7 @@ We will use the Poisson solver from the previous lesson as an example.
 The example program used here (and at the end of the previous section)
 is
 [here](../code/poisson/poisson_profiling.c){: .show-c}
-[here](../code/poisson/poisson_profiling.f08){: .show-fortran}.
+[here](../code/poisson/poisson_profiling.F08){: .show-fortran}.
 
 Later we will see how we can limit the scope of the profiler, but first
 we need to run a summary of the whole program.
@@ -54,10 +54,10 @@ scorep mpicc -o poisson poisson.c
 ~~~
 {: .source .language-bash .show-c}
 
-Assuming the final version is saved into `poisson.f08` it is compiled with:
+Assuming the final version is saved into `poisson.F08` it is compiled with:
 {: .show-fortran}
 ~~~
-scorep mpifort -o poisson poisson.f08
+scorep mpifort -o poisson poisson.F08
 ~~~
 {: .source .language-bash .show-fortran}
 
@@ -298,7 +298,7 @@ scorep mpicc -o poisson poisson.c
 {: .source .language-bash .show-c}
 ~~~
 export SCOREP_FILTERING_FILE=poisson.filter
-scorep mpifort -o poisson poisson.f08
+scorep mpifort -o poisson poisson.F08
 ~~~
 {: .source .language-bash .show-fortran}
 Score-P will only instrument and measure the parts of the program not filtered out.
@@ -386,7 +386,7 @@ ranks.
 >
 >When compiling with Score-P, add `--user` to enable user defined regions:
 >~~~
->scorep --user mpifort poisson.f08
+>scorep --user mpifort poisson.F08
 >~~~
 >
 {: .callout .show-fortran}

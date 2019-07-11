@@ -146,9 +146,9 @@ and test these separately.
 >~~~
 >{: .source .language-fortran}
 >
-> Compile this and the test module, here in example_test.f08, and the fruit.o object file
+> Compile this and the test module, here in example_test.F08, and the fruit.o object file
 > ~~~
-> gfortran example_driver.f08 example_test.f08 fruit.o
+> gfortran example_driver.F08 example_test.F08 fruit.o
 > ~~~
 >{: .language-bash}
 > and run the resulting binary.

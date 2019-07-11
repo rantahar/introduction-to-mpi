@@ -150,7 +150,7 @@ end
 >Fortran examples, exercises and solutions in this workshop will conform to the
 >Fortran 2008 standard.
 >The standard can be specified to the compiler in two ways:
->* using the `.f08` file extension.
+>* using the `.F08` file extension.
 >* adding `-std=f2008` on the command line.
 >
 >Fortran 2008 should be readable to those familiar with an earlier standard.
