@@ -280,12 +280,12 @@ Once you are happy with the filter, it can then be passed to Score-P with the
 `SCOREP_FILTERING_FILE` environment variable:
 ~~~
 export SCOREP_FILTERING_FILE=poisson.filter
-scorep mpicc -o poisson poisson_main_mpi.c poisson_step_mpi.c
+scorep mpicc -o poisson poisson.c
 ~~~
 {: .source .language-bash .show-c}
 ~~~
 export SCOREP_FILTERING_FILE=poisson.filter
-scorep mpifort -o poisson poisson_main_mpi.f90 poisson_step_mpi.f90
+scorep mpifort -o poisson poisson.f08
 ~~~
 {: .source .language-bash .show-fortran}
 Score-P will only instrument and measure the parts of the program not filtered out.
@@ -349,7 +349,7 @@ ranks.
 >
 >When compiling with Score-P, add `--user` to enable user defined regions:
 >~~~
->scorep --user mpicc poisson_main_mpi.c poisson_step_mpi.c
+>scorep --user mpicc poisson.c
 >~~~
 >{:.source .language-bash }
 {: .callout .show-c}
@@ -382,7 +382,7 @@ ranks.
 >
 >When compiling with Score-P, add `--user` to enable user defined regions:
 >~~~
->scorep --user mpifort poisson_mpi.f99
+>scorep --user mpifort poisson.f08
 >~~~
 >
 {: .callout .show-fortran}
