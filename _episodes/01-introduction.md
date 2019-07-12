@@ -68,7 +68,7 @@ MPI stands for Message Passing Interface, and is a low level, minimal and extrem
 > If you use Cygwin, you may notice an error message saying
 > ```There are not enough slots available in the system```.
 > By default, Cygwin will prevent you from running more copies
-> than you have cores to run on. Add ` --oversubscribe` after `mpirun`
+> than you have cores to run on. Add `--oversubscribe` after `mpirun`
 > to run more copies than you have cores.
 >
 {: .callout}
