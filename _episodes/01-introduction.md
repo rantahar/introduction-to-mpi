@@ -209,7 +209,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 
 ~~~
 integer n_ranks
-MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+MPI_Comm_size(MPI_COMM_WORLD, n_ranks);
 ~~~
 {: .language-fortran .show-fortran}
 
