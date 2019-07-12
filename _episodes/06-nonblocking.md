@@ -35,7 +35,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 > ## `MPI_Isend`
 >
 >~~~
-> MPI_Isend(
+> int MPI_Isend(
 >    void* data,
 >    int count,
 >    MPI_Datatype datatype,
@@ -56,7 +56,7 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 
 > ## `MPI_Irecv`
 >~~~
-> MPI_Irecv(
+> int MPI_Irecv(
 >    void* data,
 >    int count,
 >    MPI_Datatype datatype,
@@ -129,7 +129,7 @@ The request can be created by either `MPI_Isend` or `MPI_Irecv`.
 > ## `MPI_Test`
 >
 >~~~
-> MPI_Test(
+> int MPI_Test(
 >    MPI_Request* request,
 >    int * flag,
 >    MPI_Status* status)
@@ -142,7 +142,7 @@ The request can be created by either `MPI_Isend` or `MPI_Irecv`.
 
 > ## `MPI_Wait`
 >~~~
-> MPI_Wait(
+> int MPI_Wait(
 >    MPI_Request* request,
 >    MPI_Status* status)
 >~~~
