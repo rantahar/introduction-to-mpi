@@ -276,6 +276,10 @@ end
 > Here is the blocking example again.
 > Fix the problem using `MPI_Isend`, `MPI_Irecv` and `MPI_Wait`.
 >
+> If you encounter a segmentation fault,
+> think about whether a buffers have been
+> released by MPI before you free them.
+>
 > ~~~
 > #include <stdio.h>
 > #include <stdlib.h>
@@ -324,10 +328,10 @@ end
 >    MPI_Recv(recv_message, n_numbers, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
 >    printf("Message received by rank %d \n", rank);
 >
+>    // Call finalize at the end
 >    free(send_message);
 >    free(recv_message);
 >
->    // Call finalize at the end
 >    return MPI_Finalize();
 > }
 > ~~~
