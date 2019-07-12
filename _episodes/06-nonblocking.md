@@ -287,7 +287,7 @@ end
 >
 > int main(int argc, char** argv) {
 >    int rank, n_ranks, neighbour;
->    int n_numbers = 10000000;
+>    int n_numbers = 10000;
 >    int *send_message;
 >    int *recv_message;
 >    MPI_Status status;
@@ -344,7 +344,7 @@ end
 >    implicit none
 >    include "mpif.h"
 >     
->    integer, parameter :: n_numbers=10000000
+>    integer, parameter :: n_numbers=10000
 >    integer i
 >    integer rank, n_ranks, neighbour, ierr
 >    integer status(MPI_STATUS_SIZE)
@@ -399,7 +399,7 @@ end
 >>
 >> int main(int argc, char** argv) {
 >>    int rank, n_ranks, neighbour;
->>    int n_numbers = 10000000;
+>>    int n_numbers = 10000;
 >>    int *send_message;
 >>    int *recv_message;
 >>    MPI_Status status;
@@ -456,7 +456,7 @@ end
 >>   implicit none
 >>   include "mpif.h"
 >>    
->>   integer, parameter :: n_numbers=10000000
+>>   integer, parameter :: n_numbers=10000
 >>   integer i
 >>   integer rank, n_ranks, neighbour, request, ierr
 >>   integer status(MPI_STATUS_SIZE)
