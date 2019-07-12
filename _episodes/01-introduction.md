@@ -221,7 +221,7 @@ Usually the rank will need to know how many other ranks there are. You can find 
 
 ~~~
 int n_ranks;
-MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+int MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 ~~~
 {: .language-c .show-c}
 
