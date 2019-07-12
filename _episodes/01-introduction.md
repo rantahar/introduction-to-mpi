@@ -63,7 +63,7 @@ MPI stands for Message Passing Interface, and is a low level, minimal and extrem
 > to use MPI on a particular cluster.
 {: .callout}
 
-> ## Note of Cygwin
+> ## Note for Cygwin users
 >
 > If you use Cygwin, you may notice an error message saying
 > ```There are not enough slots available in the system```.
@@ -177,7 +177,7 @@ end
 >way of referring to modules and can replace the `include` statement borrowed from C.
 >You can try replacing `include "mpi.h"` with `use mpi`, which should come before the
 >`implicit none` statement.
->However, as some versions of the MPI library do no support Fortran modules, we will
+>However, as some versions of the MPI library do not support Fortran modules, we will
 >stick with the `include` statement in the examples.
 >
 {: .callout .show-fortran}
