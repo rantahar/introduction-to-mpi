@@ -49,17 +49,32 @@ mpicc: Open MPI 2.1.1 (Language: C)
 
 
 #### Windows
+On windows, the preferred option is to use the
+[Cygwin](https://www.cygwin.com/)
+terminal emulator or the Windows Subsystem for 
+Linux for Windows 10. 
+Both provide an interface that is
+similar to most HPC clusters.
+
+If you decide to use Cygwin, you need to install some
+packages using the Cygwin installer.
+If you already have Cygwin installed, you nevertheless
+should run the installer and make sure the following packages
+are selected:
+ * `gcc-core` and `gcc-fortran`
+ * `openmpi`, `libopenmpi40`, `libopenmpihf08_40`, `libopenmpiusef08_40`, `openmpi-devel` and `openmpi-devel`.
+ * `zlib` and`zlib-devel`
+ * `make` and `cmake`
+ * `git`
+ * `nano`, or your text editor of choice
+
+You can verify that it works by compiling any C or Fortran program using the `mpicc` or `mpifort` compiler.
+
 On Windows, if you use Visual Studio, you can install
 [Microsoft MPI](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi).
 The download includes two files, `msmpisetup.exe` and `msmpisdk.msi`. Download and run both installers.
 Follow [these instructions](https://blogs.technet.microsoft.com/windowshpc/2015/02/02/how-to-compile-and-run-a-simple-ms-mpi-program/)
 to create a project with the MPI compiler and library.
-
-You can verify that it works by compiling any C or Fortran program using the `mpicc` compiler.
-
-Other option include installing Open MPI under [Cygwin](https://www.cygwin.com/) or
-using the Windows Subsystem for Linux on Windows 10.
-Under Cygwin, install the `gcc`, `openmpi` and the `openmpi-devel` packages.
 
 
 ## Installing Scalasca
