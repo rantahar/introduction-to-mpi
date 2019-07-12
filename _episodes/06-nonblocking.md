@@ -211,13 +211,13 @@ int main(int argc, char** argv) {
 
   if( rank == 0 ){
      char *message = "Hello, world!\n";
-     MPI_Isend(message, 14, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &request);
+     MPI_Isend(message, 16, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &request);
   }
 
   if( rank == 1 ){
-     char message[14];
+     char message[16];
      MPI_Status status;
-     MPI_Irecv(message, 14, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &request);
+     MPI_Irecv(message, 16, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &request);
      MPI_Wait( &request, &status );
      printf("%s",message);
   }
