@@ -63,6 +63,16 @@ MPI stands for Message Passing Interface, and is a low level, minimal and extrem
 > to use MPI on a particular cluster.
 {: .callout}
 
+> ## Note of Cygwin
+>
+> If you use Cygwin, you may notice an error message saying
+> ```There are not enough slots available in the system```.
+> By default, Cygwin will prevent you from running more copies
+> than you have cores to run on. Add ` --oversubscribe` after `mpirun`
+> to run more copies than you have cores.
+>
+{: .callout}
+
 Just running a program with `mpirun` starts several copies of it.
 The number of copies is decided by the `-n` parameter.
 In the example above, the program does not know it was started by `mpirun`
