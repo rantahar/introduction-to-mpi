@@ -37,7 +37,7 @@ The most commonly-used are:
 ### Barrier
 
 ~~~
- MPI_Barrier( MPI_Comm communicator )
+ int MPI_Barrier( MPI_Comm communicator )
 ~~~
 {: .language-c .show-c}
 
@@ -52,7 +52,7 @@ Wait (doing nothing) until all ranks have reached this line.
 ### Broadcast
 
 ~~~
- MPI_Bcast(
+ int MPI_Bcast(
     void* data,
     int count,
     MPI_Datatype datatype,
@@ -77,7 +77,7 @@ meaning it has the side-effect of acting as a barrier.
 ### Scatter
 
 ~~~
- MPI_Scatter(
+ int MPI_Scatter(
     void* sendbuf,
     int sendcount,
     MPI_Datatype sendtype,
@@ -114,7 +114,7 @@ Usually `recvtype` is the same as `sendtype` and `recvcount` is `Nranks*sendcoun
 ### Gather
 
 ~~~
-MPI_Gather(
+int MPI_Gather(
     void* sendbuf,
     int sendcount,
     MPI_Datatype sendtype,
@@ -232,7 +232,7 @@ numbers.
 ### Reduce
 
 ~~~
-MPI_Reduce(
+int MPI_Reduce(
     void* sendbuf,
     void* recvbuffer,
     int count,
@@ -277,7 +277,7 @@ of the ranks to do the calculation.
 ### Allreduce
 
 ~~~
-MPI_Allreduce(
+int MPI_Allreduce(
      void* sendbuf,
      void* recvbuffer,
      int count,
