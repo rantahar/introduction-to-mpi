@@ -336,8 +336,10 @@ MPI_Comm_size(MPI_COMM_WORLD, n_ranks);
 >>
 >>  // Run only the part of the loop this rank needs to run
 >>  // The if statement makes sure we don't go over
->>  for( int i=my_first; i<my_last; i++ ) if( i < numbers ) {
->>    printf("I'm rank %d and I'm printing the number %d.\n", rank, i);
+>>  for( int i=my_first; i<my_last; i++ ) {
+>>    if( i < numbers ) {
+>>      printf("I'm rank %d and I'm printing the number %d.\n", rank, i);
+>>    }
 >>  }
 >>
 >>  // Call finalize at the end
