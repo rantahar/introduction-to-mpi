@@ -13,7 +13,7 @@ MPICH will work on Windows.
 Most Linux distributions will have an `openmpi` or `openmpi-dev` package.
 On Ubuntu, open a terminal and run:
 ```
-sudo apt install openmpi-bin openmpi-common openmpi-doc
+sudo apt install openmpi-bin openmpi-dev openmpi-common openmpi-doc
 ```
 {: .source .language-bash}
 
