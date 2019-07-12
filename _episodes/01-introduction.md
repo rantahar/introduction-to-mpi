@@ -282,7 +282,7 @@ MPI_Comm_size(MPI_COMM_WORLD, n_ranks);
 > int main(int argc, char** argv) {
 >   int numbers = 10;
 >
->   for( int i=1; i<numbers; i++ ) {
+>   for( int i=0; i<numbers; i++ ) {
 >     printf("I'm printing the number %d.\n", i);
 >   }
 >
