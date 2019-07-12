@@ -40,7 +40,7 @@ even if `MPI_Send` has been called.
 > ## MPI_Send
 >
 >~~~
-> MPI_Send(
+> int MPI_Send(
 >    void* data,
 >    int count,
 >    MPI_Datatype datatype,
@@ -60,7 +60,7 @@ even if `MPI_Send` has been called.
 
 > ## MPI_Recv
 >~~~
-> MPI_Recv(
+> int MPI_Recv(
 >    void* data,
 >    int count,
 >    MPI_Datatype datatype,
@@ -158,13 +158,13 @@ int main(int argc, char** argv) {
 
   if( rank == 0 ){
      char *message = "Hello, world!\n";
-     MPI_Send(message, 14, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
+     MPI_Send(message, 16, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
   }
 
   if( rank == 1 ){
-     char message[14];
+     char message[16];
      MPI_Status  status;
-     MPI_Recv(message, 14, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
+     MPI_Recv(message, 16, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
      printf("%s",message);
   }
 
@@ -256,13 +256,13 @@ end
 >>
 >>      if( rank%2 == 0 ){
 >>         char *message = "Hello, world!\n";
->>         MPI_Send(message, 14, MPI_CHAR, my_pair, 0, MPI_COMM_WORLD);
+>>         MPI_Send(message, 16, MPI_CHAR, my_pair, 0, MPI_COMM_WORLD);
 >>      }
 >>   
 >>      if( rank%2 == 1 ){
->>         char message[14];
+>>         char message[16];
 >>         MPI_Status  status;
->>         MPI_Recv(message, 14, MPI_CHAR, my_pair, 0, MPI_COMM_WORLD, &status);
+>>         MPI_Recv(message, 16, MPI_CHAR, my_pair, 0, MPI_COMM_WORLD, &status);
 >>         printf("%s",message);
 >>      }
 >>   }
@@ -345,7 +345,7 @@ end
 >   printf("Hello World, I'm rank %d\n", rank);
 >
 >   // Call finalize at the end
->   MPI_Finalize();
+>   return MPI_Finalize();
 > }
 > ~~~
 > {: .source .language-c .show-c}
@@ -406,7 +406,7 @@ end
 >>     }
 >>     
 >>     // Call finalize at the end
->>     MPI_Finalize();
+>>     return MPI_Finalize();
 >> }
 >> ~~~
 >>{: .source .language-c}
@@ -514,7 +514,7 @@ end
 >    free(recv_message);
 >
 >    // Call finalize at the end
->    MPI_Finalize();
+>    return MPI_Finalize();
 > }
 > ~~~
 >{: .source .language-c .show-c}
@@ -630,7 +630,7 @@ end
 >>    }
 >>
 >>    // Call finalize at the end
->>    MPI_Finalize();
+>>    return MPI_Finalize();
 >> }
 >> ~~~
 >>{: .source .language-c}
@@ -775,7 +775,7 @@ end
 >>    printf("rank %d is bored and giving up \n", rank);
 >>
 >>    // Call finalize at the end
->>    MPI_Finalize();
+>>    return MPI_Finalize();
 >> }
 >> ~~~
 >>{: .source .language-c}

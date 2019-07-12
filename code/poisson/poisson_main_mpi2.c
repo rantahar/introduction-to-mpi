@@ -55,7 +55,5 @@ int main(int argc, char** argv) {
    }
 
    // Call finalize at the end
-   MPI_Finalize();
-
-   return 0;
+   return MPI_Finalize();
 }

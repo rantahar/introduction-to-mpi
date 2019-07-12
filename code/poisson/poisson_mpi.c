@@ -116,5 +116,5 @@ main(int argc, char** argv) {
   for(j = 0;j <= isub+1;j++)
     for(i = 0;i <= MAX+1;i++) fprintf(fp10,"%f\n",u[i][j]);
   
-  MPI_Finalize();
+  return MPI_Finalize();
 }

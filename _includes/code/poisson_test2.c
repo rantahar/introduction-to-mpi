@@ -56,5 +56,5 @@
 >>    }
 >> 
 >>    // Call finalize at the end
->>    MPI_Finalize();
+>>    return MPI_Finalize();
 >> }

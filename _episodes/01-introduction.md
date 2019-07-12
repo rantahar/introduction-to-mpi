@@ -258,7 +258,7 @@ MPI_Comm_size(MPI_COMM_WORLD, n_ranks);
 >>   printf("total no. of ranks = %d\n", n_ranks);
 >>
 >>   // Call finalize at the end
->>   MPI_Finalize();
+>>   return MPI_Finalize();
 >> }
 >> ~~~
 >>{: .source .language-c}
@@ -361,7 +361,7 @@ MPI_Comm_size(MPI_COMM_WORLD, n_ranks);
 >>  }
 >>
 >>  // Call finalize at the end
->>  MPI_Finalize();
+>>  return MPI_Finalize();
 >>}
 >> ~~~
 >> {: .source .language-c}

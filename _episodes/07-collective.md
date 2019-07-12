@@ -179,7 +179,7 @@ numbers.
 >>  
 >>  // Free memory and finalise
 >>  free( receive_message );
->>  MPI_Finalize();
+>>  return MPI_Finalize();
 >>}
 >> ~~~
 >>{: .source .language-c}
@@ -368,7 +368,7 @@ but the result is sent to all the ranks.
 >    printf("The largest number is %f\n", max);
 >
 >    // Call finalize at the end
->    MPI_Finalize();
+>    return MPI_Finalize();
 > }
 > ~~~
 >{: .source .language-c .show-c}

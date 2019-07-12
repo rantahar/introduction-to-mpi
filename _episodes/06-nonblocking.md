@@ -223,7 +223,7 @@ int main(int argc, char** argv) {
   }
 
   // Call finalize at the end
-  MPI_Finalize();
+  return MPI_Finalize();
 }
 ~~~
 {: .source .language-c .show-c}
@@ -328,7 +328,7 @@ end
 >    free(recv_message);
 >
 >    // Call finalize at the end
->    MPI_Finalize();
+>    return MPI_Finalize();
 > }
 > ~~~
 > {: .source .language-c .show-c}
@@ -400,6 +400,7 @@ end
 >>    int *recv_message;
 >>    MPI_Status status;
 >>    MPI_Request request;
+>>    int return_value;
 >>
 >>    send_message = malloc(n_numbers*sizeof(int));
 >>    recv_message = malloc(n_numbers*sizeof(int));
@@ -431,11 +432,12 @@ end
 >>    MPI_Wait( &request, &status );
 >>    printf("Message received by rank %d \n", rank);
 >>
->>    // Call finalize at the end
->>    MPI_Finalize();
+>>    // Call finalize before freeing messages
+>>    return_value = MPI_Finalize();
 >>
 >>    free(send_message);
 >>    free(recv_message);
+>>    return return_value;
 >> }
 >> ~~~
 >>{: .source .language-c}

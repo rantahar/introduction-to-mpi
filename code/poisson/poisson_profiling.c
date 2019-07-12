@@ -160,5 +160,5 @@ int main(int argc, char** argv) {
    printf("Run completed with residue %g\n", unorm);
 
    // Call finalize at the end
-   MPI_Finalize();
+   return MPI_Finalize();
 }

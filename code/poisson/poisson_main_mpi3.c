@@ -82,7 +82,5 @@ int main(int argc, char** argv) {
    free(rho);
 
    // Call finalize at the end
-   MPI_Finalize();
-
-   return 0;
+   return MPI_Finalize();
 }

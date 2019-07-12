@@ -31,6 +31,6 @@ MPI_Reduce(&sum,&sumt,1,MPI_DOUBLE,MPI_SUM,iroot,MPI_COMM_WORLD);
 
 printf("total sum = %f\n", sumt);
 
-MPI_Finalize();
+return MPI_Finalize();
 
 }

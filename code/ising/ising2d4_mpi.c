@@ -198,7 +198,5 @@ int main(int argc, char** argv) {
     printf("average energy = %f, average magnetization = %f\n", esumt, magt);
   }
 
-  MPI_Finalize();
-
-  return 0;
+  return MPI_Finalize();
 }
