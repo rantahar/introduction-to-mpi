@@ -11,7 +11,7 @@
 #define SUBMAX 500
 #define IMAX 1000
 
-main(int argc, char** argv) {
+int main(int argc, char** argv) {
 
   int i, j, flag, node, numtask, nextdn, nextup, isub, itag1, itag2, loop;
   float u[MAX+2][SUBMAX+2], unew[MAX+2][SUBMAX+2], rho[MAX+2][SUBMAX+2];

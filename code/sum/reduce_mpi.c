@@ -7,7 +7,7 @@
 
 #define N 1000000
 
-main(int argc, char** argv) {
+int main(int argc, char** argv) {
 
 int   i, node, numtask, subN, iroot;
 float A[N];
