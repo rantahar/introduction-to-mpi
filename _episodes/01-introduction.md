@@ -87,10 +87,15 @@ This will set up the environment for MPI, and assign a number (called the _rank_
 At the end, each process should also cleanup by calling `MPI_Finalize`:
 
 ~~~
-MPI_Init(&argc, &argv);
-MPI_Finalize();
+int MPI_Init(&argc, &argv);
+int MPI_Finalize();
 ~~~
 {: .language-c .show-c}
+
+Both `MPI_Init` and `MPI_Finalize` return an integer.
+This describes errors that may happen in the function.
+Usually we will return the value of `MPI_Finalize` from the main function
+{: .show-c}
 
 ~~~
 integer ierr
@@ -99,13 +104,16 @@ call MPI_Finalize(ierr);
 ~~~
 {: .language-fortran .show-fortran}
 
-
+Both function take the parameter `ierr`,
+which is overwritten by the number
+of any error encountered, or by 0 if there is no error.
+{: .show-fortran}
 
 Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function:
 
 ~~~
 int rank;
-MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+int MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 ~~~
 {: .language-c .show-c}
 
@@ -133,7 +141,7 @@ Here's a more complete example:
    printf("My rank number is = %d\n", rank);
 
    // Call finalize at the end
-   MPI_Finalize();
+   return MPI_Finalize();
  }
 ~~~
 {: .language-c .show-c}
