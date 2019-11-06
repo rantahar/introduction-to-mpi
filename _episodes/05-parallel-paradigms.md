@@ -17,20 +17,30 @@ keypoints:
 
 ## Parallel Paradigms
 
-How to achieve a parallel computation is roughly divided into two camps: one is "data parallel"
-and the other is "message passing". MPI (Message Passing Interface, the parallelization method
-we use in our lessons) obviously belongs to the second camp. "OpenMP" belongs to the first.
-In the message passing paradigm, each CPU (or core) runs an independent program. Parallelism is
-achieved by receiving data which it doesn't have, and sending data which it has. In the data
-parallel paradigm, there are many different data and the same operations (instructions in
-assembly language) are performed on these data at the same time. Parallelism is
-achieved by how many different data a single operation can act on. This division is mainly
-due to historical development of parallel architectures: one follows from shared memory
+Parallel computation strategies can be divided roughly into two paradigms,
+"data parallel" and "message passing".
+MPI (Message Passing Interface, the parallelization method we use in our lessons)
+represents the second paradigm.
+Probably the most commonly used example of the data parallel paradigm is "OpenMP".
+In the message passing paradigm, each CPU (or core) runs an independent program.
+These programs work together on the same problem and communicate with each other
+by passing messages between them.
+If one CPU has a piece of data that a second CPU needs, it can send that data
+to the other.
+
+In the data parallel paradigm, multiple CPU's run the same program and the data is
+shared in common. 
+Each CPU runs the same commands on a different piece of data.
+This works well when the same operation needs to be performed on many pieces of data
+at the same time.
+This is the way GPU's are designed to operate.
+
+The reason for this division is mainly the historical development of parallel
+algorithms. One one follows from shared memory
 architecture like SMP (Shared Memory Processor) and the other from distributed computer
-architecture. A familiar example of the shared memory architecture is GPU (or multi-core
-CPU) architecture and a familiar example of the distributed computing architecture is a cluster
-computer. Which architecture is more useful depends on what kind of problems you have.
-Sometimes, one has to use both!
+architectures. Wether one is more efficient that the other depends on the type of problem
+you want to solve.
+
 
 Consider a simple loop which can be sped up if we have many CPUs (or cores) for illustration:
 
