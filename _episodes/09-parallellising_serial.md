@@ -189,7 +189,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >
 >> ## Solution
 >> ~~~
-{% include code/poisson_test.c %}
+{% include code/poisson_test2.c %}
 >> ~~~
 >>{: .source .language-c}
 >{: .solution .show-c }
