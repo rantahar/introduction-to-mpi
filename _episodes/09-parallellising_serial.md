@@ -20,7 +20,10 @@ The examples used in the previous sections were perhaps not the most realistic.
 In this section we will look at a more complete code and take it from serial to
 parallel in a couple of steps.
 
-The exercises and solutions are based on the following code:
+The exercises and solutions are based on a code that simulates the Poisson's equation,
+which in this case describes how heat diffuses in a metal stick. The original code below
+repeats small time steps untill the distribution of heat energy reaches an equilibrium.
+
 
 ~~~
 {% include code/poisson.c %}
