@@ -1,4 +1,6 @@
-/* a serial code for Poisson equation */
+/* A serial code for Poisson equation 
+ * This will apply the diffusion equation to an initial state
+ * untill an equilibrium state is reached. */
 
 /* contact seyong.kim81@gmail.com for comments and questions */
 
@@ -9,6 +11,7 @@
 #define GRIDSIZE 10
 
 
+/* Apply a single time step */
 double poisson_step( 
      float u[GRIDSIZE+2][GRIDSIZE+2],
      float unew[GRIDSIZE+2][GRIDSIZE+2],
@@ -49,9 +52,20 @@ double poisson_step(
 int main(int argc, char** argv) {
 
    int i, j;
-   float u[GRIDSIZE+2][GRIDSIZE+2], unew[GRIDSIZE+2][GRIDSIZE+2], rho[GRIDSIZE+2][GRIDSIZE+2];
+   float ** u, **unew;
    float h, hsq;
    double unorm, residual;
+
+   /* Allocate the field u and a temporary variable unew.
+    * The number of points in the real volume is GRIDSIZE.
+    * Reserve space also for boundary conditions. */
+   u    = malloc( (GRIDSIZE+2)*sizeof(float*) );
+   unew = malloc( (GRIDSIZE+2)*sizeof(float*) );
+
+   for( i=0; i<GRIDSIZE+2; i++ ){
+      u[i]    = malloc( (GRIDSIZE+2)*sizeof(float) );
+      unew[i] = malloc( (GRIDSIZE+2)*sizeof(float) );
+   }
  
    /* Set up parameters */
    h = 0.1;
@@ -84,5 +98,14 @@ int main(int argc, char** argv) {
    }
  
    printf("Run completed with residue %g\n", unorm);
+
+   /* Free the allocated fields */
+
+   for( i=0; i<GRIDSIZE+2; i++ ){
+      free(u[i])   ;
+      free(unew[i]);
+   }
+   free(u);
+   free(unew);
 
 }
