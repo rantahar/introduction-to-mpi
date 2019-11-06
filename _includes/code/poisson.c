@@ -68,8 +68,8 @@ int main(int argc, char** argv) {
       rho[i] = 0.0;
    }
    
-   // Create a start configuration with the field
-   // u=10 at x=0
+   // Create a start configuration with the heat energy
+   // u=10 at the x=0 boundary
    u[0] = 10.0;
  
    // Run iterations until the field reaches an equilibrium
