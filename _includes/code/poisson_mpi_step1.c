@@ -1,7 +1,5 @@
 >> double poisson_step( 
->>     float u[GRIDSIZE+2][GRIDSIZE+2],
->>     float unew[GRIDSIZE+2][GRIDSIZE+2],
->>     float rho[GRIDSIZE+2][GRIDSIZE+2],
+>>     float **u, float **unew, float **rho,
 >>     float hsq
 >>   ){
 >>   /* We will calculate unorm separately on each rank. It needs to be summed up at the end*/
