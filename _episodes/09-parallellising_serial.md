@@ -195,6 +195,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >> ~~~
 {% include code/poisson_test2.c %}
 >> ~~~
+>>{: .source .language-c}
 >>
 >> Notice that we now allocate space for the entire lattice
 >> on each node. Since we haven't touched the poisson_step
@@ -202,7 +203,6 @@ Here the habit of modular programming is very useful. When the functions are sma
 >> access all the memory. Allocating only the part our rank
 >> needs would produce a segmentation fault.
 >> 
->>{: .source .language-c}
 >{: .solution .show-c }
 >
 >> ## Solution
