@@ -189,12 +189,16 @@ Here the habit of modular programming is very useful. When the functions are sma
 >
 >> ## Solution
 >>
->> Notice that for this step to work you need to adjust the loops in the poisson_step function,
->> or it will produce a segmentation fault.
->>
 >> ~~~
 {% include code/poisson_test2.c %}
 >> ~~~
+>>
+>> Notice that we now allocate space for the entire lattice
+>> on each node. Since we haven't touched the poisson_step
+>> function, it will still try to update all the points and
+>> access all the memory. Allocating only the part our rank
+>> needs would produce a segmentation fault.
+>> 
 >>{: .source .language-c}
 >{: .solution .show-c }
 >

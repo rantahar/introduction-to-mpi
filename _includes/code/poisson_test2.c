@@ -19,11 +19,11 @@
 >>   /* Allocate the field u and a temporary variable unew.
 >>    * The number of points in the real volume is GRIDSIZE.
 >>    * Reserve space also for boundary conditions. */
->>   u    = malloc( (my_j_max+2)*sizeof(float*) );
->>   unew = malloc( (my_j_max+2)*sizeof(float*) );
->>   rho  = malloc( (my_j_max+2)*sizeof(float*) );
+>>   u    = malloc( (GRIDSIZE+2)*sizeof(float*) );
+>>   unew = malloc( (GRIDSIZE+2)*sizeof(float*) );
+>>   rho  = malloc( (GRIDSIZE+2)*sizeof(float*) );
 >>
->>   for( i=0; i<my_j_max+2; i++ ){
+>>   for( i=0; i<GRIDSIZE+2; i++ ){
 >>      u[i]    = malloc( (GRIDSIZE+2)*sizeof(float) );
 >>      unew[i] = malloc( (GRIDSIZE+2)*sizeof(float) );
 >>      rho[i]  = malloc( (GRIDSIZE+2)*sizeof(float) );
@@ -37,7 +37,7 @@
 >>    hsq = h*h;
 >> 
 >>    // Initialise the u and rho field to 0 
->>    for( int j=0; j <= my_j_max+1; j++ ){
+>>    for( int j=0; j <= GRIDSIZE+1; j++ ){
 >>       for( int i=0; i <= GRIDSIZE+1; i++ ) {
 >>          u[j][i] = 0.0;
 >>          rho[j][i] = 0.0;
@@ -72,7 +72,7 @@
 >> 
 >>   
 >>   /* Free the allocated fields */
->>   for( i=0; i<my_j_max+2; i++ ){
+>>   for( i=0; i<GRIDSIZE+2; i++ ){
 >>      free(u[i]);
 >>      free(unew[i]);
 >>      free(rho[i]);
