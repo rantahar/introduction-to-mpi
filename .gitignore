@@ -8,5 +8,6 @@ _site
 .Rproj.user
 .Rhistory
 .RData
+.jekyll-cache
 code_test
 
