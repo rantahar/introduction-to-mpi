@@ -32,6 +32,16 @@ MPI stands for Message Passing Interface, and is a low level, minimal and extrem
 
 ## Using MPI
 
+> ## MPI on HPC
+>
+> HPC clusters typically have more than one version of MPI available, so you may need
+> to tell it which one you want to use before it will give you access to it.
+>
+> Typically, a command like `module load mpi` will give you access to an MPI library,
+> but ask a helper or consult your HPC facility's documentation if you're not sure how
+> to use MPI on a particular cluster.
+{: .callout}
+
 > ## Running with mpirun
 >
 > Let's get our hands dirty from the start and make sure MPI is installed. Open a bash command line and run the command:
@@ -52,16 +62,6 @@ MPI stands for Message Passing Interface, and is a low level, minimal and extrem
 > This is another common name for the command.
 >
 {: .challenge}
-
-> ## MPI on HPC
->
-> HPC clusters typically have more than one version of MPI available, so you may need
-> to tell it which one you want to use before it will give you access to it.
->
-> Typically, a command like `module load mpi` will give you access to an MPI library,
-> but ask a helper or consult your HPC facility's documentation if you're not sure how
-> to use MPI on a particular cluster.
-{: .callout}
 
 > ## Note for Cygwin users
 >
