@@ -53,7 +53,7 @@
 >>   }
 >> 
 >>   for( i=1; i<10; i++)
->>     unorm = poisson_step( u, unew, rho, hsq, GRIDSIZE );
+>>     unorm = poisson_step( u, unew, rho, hsq, my_j_max );
 >> 
 >>   if( fabs(unorm - 0.463676) < 1e-6 ){
 >>     printf("TEST SUCCEEDED after 10 iteration\n");
