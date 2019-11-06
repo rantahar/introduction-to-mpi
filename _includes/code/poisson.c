@@ -14,33 +14,27 @@
 
 /* Apply a single time step */
 double poisson_step( 
-     float **u, float **unew, float **rho,
-     float hsq
+     float *u, float *unew, float *rho,
+     float hsq, int points
    ){
    double unorm;
  
    // Calculate one timestep
-   for( int j=1; j <= GRIDSIZE; j++){
-      for( int i=1; i <= GRIDSIZE; i++){
-         float difference = u[j][i-1] + u[j][i+1] + u[j-1][i] + u[j+1][i];
-         unew[j][i] = 0.25*( difference - hsq*rho[j][i] );
-      }
+   for( int i=1; i <= points; i++){
+      float difference = u[i-1] + u[i+1];
+      unew[i] = 0.5*( difference - hsq*rho[i] );
    }
  
    // Find the difference compared to the previous time step
    unorm = 0.0;
-   for( int j = 1;j <= GRIDSIZE; j++){
-      for( int i = 1;i <= GRIDSIZE; i++){
-         float diff = unew[j][i]-u[j][i];
-         unorm +=diff*diff;
-      }
+   for( int i = 1;i <= points; i++){
+      float diff = unew[i]-u[i];
+      unorm +=diff*diff;
    }
  
    // Overwrite u with the new field
-   for( int j = 1;j <= GRIDSIZE;j++){
-      for( int i = 1;i <= GRIDSIZE;i++){
-         u[j][i] = unew[j][i];
-      }
+   for( int i = 1;i <= points;i++){
+      u[i] = unew[i];
    }
  
    return unorm;
@@ -51,7 +45,7 @@ double poisson_step(
 int main(int argc, char** argv) {
 
    int i, j;
-   float ** u, **unew, **rho;
+   float *u, *unew, *rho;
    float h, hsq;
    double unorm, residual;
 
@@ -62,12 +56,6 @@ int main(int argc, char** argv) {
    u    = malloc( (GRIDSIZE+2)*sizeof(float*) );
    unew = malloc( (GRIDSIZE+2)*sizeof(float*) );
    rho  = malloc( (GRIDSIZE+2)*sizeof(float*) );
-
-   for( i=0; i<GRIDSIZE+2; i++ ){
-      u[i]    = malloc( (GRIDSIZE+2)*sizeof(float) );
-      unew[i] = malloc( (GRIDSIZE+2)*sizeof(float) );
-      rho[i]  = malloc( (GRIDSIZE+2)*sizeof(float) );
-   }
  
    /* Set up parameters */
    h = 0.1;
@@ -75,23 +63,18 @@ int main(int argc, char** argv) {
    residual = 1e-5;
  
    // Initialise the u and rho field to 0 
-   for(j=0; j <= GRIDSIZE+1; j++){
-      for(i=0; i <= GRIDSIZE+1; i++) {
-         u[j][i] = 0.0;
-         rho[j][i] = 0.0;
-      }
+   for(i=0; i <= GRIDSIZE+1; i++) {
+      u[i] = 0.0;
+      rho[i] = 0.0;
    }
    
    // Create a start configuration with the field
    // u=10 at x=0
-   for(j = 0;j <= GRIDSIZE+1; j++){
-      u[j][0] = 10.0;
-   }
+   u[0] = 10.0;
  
    // Run iterations until the field reaches an equilibrium
    for( i=0; i<10000; i++ ) {
-     
-     unorm = poisson_step( u, unew, rho, hsq );
+     unorm = poisson_step( u, unew, rho, hsq, GRIDSIZE );
      printf("Iteration %d: Residue %g\n", i, unorm);
      
      if( sqrt(unorm) < sqrt(residual) ){
@@ -102,13 +85,7 @@ int main(int argc, char** argv) {
    printf("Run completed with residue %g\n", unorm);
 
    /* Free the allocated fields */
-   for( i=0; i<GRIDSIZE+2; i++ ){
-      free(u[i]);
-      free(unew[i]);
-      free(rho[i]);
-   }
    free(u);
    free(unew);
    free(rho);
-
 }
