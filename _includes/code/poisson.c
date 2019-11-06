@@ -7,15 +7,14 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #define GRIDSIZE 10
 
 
 /* Apply a single time step */
 double poisson_step( 
-     float u[GRIDSIZE+2][GRIDSIZE+2],
-     float unew[GRIDSIZE+2][GRIDSIZE+2],
-     float rho[GRIDSIZE+2][GRIDSIZE+2],
+     float **u, float **unew, float **rho,
      float hsq
    ){
    double unorm;
@@ -52,19 +51,22 @@ double poisson_step(
 int main(int argc, char** argv) {
 
    int i, j;
-   float ** u, **unew;
+   float ** u, **unew, **rho;
    float h, hsq;
    double unorm, residual;
 
-   /* Allocate the field u and a temporary variable unew.
+   /* Allocate the field u and a temporary variable unew,
+    * and the source field rho.
     * The number of points in the real volume is GRIDSIZE.
     * Reserve space also for boundary conditions. */
    u    = malloc( (GRIDSIZE+2)*sizeof(float*) );
    unew = malloc( (GRIDSIZE+2)*sizeof(float*) );
+   rho  = malloc( (GRIDSIZE+2)*sizeof(float*) );
 
    for( i=0; i<GRIDSIZE+2; i++ ){
       u[i]    = malloc( (GRIDSIZE+2)*sizeof(float) );
       unew[i] = malloc( (GRIDSIZE+2)*sizeof(float) );
+      rho[i]  = malloc( (GRIDSIZE+2)*sizeof(float) );
    }
  
    /* Set up parameters */
@@ -100,12 +102,13 @@ int main(int argc, char** argv) {
    printf("Run completed with residue %g\n", unorm);
 
    /* Free the allocated fields */
-
    for( i=0; i<GRIDSIZE+2; i++ ){
       free(u[i])   ;
       free(unew[i]);
+      free(rho[i]);
    }
    free(u);
    free(unew);
+   free(rho);
 
 }
