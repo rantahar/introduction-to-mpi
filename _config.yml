@@ -7,7 +7,7 @@
 # dc: Data Carpentry
 # lc: Library Carpentry
 # cp: Carpentries (to use for instructor traning for instance)
-carpentry: "sa2c"
+carpentry: "pdc"
 
 # Overall title for pages.
 title: "Introduction to Parallel Programming with MPI"
@@ -33,6 +33,7 @@ email: "j.m.o.rantaharju@swansea.ac.uk"
 
 # Sites.
 sa2c_site: "https://sa2c.swansea.ac.uk/"
+pdc_site: "https://www.pdc.kth.se"
 amy_site: "https://amy.software-carpentry.org/workshops"
 carpentries_github: "https://github.com/carpentries"
 carpentries_pages: "https://carpentries.github.io"

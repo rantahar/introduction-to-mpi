@@ -35,6 +35,10 @@
       <a href="{{ site.sa2c_site }}" class="pull-left">
         <img class="navbar-logo" src="{{ relative_root_path }}{% link /assets/img/sa2c-logo.svg %}" alt="The SA2C logo" />
       </a>
+      {% elsif site.carpentry == "pdc" %}
+      <a href="{{ site.pdc_site }}" class="pull-left">
+        <img class="navbar-logo" src="{{ relative_root_path }}{% link /assets/img/pdc_logo.png %}" alt="The PDC logo" />
+      </a>
       {% endif %}
 
       {% comment %} Always show link to home page. {% endcomment %}
