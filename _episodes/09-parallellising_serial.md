@@ -188,6 +188,10 @@ Here the habit of modular programming is very useful. When the functions are sma
 > each rank only initializes its own data.
 >
 >> ## Solution
+>>
+>> Notice that for this step to work you need to adjust the loops in the poisson_step function,
+>> or it will produce a segmentation fault.
+>>
 >> ~~~
 {% include code/poisson_test2.c %}
 >> ~~~

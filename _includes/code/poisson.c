@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 
    /* Free the allocated fields */
    for( i=0; i<GRIDSIZE+2; i++ ){
-      free(u[i])   ;
+      free(u[i]);
       free(unew[i]);
       free(rho[i]);
    }
