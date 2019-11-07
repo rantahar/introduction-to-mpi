@@ -37,6 +37,7 @@
 >>     printf("Norm %g\n", unorm);
 >>   }
 >> 
+>>   // Run 9 more iterations for a total of 10
 >>   for( i=1; i<10; i++)
 >>     unorm = poisson_step( u, unew, rho, hsq, GRIDSIZE );
 >> 
