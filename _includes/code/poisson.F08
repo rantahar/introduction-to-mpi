@@ -7,54 +7,46 @@
 program poisson
 
    implicit none
- 
+
    integer, parameter :: GRIDSIZE=10
    integer i
- 
+
    real u(0:(GRIDSIZE+1)), unew(0:(GRIDSIZE+1))
    real rho(0:(GRIDSIZE+1))
    real h, hsq
-   double precision unorm, difference
- 
+   double precision unorm, residual
+
    ! Set up parameters
    h = 0.1
    hsq = h*h
- 
+   residual = 1e-5
+
    ! Initialise the u and rho field to 0 
    do i = 0, GRIDSIZE+1
-       u(i) = 0.0
-       rho(i) = 0.0
-    enddo
-   
- 
-   ! Test a configuration with u=10 at x=0 boundary
-   u(0) = 10
- 
-   ! Run a single iteration of the poisson solver
-   call poisson_step( u, unew, rho, GRIDSIZE, hsq, unorm )
-   
-   if (unorm == 25) then
-      write(6,*) "PASSED after 1 step"
-   else
-      write(6,*) "FAILED after 1 step"
-      write(6,*) unorm
-   end if
- 
-   ! Run 9 more iterations for a total of 10
-   do i = 1, 10
-      call poisson_step( u, unew, rho, GRIDSIZE, hsq, unorm )
-   end do
- 
-   difference = unorm - 0.40042400360107422
-   if (difference*difference < 1e-16) then
-      write(6,*) "PASSED after 10 steps"
-   else
-      write(6,*) "FAILED after 10 steps"
-      write(6,*) unorm
-   end if
- 
- end
- 
+      u(i) = 0.0
+      rho(i) = 0.0
+   enddo
+
+   ! Create a start configuration with the field
+   ! u=10 at the x=0 boundary
+   u(0) = 10.0
+
+   ! Run iterations until the field reaches an equilibrium and
+   ! no longer changes
+   do 
+
+      call poisson_step(u, unew, rho, GRIDSIZE, hsq, unorm)
+      write(6,*) 'Iteration', i, ', residue', unorm
+
+      if ( sqrt(unorm) <= sqrt(residual) ) then
+         exit
+      end if
+
+   enddo
+
+   write(6,*) 'Run completed with residue ', unorm
+
+end
 
 ! Apply a single time step
 subroutine poisson_step(u, unew, rho, GRIDSIZE, hsq, unorm)
@@ -66,11 +58,11 @@ subroutine poisson_step(u, unew, rho, GRIDSIZE, hsq, unorm)
    real, intent(in), dimension (0:(GRIDSIZE+1)) :: rho
    real, intent(in) :: hsq
    double precision, intent(out) :: unorm
-   integer i
+   integer i, j
    
    ! Calculate one timestep
    do i = 1, GRIDSIZE
-      unew(i) = 0.5*(u(i-1)+u(i+1)- hsq*rho(i))
+      unew(i) = 0.25*(u(i-1)+u(i+1)- hsq*rho(i))
    enddo
 
    ! Find the difference compared to the previous time step
