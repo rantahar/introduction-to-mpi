@@ -3,7 +3,7 @@
 >>   implicit none
 >>
 >>   integer, parameter :: GRIDSIZE=10
->>   integer i,j
+>>   integer i
 >>
 >>   real u(0:(GRIDSIZE+1)), unew(0:(GRIDSIZE+1))
 >>   real rho(0:(GRIDSIZE+1))
@@ -18,7 +18,7 @@
 >>   do i = 0, GRIDSIZE+1
 >>       u(i) = 0.0
 >>       rho(i) = 0.0
->>    enddo
+>>   enddo
 >>   
 >>
 >>   ! Test a configuration with u=10 at x=0 boundary
@@ -31,6 +31,7 @@
 >>      write(6,*) "PASSED after 1 step"
 >>   else
 >>      write(6,*) "FAILED after 1 step"
+>>      write(6,*) unorm
 >>   end if
 >>
 >>   ! Run 9 more iterations for a total of 10
@@ -38,11 +39,12 @@
 >>      call poisson_step( u, unew, rho, GRIDSIZE, hsq, unorm )
 >>   end do
 >>
->>   difference = unorm - 0.463676
+>>   difference = unorm - 0.40042400360107422
 >>   if (difference*difference < 1e-16) then
->>      write(6,*) "PASSED after 50 steps"
+>>      write(6,*) "PASSED after 10 steps"
 >>   else
->>      write(6,*) "FAILED after 50 steps"
+>>      write(6,*) "FAILED after 10 steps"
+>>      write(6,*) unorm
 >>   end if
 >>
 >>end
