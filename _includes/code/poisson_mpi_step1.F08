@@ -10,7 +10,7 @@
 >>    double precision local_unorm
 >>    double precision, intent(out) :: unorm
 >>    integer my_j_max, n_ranks
->>    integer ierr, i, j
+>>    integer ierr, i
 >>    
 >>    ! Calculate one timestep
 >>    do i = 1, GRIDSIZE
