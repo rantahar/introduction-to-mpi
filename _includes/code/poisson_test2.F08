@@ -41,7 +41,9 @@
 >>   enddo
 >>
 >>   ! Test a configuration with u=10 at x=0 boundary
->>   u(0) = 10
+>>   if (my_rank == 0) then	
+>>     u(0) = 10
+>>   end if
 >>
 >>   ! Run a single iteration of the poisson solver
 >>   call poisson_step( u, unew, rho, my_j_max, hsq, unorm )
