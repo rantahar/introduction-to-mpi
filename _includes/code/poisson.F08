@@ -31,10 +31,12 @@ program poisson
    ! u=10 at the x=0 boundary
    u(0) = 10.0
 
-   ! Run iterations until the field reaches an equilibrium
+   ! Run iterations until the field reaches an equilibrium and
+   ! no longer changes
    do 
 
       call poisson_step(u, unew, rho, GRIDSIZE, hsq, unorm)
+      write(6,*) 'Iteration', i, ', residue', unorm
 
       if ( sqrt(unorm) <= sqrt(residual) ) then
          exit
@@ -69,6 +71,7 @@ subroutine poisson_step(u, unew, rho, GRIDSIZE, hsq, unorm)
       unorm = unorm + (unew(i)-u(i))*(unew(i)-u(i))
    enddo
 
+   ! Overwrtie u with the new value
    do i = 1, GRIDSIZE
       u(i) = unew(i)
    enddo

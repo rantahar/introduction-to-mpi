@@ -32,7 +32,7 @@ double poisson_step(
       unorm +=diff*diff;
    }
  
-   // Overwrite u with the new field
+   // Overwrite u with the new value
    for( int i = 1;i <= points;i++){
       u[i] = unew[i];
    }
@@ -73,6 +73,7 @@ int main(int argc, char** argv) {
    u[0] = 10.0;
  
    // Run iterations until the field reaches an equilibrium
+   // and no longer changes
    for( i=0; i<10000; i++ ) {
      unorm = poisson_step( u, unew, rho, hsq, GRIDSIZE );
      printf("Iteration %d: Residue %g\n", i, unorm);
