@@ -1,16 +1,9 @@
 >>int main(int argc, char** argv) {
 >>
 >>   int i, j;
->>   float *u, *unew, *rho;
+>>   float u[GRIDSIZE+2], unew[GRIDSIZE+2], rho[GRIDSIZE+2];
 >>   float h, hsq;
 >>   double unorm;
->>
->>   /* Allocate the field u and a temporary variable unew.
->>    * The number of points in the real volume is GRIDSIZE.
->>    * Reserve space also for boundary conditions. */
->>   u    = malloc( (GRIDSIZE+2)*sizeof(float*) );
->>   unew = malloc( (GRIDSIZE+2)*sizeof(float*) );
->>   rho  = malloc( (GRIDSIZE+2)*sizeof(float*) );
 >>
 >>   /* Set up parameters */
 >>   h = 0.1;
@@ -47,10 +40,5 @@
 >>     printf("TEST FAILED after 10 iteration\n");
 >>     printf("Norm %g\n", unorm);
 >>   }
->>
->>   /* Free the allocated fields */
->>   free(u);
->>   free(unew);
->>   free(rho);
 >>
 >>}

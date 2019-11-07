@@ -44,19 +44,12 @@ double poisson_step(
 
 int main(int argc, char** argv) {
 
-   int i, j;
-   float *u, *unew, *rho;
+   // The heat energy in each block
+   float u[GRIDSIZE+2], unew[GRIDSIZE+2], rho[GRIDSIZE+2];
+   int i;
    float h, hsq;
    double unorm, residual;
 
-   /* Allocate the field u and a temporary variable unew,
-    * and the source field rho.
-    * The number of points in the real volume is GRIDSIZE.
-    * Reserve space also for boundary conditions. */
-   u    = malloc( (GRIDSIZE+2)*sizeof(float*) );
-   unew = malloc( (GRIDSIZE+2)*sizeof(float*) );
-   rho  = malloc( (GRIDSIZE+2)*sizeof(float*) );
- 
    /* Set up parameters */
    h = 0.1;
    hsq = h*h;
@@ -67,7 +60,7 @@ int main(int argc, char** argv) {
       u[i] = 0.0;
       rho[i] = 0.0;
    }
-   
+
    // Create a start configuration with the heat energy
    // u=10 at the x=0 boundary
    u[0] = 10.0;
@@ -85,8 +78,4 @@ int main(int argc, char** argv) {
  
    printf("Run completed with residue %g\n", unorm);
 
-   /* Free the allocated fields */
-   free(u);
-   free(unew);
-   free(rho);
 }
