@@ -330,13 +330,10 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 {: .challenge}
 
 
-
 >## Parallel loop
 >
-> Modify the following code to split the iterations of the loop among processes.
-> Each iteration of the loop should be run by only one rank.
-> Each rank should also have more or less the same amount of work.
->
+> The following serial code contains a loop and in each iteration some work is 
+> performed (in this simple case, simply printing the iteration variable).
 > ~~~
 > #include <stdio.h>
 >
@@ -373,8 +370,116 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 > ~~~
 > {: .source .language-python .show-python}
 >
+> In the parallelized version below, the iterations of the loop 
+> are split among parallel processes, but some parts of the code are 
+> missing. Study the code and fill in the blanks so that each iteration is 
+> run by only one rank, and each rank has more or less the same amount of work.
+>
+> ~~~
+>#include <stdio.h>
+>#include <math.h>
+>#include <mpi.h>
+>
+>int main(int argc, char** argv) {
+>  int rank, n_ranks, numbers_per_rank;
+>  int my_first, my_last;
+>  int numbers = 10;
+>
+>  // First call MPI_Init
+>  MPI_Init(&argc, &argv);
+>  // Get my rank and the number of ranks
+>  MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+>  MPI_Comm_size(MPI_COMM_WORLD,&n_ranks);
+>
+>  // Calculate the number of iterations for each rank
+>  numbers_per_rank = floor(____/____);
+>  if( numbers%n_ranks > 0 ){
+>     // Add 1 in case the number of ranks doesn't divide the number of numbers
+>     ____ += 1;
+>  }
+>
+>  // Figure out the first and the last iteration for this rank
+>  my_first = ____ * ____;
+>  my_last = ____ + ____;
+>
+>  // Run only the part of the loop this rank needs to run
+>  // The if statement makes sure we don't go over
+>  for( int i=my_first; i<my_last; i++ ) {
+>    if( i < numbers ) {
+>      printf("I'm rank %d and I'm printing the number %d.\n", rank, i);
+>    }
+>  }
+>
+>  // Call finalize at the end
+>  return MPI_Finalize();
+>}
+> ~~~
+> {: .source .language-c}
 >
 >
+> ~~~
+>program print_numbers
+>
+>    implicit none
+>    include "mpif.h"
+>
+>    integer numbers, number
+>    integer rank, n_ranks, ierr
+>    integer numbers_per_rank, my_first, my_last
+>    numbers = 10
+>
+>    ! Call MPI_Init
+>    call MPI_Init(ierr)
+>
+>    ! Get my rank and the total number of ranks
+>    call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
+>    call MPI_Comm_size(MPI_COMM_WORLD,n_ranks,ierr)
+>
+>    ! Calculate the number of iterations for each rank
+>    numbers_per_rank = ____/____
+>    if (MOD(numbers, n_ranks) > 0) then
+>         ! add 1 in case the number of ranks doesn't divide the number of numbers
+>         ____ = ____ + 1
+>    end if
+>
+>    ! Figure out the first and the last iteration for this rank
+>    my_first = ____ * ____
+>    my_last = ____ + ____
+>
+>    ! Run only the necessary part of the loop, making sure we don't go over
+>    do number = my_first, my_last - 1
+>         if (number < numbers) then
+>              write(6,*) "I'm rank", rank, " and I'm printing the number", number
+>         end if
+>    end do
+>
+>
+>    call MPI_Finalize(ierr)
+>end
+> ~~~
+>{: .source .language-fortran}
+>
+> ## Solution
+> ~~~
+> from mpi4py import MPI
+>
+> numbers = 10
+>
+> rank = MPI.COMM_WORLD.Get_rank()
+> n_ranks = MPI.COMM_WORLD.Get_size()
+>
+> numbers_per_rank = ____ // ____
+> if numbers % n_ranks > 0:
+>     ____ += 1
+>
+> my_first = ____ * ____
+> my_last = ____ + ____
+>
+> for i in range(my_first, my_last):
+>     if i < numbers:
+>         print("I'm rank {:d} and I'm printing the number {:d}.".format(rank, i))
+> ~~~
+>{: .source .language-python}
 >> ## Solution
 >> ~~~
 >>#include <stdio.h>
@@ -479,8 +584,8 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >> if numbers % n_ranks > 0:
 >>     numbers_per_rank += 1
 >>
->> my_first = rank * numbers_per_rank;
->> my_last = my_first + numbers_per_rank;
+>> my_first = rank * numbers_per_rank
+>> my_last = my_first + numbers_per_rank
 >>
 >> for i in range(my_first, my_last):
 >>     if i < numbers:
@@ -494,7 +599,7 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 {: .challenge }
 
 In lesson 3 you will learn how to communicate between the ranks. From there, you can in principle write general parallel programs.
-The trick is in designing a working, fast and efficient parallel algorithm for you problem.
+The trick is in designing a working, fast and efficient parallel algorithm for your problem.
 
 
 {% include links.md %}
