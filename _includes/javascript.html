@@ -32,6 +32,13 @@ Toggle between showing code in different languages using a show-language class
       $(".show-fortran").hide()
     }
     localStorage.setItem('show-fortran', $("#show_fortran_checkbox")[0].checked);
+
+    if ($("#show_python_checkbox")[0].checked == true){
+      $(".show-python").show()
+    } else {
+      $(".show-python").hide()
+    }
+    localStorage.setItem('show-python', $("#show_python_checkbox")[0].checked);
   }
   
   //Load the checkbox states from local storage and apply
