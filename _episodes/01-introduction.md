@@ -84,7 +84,7 @@ This usually also requires knowing the total number of tasks running at the same
 To achieve this, the program needs to call the
 `MPI_Init` function.
 This will set up the environment for MPI, and assign a number (called the _rank_) to each process.
-At the end, each process should also cleanup by calling `MPI_Finalize`:
+At the end, each process should also cleanup by calling `MPI_Finalize`.
 
 ~~~
 int MPI_Init(&argc, &argv);
@@ -109,7 +109,18 @@ which is overwritten by the number
 of any error encountered, or by 0 if there is no error.
 {: .show-fortran}
 
-Between these two statements, you can find out the rank of the copy using the `MPI_Comm_rank` function:
+In [MPI for Python](https://mpi4py.readthedocs.io/en/stable/), the
+initialization and finalization of MPI are handled by the library, and the user
+can perform MPI calls after ``from mpi4py import MPI``.
+{: .show-python}
+
+~~~
+from mpi4py import MPI
+~~~
+{: .language-python .show-python}
+
+After MPI is initialized, you can find out the rank of the copy using the `MPI_Comm_rank` function
+in C and Fortran, or the `Get_rank` method in Python:
 
 ~~~
 int rank;
@@ -122,6 +133,11 @@ integer rank
 call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
 ~~~
 {: .language-fortran .show-fortran}
+
+~~~
+rank = MPI.COMM_WORLD.Get_rank()
+~~~
+{: .language-python .show-python}
 
 
 Here's a more complete example:
@@ -138,7 +154,7 @@ Here's a more complete example:
    // Get my rank
    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-   printf("My rank number is = %d\n", rank);
+   printf("My rank number is %d\n", rank);
 
    // Call finalize at the end
    return MPI_Finalize();
@@ -162,6 +178,14 @@ program hello
 end
 ~~~
 {: .source .language-fortran .show-fortran}
+
+~~~
+from mpi4py import MPI
+
+rank = MPI.COMM_WORLD.Get_rank()
+print("My rank number is", rank)
+~~~
+{: .language-python .show-python}
 
 > ## Fortran Standard
 >
