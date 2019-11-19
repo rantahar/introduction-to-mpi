@@ -477,7 +477,7 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >>
 >>numbers_per_rank = numbers // n_ranks
 >>if numbers % n_ranks > 0:
->>    numbers_per_rank += 1
+>>     numbers_per_rank += 1
 >>
 >>my_first = rank * numbers_per_rank;
 >>my_last = my_first + numbers_per_rank;
