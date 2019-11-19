@@ -119,10 +119,8 @@ from mpi4py import MPI
 ~~~
 {: .language-python .show-python}
 
-After MPI is initialized, you can find out the rank of the copy using
-the `MPI_Comm_rank` function{: .show-c}
-the `MPI_Comm_rank` function{: .show-fortran}
-the `Get_rank` method{: .show-python}
+After MPI is initialized, you can find out the rank of the copy using the `MPI_Comm_rank` function
+in C and Fortran, or the `Get_rank` method in Python.
 :
 
 ~~~
@@ -222,10 +220,9 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
 > ## Compile and Run
 >
-> Compile the above code with `mpicc`.{: .show-c}
-> Compile the above code with `mpifort`.{: .show-fortran}
-> The Python code does not need compilation.{: .show-python}
-> Run it with `mpirun`.
+> Compile the above C code with `mpicc`, or Fortran code with `mpiifort`.
+> Python code does not need compilation.
+> Run the code with `mpirun`.
 >
 {: .challenge}
 
@@ -245,9 +242,7 @@ needs to be doing.
 When all ranks are doing their job, the algorithm will work correctly.
 
 Usually the rank will need to know how many other ranks there are. You can find this out using
-the `MPI_Comm_size` function.{: .show-c}
-the `MPI_Comm_size` function.{: .show-fortran}
-the `Get_size` method.{: .show-python}
+the `MPI_Comm_size` function in C and Fortran, or the `Get_size` method in Python.
 
 ~~~
 int n_ranks;
