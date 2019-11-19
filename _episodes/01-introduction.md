@@ -109,7 +109,7 @@ which is overwritten by the number
 of any error encountered, or by 0 if there is no error.
 {: .show-fortran}
 
-In [MPI for Python](https://mpi4py.readthedocs.io/en/stable/), the
+In [MPI for Python (mpi4py)](https://mpi4py.readthedocs.io/en/stable/), the
 initialization and finalization of MPI are handled by the library, and the user
 can perform MPI calls after ``from mpi4py import MPI``.
 {: .show-python}
@@ -221,8 +221,8 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 > ## Compile and Run
 >
 > Compile the above C code with `mpicc`, or Fortran code with `mpiifort`.
-> Python code does not need compilation.
-> Run the code with `mpirun`.
+>Python code does not need compilation.
+>Run the code with `mpirun`.
 >
 {: .challenge}
 
