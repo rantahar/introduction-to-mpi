@@ -257,7 +257,7 @@ MPI_Comm_size(MPI_COMM_WORLD, n_ranks);
 {: .language-fortran .show-fortran}
 
 ~~~
-n_ranks = MPI.COMM_WORLD.Get_rank()
+n_ranks = MPI.COMM_WORLD.Get_size()
 ~~~
 {: .language-python .show-python}
 
@@ -368,8 +368,8 @@ n_ranks = MPI.COMM_WORLD.Get_rank()
 > ~~~
 >numbers = 10
 >
->for number in numbers:
->    print("I'm printing the number", number)
+>for number in range(numbers):
+>     print("I'm printing the number", number)
 > ~~~
 > {: .source .language-python .show-python}
 >
@@ -483,8 +483,8 @@ n_ranks = MPI.COMM_WORLD.Get_rank()
 >>my_last = my_first + numbers_per_rank;
 >>
 >>for i in range(my_first, my_last):
->>  if i < numbers:
->>      print("I'm rank {:d} and I'm printing the number {:d}.".format(rank, i))
+>>     if i < numbers:
+>>         print("I'm rank {:d} and I'm printing the number {:d}.".format(rank, i))
 >> ~~~
 >>{: .source .language-python}
 >>
