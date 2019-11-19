@@ -221,8 +221,8 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 > ## Compile and Run
 >
 > Compile the above C code with `mpicc`, or Fortran code with `mpiifort`.
->Python code does not need compilation.
->Run the code with `mpirun`.
+> Python code does not need compilation.
+> Run the code with `mpirun`.
 >
 {: .challenge}
 
@@ -285,7 +285,7 @@ n_ranks = MPI.COMM_WORLD.Get_rank()
 >>   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
 >>
 >>   printf("Hello World! I'm rank %d\n", rank);
->>   printf("total no. of ranks = %d\n", n_ranks);
+>>   printf("Total no. of ranks = %d\n", n_ranks);
 >>
 >>   // Call finalize at the end
 >>   return MPI_Finalize();
@@ -307,12 +307,25 @@ n_ranks = MPI.COMM_WORLD.Get_rank()
 >>     call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
 >>     call MPI_Comm_size(MPI_COMM_WORLD,n_ranks,ierr)
 >>     write(6,*) "Hello World! I'm rank ", rank
->>     write(6,*) "total no. of ranks = ", n_ranks
+>>     write(6,*) "Total no. of ranks = ", n_ranks
 >>     call MPI_Finalize(ierr)
 >>end
 >> ~~~
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
+>
+>> ## Solution
+>> ~~~
+>>from mpi4py import MPI
+>>
+>>rank = MPI.COMM_WORLD.Get_rank()
+>>n_ranks = MPI.COMM_WORLD.Get_size()
+>>
+>>print("Hello World! I'm rank", rank);
+>>print("Total no. of ranks =", n_ranks);
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
 >
 {: .challenge}
 
