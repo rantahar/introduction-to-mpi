@@ -1037,6 +1037,46 @@ if rank == 1:
 > {: .solution .show-fortran}
 >
 >
+>> ## Solution
+>>
+>> ~~~
+>> from mpi4py import MPI
+>> 
+>> max_count = 1000000
+>> ball = 1 # A dummy message to simulate the ball
+>> 
+>> # Get my rank
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> 
+>> # Call the other rank the neighbour
+>> if rank == 0:
+>>     neighbour = 1
+>> else:
+>>     neighbour = 0
+>> 
+>> if rank == 0:
+>>    # Rank 0 starts with the ball. Send it to rank 1
+>>    MPI.COMM_WORLD.send(ball, dest=1, tag=0)
+>> 
+>> # Now run a send and receive in a loop untill someone gets bored
+>> counter = 0
+>> bored = False
+>> while not bored:
+>>    # Receive the ball
+>>    ball = MPI.COMM_WORLD.recv(source=neighbour, tag=0)
+>> 
+>>    # Increment the counter and send the ball back
+>>    counter += 1
+>>    MPI.COMM_WORLD.send(ball, dest=neighbour, tag=0)
+>> 
+>>    # Check if the rank is bored
+>>    bored = (counter >= max_count)
+>> 
+>> print("Rank {:d} is bored and giving up".format(rank))
+>> ~~~
+>>{: .source .language-python}
+> {: .solution .show-python}
+>
 {: .challenge}
 
 
