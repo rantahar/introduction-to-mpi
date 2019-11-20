@@ -116,6 +116,30 @@ even if `MPI_Send` has been called.
 >
 {: .callout .show-fortran}
 
+> ## MPI.send
+>
+>~~~
+> def send(self, obj, int dest, int tag=0)
+>~~~
+>
+> | `obj`:          | The Python object being sent |
+> | `dest`:         | The rank number of the rank the data will be sent to |
+> | `tag`:          | A message tag (integer) |
+>
+{: .callout .show-python}
+
+> ## MPI.recv
+>~~~
+> def recv(self, buf=None, int source=ANY_SOURCE, int tag=ANY_TAG, Status status=None)
+>~~~
+>
+> | `buf`:          | The buffer object to where the received data should be written (optional) |
+> | `source`:       | The rank number of the rank sending the data |
+> | `tag`:          | A message tag (integer) |
+> | `status`:       | A pointer for writing the exit status of the MPI command |
+>
+{: .callout .show-python}
+
 The number of arguments can make these commands look complicated,
 so don't worry if you need to refer back to the documentation regularly
 when working with them.
@@ -212,6 +236,29 @@ program hello
 end
 ~~~
 {: .source .language-fortran .show-fortran}
+
+~~~
+from mpi4py import MPI
+import sys
+
+# Check that there are two ranks
+n_ranks = MPI.COMM_WORLD.Get_size()
+if n_ranks != 2:
+    print("This example requires exactly two ranks")
+    sys.exit(1)
+
+# Get my rank
+rank = MPI.COMM_WORLD.Get_rank()
+
+if rank == 0:
+    message = "Hello, world!\n"
+    MPI.COMM_WORLD.send(message, dest=1, tag=0)
+
+if rank == 1:
+    message = comm.recv(source=0, tag=0)
+    print(message)
+~~~
+{: .source .language-python .show-python}
 
 
 > ## Try It Out
