@@ -316,13 +316,13 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >
 >> ## Solution
 >> ~~~
->>from mpi4py import MPI
+>> from mpi4py import MPI
 >>
->>rank = MPI.COMM_WORLD.Get_rank()
->>n_ranks = MPI.COMM_WORLD.Get_size()
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> n_ranks = MPI.COMM_WORLD.Get_size()
 >>
->>print("Hello World! I'm rank", rank);
->>print("Total no. of ranks =", n_ranks);
+>> print("Hello World! I'm rank", rank);
+>> print("Total no. of ranks =", n_ranks);
 >> ~~~
 >>{: .source .language-python}
 >{: .solution .show-python}
@@ -366,9 +366,9 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 > {: .source .language-fortran .show-fortran}
 >
 > ~~~
->numbers = 10
+> numbers = 10
 >
->for number in range(numbers):
+> for number in range(numbers):
 >     print("I'm printing the number", number)
 > ~~~
 > {: .source .language-python .show-python}
@@ -468,21 +468,21 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >
 >> ## Solution
 >> ~~~
->>from mpi4py import MPI
+>> from mpi4py import MPI
 >>
->>numbers = 10
+>> numbers = 10
 >>
->>rank = MPI.COMM_WORLD.Get_rank()
->>n_ranks = MPI.COMM_WORLD.Get_size()
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> n_ranks = MPI.COMM_WORLD.Get_size()
 >>
->>numbers_per_rank = numbers // n_ranks
->>if numbers % n_ranks > 0:
+>> numbers_per_rank = numbers // n_ranks
+>> if numbers % n_ranks > 0:
 >>     numbers_per_rank += 1
 >>
->>my_first = rank * numbers_per_rank;
->>my_last = my_first + numbers_per_rank;
+>> my_first = rank * numbers_per_rank;
+>> my_last = my_first + numbers_per_rank;
 >>
->>for i in range(my_first, my_last):
+>> for i in range(my_first, my_last):
 >>     if i < numbers:
 >>         print("I'm rank {:d} and I'm printing the number {:d}.".format(rank, i))
 >> ~~~
