@@ -369,6 +369,36 @@ if rank == 1:
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
 >
+>> ## Solution
+>> ~~~
+>>from mpi4py import MPI
+>>
+>># Get the number of ranks
+>>n_ranks = MPI.COMM_WORLD.Get_size()
+>>
+>># Get my rank
+>>rank = MPI.COMM_WORLD.Get_rank()
+>>
+>># Figure out my pair
+>>if rank % 2 == 1:
+>>    my_pair = rank - 1
+>>else:
+>>    my_pair = rank + 1
+>>
+>># Run only if my pair exists
+>>if my_pair < n_ranks:
+>>
+>>     if rank % 2 == 0:
+>>         message = "Hello, world!"
+>>         MPI.COMM_WORLD.send(message, dest=my_pair, tag=0)
+>>
+>>     if rank%2 == 1:
+>>         message = MPI.COMM_WORLD.recv(source=my_pair, tag=0)
+>>         print(message)
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
+>
 {: .challenge}
 
 > ## Hello Again, World!
