@@ -381,9 +381,9 @@ if rank == 1:
 >>
 >># Figure out my pair
 >>if rank % 2 == 1:
->>    my_pair = rank - 1
+>>     my_pair = rank - 1
 >>else:
->>    my_pair = rank + 1
+>>     my_pair = rank + 1
 >>
 >># Run only if my pair exists
 >>if my_pair < n_ranks:
@@ -392,7 +392,7 @@ if rank == 1:
 >>         message = "Hello, world!"
 >>         MPI.COMM_WORLD.send(message, dest=my_pair, tag=0)
 >>
->>     if rank%2 == 1:
+>>     if rank % 2 == 1:
 >>         message = MPI.COMM_WORLD.recv(source=my_pair, tag=0)
 >>         print(message)
 >> ~~~
@@ -448,6 +448,16 @@ if rank == 1:
 >end
 >~~~
 >{: .source .language-fortran .show-fortran}
+>
+>~~~
+>from mpi4py import MPI
+>
+># Get my rank
+>rank = MPI.COMM_WORLD.Get_rank()
+>
+>print("Hello World, I'm rank", rank)
+>~~~
+>{: .source .language-python .show-python}
 >
 >> ## Solution
 >> ~~~
@@ -530,6 +540,29 @@ if rank == 1:
 >> ~~~
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
+>
+>> ## Solution
+>> ~~~
+>>from mpi4py import MPI
+>>
+>># Get my rank and the number of ranks
+>>rank = MPI.COMM_WORLD.Get_rank()
+>>n_ranks = MPI.COMM_WORLD.Get_size()
+>>
+>>if rank != 0:
+>>     # All ranks other than 0 should send a message
+>>     message = "Hello World, I'm rank {:d}".format(rank)
+>>     MPI.COMM_WORLD.send(message, dest=0, tag=0)
+>>
+>>else:
+>>     # Rank 0 will receive each message and print them
+>>     for sender in range(1, n_ranks):
+>>         message = MPI.COMM_WORLD.recv(source=sender, tag=0)
+>>         print(message)
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
+>
 {: .challenge}
 
 
@@ -647,6 +680,42 @@ if rank == 1:
 >end
 > ~~~
 >{: .source .language-fortran .show-fortran}
+>
+>
+>~~~
+>from mpi4py import MPI
+>import sys
+>
+>n_numbers = 10000
+>
+># Get my rank and the number of ranks
+>rank = MPI.COMM_WORLD.Get_rank()
+>n_ranks = MPI.COMM_WORLD.Get_size()
+>
+># Check that there are exactly two ranks
+>if n_ranks != 2:
+>     print("This example requires exactly two ranks")
+>     sys.exit(1)
+>
+># Call the other rank the neighbour
+>if rank == 0:
+>     neighbour = 1
+>else:
+>     neighbour = 0
+>
+># Generate numbers to send
+>send_message = []
+>for i in range(n_numbers):
+>     send_message.append(i)
+>
+># Send the message to other rank
+>MPI.COMM_WORLD.send(send_message, dest=neighbour, tag=0)
+>
+># Receive the message from the other rank
+>recv_message = MPI.COMM_WORLD.recv(source=neighbour, tag=0)
+>print("Message received by rank", rank)
+> ~~~
+>{: .source .language-python .show-python}
 >
 >
 >> ## Solution
@@ -786,6 +855,56 @@ if rank == 1:
 >> ~~~
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
+>
+>
+>> ## Solution
+>>
+>> ~~~
+>> from mpi4py import MPI
+>> import sys
+>>
+>> n_numbers = 10000
+>>
+>> # Get my rank and the number of ranks
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> n_ranks = MPI.COMM_WORLD.Get_size()
+>>
+>> # Check that there are exactly two ranks
+>> if n_ranks != 2:
+>>     print("This example requires exactly two ranks")
+>>     sys.exit(1)
+>>
+>> # Call the other rank the neighbour
+>> if rank == 0:
+>>     neighbour = 1
+>> else:
+>>     neighbour = 0
+>>
+>> # Generate numbers to send
+>> send_message = []
+>> for i in range(n_numbers):
+>>     send_message.append(i)
+>>
+>> if rank == 0:
+>>     # Rank 0 will send first
+>>     MPI.COMM_WORLD.send(send_message, dest=1, tag=0)
+>>
+>> if rank == 1:
+>>     # Rank 1 will receive it's message before sending
+>>     recv_message = MPI.COMM_WORLD.recv(source=0, tag=0)
+>>     print("Message received by rank", rank)
+>>
+>> if rank == 1:
+>>     # Now rank 1 is free to send
+>>     MPI.COMM_WORLD.send(send_message, dest=0, tag=0)
+>>
+>> if rank == 0:
+>>     # And rank 0 will receive the message
+>>     recv_message = MPI.COMM_WORLD.recv(source=1, tag=0)
+>>     print("Message received by rank", rank)
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
 >
 >
 {: .challenge}
