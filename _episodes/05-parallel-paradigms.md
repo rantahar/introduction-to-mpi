@@ -99,8 +99,9 @@ memory address. So, the compiler "calculates" the address off-set for each CPU (
 compute on a part of the whole data. Here, the catch word is shared memory which allows all CPUs (or cores)
 to access all the address space.
 
-In Python, the multiprocessing module supports process-based parallelism. Read more at
-https://docs.python.org/dev/library/multiprocessing.html#module-multiprocessing
+In Python, process-based parallelism is supported by the
+[multiprocessing](https://docs.python.org/dev/library/multiprocessing.html#module-multiprocessing)
+module.
 
 ### Message Passing
 
@@ -128,7 +129,7 @@ for(i=0; i<m; i++) {
 
 ~~~
 for i in range(m):
-  a[i] = b[i] + c[i]
+    a[i] = b[i] + c[i]
 ~~~
 {: .language-python .show-python}
 
