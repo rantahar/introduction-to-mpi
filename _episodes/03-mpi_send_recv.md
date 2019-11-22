@@ -116,7 +116,7 @@ even if `MPI_Send` has been called.
 >
 {: .callout .show-fortran}
 
-> ## MPI.send
+> ## MPI.Comm.send
 >
 >~~~
 > def send(self, obj, int dest, int tag=0)
@@ -128,7 +128,7 @@ even if `MPI_Send` has been called.
 >
 {: .callout .show-python}
 
-> ## MPI.recv
+> ## MPI.Comm.recv
 >~~~
 > def recv(self, buf=None, int source=ANY_SOURCE, int tag=ANY_TAG, Status status=None)
 >~~~
