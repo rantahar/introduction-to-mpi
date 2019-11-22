@@ -172,7 +172,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >
 >> ## Solution
 >> ~~~
-{% include code/poisson_test.py %}
+>> todo: add python code
 >> ~~~
 >>{: .source .language-python}
 >{: .solution .show-python }
