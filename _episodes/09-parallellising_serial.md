@@ -188,8 +188,8 @@ Here the habit of modular programming is very useful. When the functions are sma
 >> hsq = h**2
 >>
 >> # Initialise the u and rho field to 0
->> for j in range(GRIDSIZE+1):
->>     for i in range(GRIDSIZE+1):
+>> for j in range(GRIDSIZE+2):
+>>     for i in range(GRIDSIZE+2):
 >>         u[j][i] = 0.0
 >>         rho[j][i] = 0.0
 >>
