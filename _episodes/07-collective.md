@@ -47,6 +47,11 @@ The most commonly-used are:
 ~~~
 {: .language-fortran .show-fortran}
 
+~~~
+ def barrier(self)
+~~~
+{: .language-c .show-python}
+
 Wait (doing nothing) until all ranks have reached this line.
 
 ### Broadcast
@@ -67,6 +72,11 @@ MPI_Bcast(buffer, count, datatype, root, COMM, IERROR)
     INTEGER    count, datatype, root, COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
+
+~~~
+def bcast(self, obj, int root=0)
+~~~
+{: .language-python .show-python}
 
 ![Each rank sending a piece of data to root rank]({{ page.root }}{% link files/broadcast.png %})
 
@@ -97,6 +107,11 @@ MPI_Scatter(sendbuf, sendcount, sendtype, recvbuffer, recvcount,
     INTEGER    COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
+
+~~~
+def scatter(self, sendobj, int root=0)
+~~~
+{: .language-python .show-python}
 
 ![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/scatter.png %})
 
@@ -134,6 +149,11 @@ MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount,
     INTEGER    COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
+
+~~~
+def gather(self, sendobj, int root=0)
+~~~
+{: .language-python .show-python}
 
 ![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/gather.png %})
 
@@ -226,6 +246,25 @@ numbers.
 >{: .solution .show-fortran }
 >
 >
+>> ## Solution
+>> ~~~
+>> from mpi4py import MPI
+>>
+>> # Get my rank and the number of ranks
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> n_ranks = MPI.COMM_WORLD.Get_size()
+>>
+>> # Use gather to send all messages to rank 0
+>> send_message = "Hello World, I'm rank {:d}".format(rank)
+>> receive_message = MPI.COMM_WORLD.gather(send_message, root=0)
+>>
+>> if rank == 0:
+>>     for i in range(n_ranks):
+>>         print(receive_message[i])
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python }
+>
 {: .challenge}
 
 
@@ -251,6 +290,11 @@ MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, COMM,
 ~~~
 {: .language-fortran .show-fortran}
 
+~~~
+def reduce(self, sendobj, op=SUM, int root=0)
+~~~
+{: .language-python .show-python}
+
 ![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/reduction.png %})
 
 Each rank sends a piece of data, which are combined on their way to rank `root` into a single piece of data.
@@ -264,6 +308,9 @@ Possible operations include:
 * `MPI_PROD`: Calculate the product of numbers sent by each rank.
 * `MPI_MAXLOC`: Return the maximum value and the number of the rank that sent the maximum value.
 * `MPI_MINLOC`: Return the minimum value of the number of the rank that sent the minimum value.
+
+In Python, these operations are named ``MPI.SUM``, ``MPI.MAX``, ``MPI.MIN``, and so on.
+{: .show-python}
 
 The `MPI_Reduce` operation is usually faster than what you might write by hand.
 It can apply different algorithms depending on the system it's running on to reach the best
@@ -293,6 +340,11 @@ MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, COMM, IERROR)
     INTEGER    count, datatype, op, COMM, IERROR
 ~~~
 {: .language-fortran .show-fortran}
+
+~~~
+def allreduce(self, sendobj, op=SUM)
+~~~
+{: .language-python .show-python}
 
 ![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/allreduce.png %})
 
@@ -452,6 +504,48 @@ but the result is sent to all the ranks.
 >{: .source .language-fortran .show-fortran}
 >
 >
+> ~~~
+> from mpi4py import MPI
+> 
+> # Calculate the sum of numbers in a vector
+> def find_sum(vector):
+>     my_sum = 0.0
+>     for i in range(len(vector)):
+>         my_sum += vector[i]
+>     return my_sum
+> 
+> # Find the maximum of numbers in a vector
+> def find_maximum(vector):
+>     my_max = 0.0
+>     for i in range(len(vector)):
+>         if vector[i] > my_max:
+>             my_max = vector[i]
+>     return my_max
+> 
+> n_numbers = 1024
+> 
+> # Get my rank
+> rank = MPI.COMM_WORLD.Get_rank()
+> 
+> # Each rank will have n_numbers numbers,
+> # starting from where the previous left off
+> my_first_number = n_numbers*rank
+> 
+> # Generate a vector
+> vector = []
+> for i in range(n_numbers):
+>     vector.append(float(my_first_number + i))
+> 
+> # Find the sum and print
+> my_sum = find_sum(vector)
+> print("The sum of the numbers is", my_sum)
+> 
+> # Find the maximum and print
+> my_max = find_maximum(vector)
+> print("The largest number is", my_max)
+> ~~~
+>{: .source .language-python .show-python}
+>
 >
 >> ## Solution
 >>
@@ -548,6 +642,37 @@ but the result is sent to all the ranks.
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
 >
+>
+>> ## Solution
+>>
+>> ~~~
+>> from mpi4py import MPI
+>>
+>> # Calculate the sum of numbers in a vector
+>> def find_sum(vector):
+>>     my_sum = 0.0
+>>
+>>     for i in range(len(vector)):
+>>         my_sum += vector[i]
+>>
+>>     global_sum = MPI.COMM_WORLD.allreduce(my_sum, op=MPI.SUM)
+>>
+>>     return global_sum
+>>
+>> # Find the maximum of numbers in a vector
+>> def find_maximum(vector):
+>>     my_max = 0.0
+>>
+>>     for i in range(len(vector)):
+>>         if vector[i] > my_max:
+>>             my_max = vector[i]
+>>
+>>     global_max = MPI.COMM_WORLD.allreduce(my_max, op=MPI.SUM)
+>>
+>>     return global_max
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
 >
 {: .challenge}
 
