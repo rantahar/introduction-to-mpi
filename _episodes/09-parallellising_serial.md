@@ -170,6 +170,13 @@ Here the habit of modular programming is very useful. When the functions are sma
 >>{: .source .language-fortran}
 >{: .solution .show-fortran }
 >
+>> ## Solution
+>> ~~~
+{% include code/poisson_test.py %}
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python }
+>
 {: .challenge}
 
 > ## Make the test work in parallel
@@ -194,7 +201,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >
 >> ## Solution
 >> ~~~
-{% include code/poisson_test.c %}
+{% include code/poisson_test2.c %}
 >> ~~~
 >>{: .source .language-c}
 >{: .solution .show-c }
