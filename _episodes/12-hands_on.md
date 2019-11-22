@@ -81,8 +81,9 @@ keypoints:
 >>## solution
 >>
 >> A possible MPI implementation for reference:
->> [ising2d4.c](../code/ising/ising2d4_mpi.c){: .show-c}
->> [ising2d4.F08](../code/ising/ising2d4_mpi.F08){: .show-fortran}
+>> [ising2d4_mpi.c](../code/ising/ising2d4_mpi.c){: .show-c}
+>> [ising2d4_mpi.F08](../code/ising/ising2d4_mpi.F08){: .show-fortran}
+>> [ising2d4_mpi.py](../code/ising/ising2d4_mpi.py){: .show-python}
 >{: .solution}
 >
 {: .challenge}
