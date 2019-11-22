@@ -301,7 +301,7 @@ Here the habit of modular programming is very useful. When the functions are sma
 >>     print("TEST FAILED after 10 iteration")
 >>     print("Norm", unorm)
 >> ~~~
->> : .source .language-python}
+>>{: .source .language-python}
 >{: .solution .show-python }
 >
 {: .challenge}
@@ -381,7 +381,7 @@ You can optimise later.
 >>             u[j][i] = unew[j][i]
 >>
 >>     # Return the sum over all ranks
->>     return global_unorm_
+>>     return global_unorm
 >> ~~~
 >>{: .source .language-python}
 >{: .solution .show-python}
@@ -424,7 +424,7 @@ You can optimise later.
 >> There needs to be an exception for the first and the last rank.
 >>
 >> ~~~
->>efef poisson_step(GRIDSIZE, u, unew, rho, hsq):
+>> def poisson_step(GRIDSIZE, u, unew, rho, hsq):
 >>
 >>     sendbuf = np.zeros(GRIDSIZE)
 >>
