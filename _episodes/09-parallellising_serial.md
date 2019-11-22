@@ -173,7 +173,6 @@ Here the habit of modular programming is very useful. When the functions are sma
 >> ## Solution
 >> ~~~
 >> import numpy as np
->> import math
 >>
 >> GRIDSIZE = 10
 >>
@@ -253,6 +252,9 @@ Here the habit of modular programming is very useful. When the functions are sma
 >
 >> ## Solution
 >> ~~~
+>> from mpi4py import MPI
+>> import numpy as np
+>>
 >> GRIDSIZE = 10
 >>
 >> u = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
