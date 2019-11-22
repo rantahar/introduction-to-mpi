@@ -32,6 +32,11 @@ The exercises and solutions are based on the following code:
 ~~~
 {: .language-fortran .show-fortran }
 
+~~~
+{% include code/poisson.py %}
+~~~
+{: .language-python .show-python }
+
 
 ### Parallel Regions
 
