@@ -251,6 +251,59 @@ Here the habit of modular programming is very useful. When the functions are sma
 >>{: .source .language-fortran}
 >{: .solution .show-fortran }
 >
+>> ## Solution
+>> ~~~
+>> GRIDSIZE = 10
+
+>> u = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
+>> unew = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
+>> rho = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
+
+>> # Find the number of x-slices calculated by each rank
+>> # The simple calculation here assumes that GRIDSIZE is divisible by n_ranks
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> n_ranks = MPI.COMM_WORLD.Get_size()
+>> my_j_max = GRIDSIZE // n_ranks
+
+>> # Set up parameters
+>> h = 0.1
+
+>> # Run Setup
+>> hsq = h**2
+
+>> # Initialise the u and rho field to 0
+>> for j in range(my_j_max+2):
+>>     for i in range(GRIDSIZE+2):
+>>         u[j][i] = 0.0
+>>         rho[j][i] = 0.0
+
+>> # Start form a configuration with u=10 at x=1 and y=1
+>> # The actual x coordinate is my_j_max*rank + x
+>> # meaning that x=1 is on rank 0
+>> if rank == 0:
+>>     u[1][1] = 10
+
+>> # Run a single iteration first
+>> unorm = poisson_step(GRIDSIZE, u, unew, rho, hsq)
+
+>> if unorm == 112.5:
+>>     print("TEST SUCCEEDED after 1 iteration")
+>> else:
+>>     print("TEST FAILED after 1 iteration")
+>>     print("Norm", unorm)
+
+>> for i in range(1, 10):
+>>     unorm = poisson_step(GRIDSIZE, u, unew, rho, hsq)
+
+>> if abs(unorm - 0.208634816) < 1e-6:
+>>     print("TEST SUCCEEDED after 10 iteration")
+>> else:
+>>     print("TEST FAILED after 10 iteration")
+>>     print("Norm", unorm)
+>> ~~~
+>> : .source .language-python}
+>{: .solution .show-python }
+>
 {: .challenge}
 
 ### Write a Parallel Function Thinking About a Single Rank
@@ -295,6 +348,44 @@ You can optimise later.
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
 >
+>> ## Solution
+>>
+>> ~~~
+>> def poisson_step(GRIDSIZE, u, unew, rho, hsq):
+>>
+>>     # Find the number of x-slices calculated by each rank
+>>     # The simple calculation here assumes that GRIDSIZE is divisible by n_ranks
+>>     rank = MPI.COMM_WORLD.Get_rank()
+>>     n_ranks = MPI.COMM_WORLD.Get_size()
+>>     my_j_max = GRIDSIZE // n_ranks
+>>
+>>     # Calculate one timestep
+>>     for j in range(1, my_j_max+1):
+>>         for i in range(1, GRIDSIZE+1):
+>>             difference = u[j][i-1] + u[j][i+1] + u[j-1][i] + u[j+1][i]
+>>             unew[j][i] = 0.25 * (difference - hsq * rho[j][i])
+>>
+>>     # Find the difference compared to the previous time step
+>>     unorm = 0.0
+>>     for j in range(1, my_j_max+1):
+>>         for i in range(1, GRIDSIZE+1):
+>>             diff = unew[j][i] - u[j][i]
+>>             unorm += diff**2
+>>
+>>     # Use Allreduce to calculate the sum over ranks
+>>     global_unorm = MPI.COMM_WORLD.allreduce(unorm, op=MPI.SUM)
+>>
+>>     # Overwrite u with the new field
+>>     for j in range(1, my_j_max+1):
+>>         for i in range(1, GRIDSIZE+1):
+>>             u[j][i] = unew[j][i]
+>>
+>>     # Return the sum over all ranks
+>>     return global_unorm_
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
+>
 {: .challenge}
 
 
@@ -325,8 +416,102 @@ You can optimise later.
 {% include code/poisson_mpi_step2.F08 %}
 >>~~~
 >>{: .source .language-fortran}
->>
 >{: .solution .show-fortran}
+>
+>> ## Solution
+>> Each rank needs to send the values at `u(1)` down to `rank-1` and
+>> the values at `u(my_j_max)` to `rank+1`.
+>> There needs to be an exception for the first and the last rank.
+>>
+>> ~~~
+>>efef poisson_step(GRIDSIZE, u, unew, rho, hsq):
+>>
+>>     sendbuf = np.zeros(GRIDSIZE)
+>>
+>>     # Find the number of x-slices calculated by each rank
+>>     # The simple calculation here assumes that GRIDSIZE is divisible by n_ranks
+>>     rank = MPI.COMM_WORLD.Get_rank()
+>>     n_ranks = MPI.COMM_WORLD.Get_size()
+>>     my_j_max = GRIDSIZE // n_ranks
+>>
+>>     # Calculate one timestep
+>>     for j in range(1, my_j_max+1):
+>>         for i in range(1, GRIDSIZE+1):
+>>             difference = u[j][i-1] + u[j][i+1] + u[j-1][i] + u[j+1][i]
+>>             unew[j][i] = 0.25 * (difference - hsq * rho[j][i])
+>>
+>>     # Find the difference compared to the previous time step
+>>     unorm = 0.0
+>>     for j in range(1, my_j_max+1):
+>>         for i in range(1, GRIDSIZE+1):
+>>             diff = unew[j][i] - u[j][i]
+>>             unorm += diff**2
+>>
+>>     # Use Allreduce to calculate the sum over ranks
+>>     global_unorm = MPI.COMM_WORLD.allreduce(unorm, op=MPI.SUM)
+>>
+>>     # Overwrite u with the new field
+>>     for j in range(1, my_j_max+1):
+>>         for i in range(1, GRIDSIZE+1):
+>>             u[j][i] = unew[j][i]
+>>
+>>     # The u field has been changed, communicate it to neighbours
+>>     # With blocking communication, half the ranks should send first
+>>     # and the other half should receive first
+>>     if rank % 2 == 1:
+>>         # Ranks with odd number send first
+>>
+>>         # Send data down from rank to rank-1
+>>         for i in range(GRIDSIZE):
+>>             sendbuf[i] = unew[1][i+1]
+>>         MPI.COMM_WORLD.send(sendbuf, dest=rank-1, tag=1)
+>>
+>>         # Receive dat from rank-1
+>>         recvbuf = MPI.COMM_WORLD.recv(source=rank-1, tag=2)
+>>         for i in range(GRIDSIZE):
+>>             u[0][i+1] = recvbuf[i]
+>>
+>>         if rank != (n_ranks-1):
+>>             # Send data up to rank+1 (if I'm not the last rank)
+>>             for i in range(GRIDSIZE):
+>>                 sendbuf[i] = unew[my_j_max][i+1]
+>>             MPI.COMM_WORLD.send(sendbuf, dest=rank+1, tag=1)
+>>
+>>             # Receive data from rank+1
+>>             recvbuf = MPI.COMM_WORLD.recv(source=rank+1, tag=2)
+>>             for i in range(GRIDSIZE):
+>>                 u[my_j_max+1][i+1] = recvbuf[i]
+>>
+>>     else:
+>>         # Ranks with even number receive first
+>>
+>>         if rank != 0:
+>>             # Receive data from rank-1 (if I'm not the first rank)
+>>             recvbuf = MPI.COMM_WORLD.recv(source=rank-1, tag=1)
+>>             for i in range(GRIDSIZE):
+>>                 u[0][i+1] = recvbuf[i]
+>>
+>>             # Send data down to rank-1
+>>             for i in range(GRIDSIZE):
+>>                 sendbuf[i] = unew[1][i+1]
+>>             MPI.COMM_WORLD.send(sendbuf, dest=rank-1, tag=2)
+>>
+>>         if rank != (n_ranks-1):
+>>             # Receive data from rank+1 (if I'm not the last rank)
+>>             recvbuf = MPI.COMM_WORLD.recv(source=rank+1, tag=1)
+>>             for i in range(GRIDSIZE):
+>>                 u[my_j_max+1][i+1] = recvbuf[i]
+>>
+>>             # Send data up to rank+1
+>>             for i in range(GRIDSIZE):
+>>                 sendbuf[i] = unew[my_j_max][i+1]
+>>             MPI.COMM_WORLD.send(sendbuf, dest=rank+1, tag=2)
+>>
+>>     # Return the sum over all ranks
+>>     return global_unorm
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
 >
 {: .challenge}
 
