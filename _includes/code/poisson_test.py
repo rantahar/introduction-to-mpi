@@ -8,10 +8,10 @@
 >> rho = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
 >>
 >> # Set up parameters
->> h = 0.1;
+>> h = 0.1
 >>
 >> # Run Setup
->> hsq = h*h;
+>> hsq = h**2
 >>
 >> # Initialise the u and rho field to 0
 >> for j in range(GRIDSIZE+1):
