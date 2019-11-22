@@ -48,9 +48,9 @@ The most commonly-used are:
 {: .language-fortran .show-fortran}
 
 ~~~
- def barrier(self)
+def barrier(self)
 ~~~
-{: .language-c .show-python}
+{: .language-python .show-python}
 
 Wait (doing nothing) until all ranks have reached this line.
 
