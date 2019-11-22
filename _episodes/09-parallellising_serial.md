@@ -172,7 +172,45 @@ Here the habit of modular programming is very useful. When the functions are sma
 >
 >> ## Solution
 >> ~~~
-{% include code/poisson_test.py %}
+>> import numpy as np
+>> import math
+>>
+>> GRIDSIZE = 10
+>>
+>> u = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
+>> unew = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
+>> rho = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
+>>
+>> # Set up parameters
+>> h = 0.1
+>>
+>> # Run Setup
+>> hsq = h**2
+>>
+>> # Initialise the u and rho field to 0
+>> for j in range(GRIDSIZE+2):
+>>     for i in range(GRIDSIZE+2):
+>>         u[j][i] = 0.0
+>>         rho[j][i] = 0.0
+>>
+>> # Test a configuration with u=10 at x=1 and y=1
+>> u[1][1] = 10
+>>
+>> # Run a single iteration first
+>> unorm = poisson_step(GRIDSIZE, u, unew, rho, hsq)
+>>
+>> if unorm == 112.5:
+>>     print("TEST SUCCEEDED after 1 iteration")
+>> else:
+>>     print("TEST FAILED after 1 iteration")
+>>
+>> for i in range(1, 10):
+>>     unorm = poisson_step(GRIDSIZE, u, unew, rho, hsq)
+>>
+>> if abs(unorm - 0.208634816) < 1e-6:
+>>     print("TEST SUCCEEDED after 10 iteration")
+>> else:
+>>     print("TEST FAILED after 10 iteration")
 >> ~~~
 >>{: .source .language-python}
 >{: .solution .show-python }
@@ -216,47 +254,47 @@ Here the habit of modular programming is very useful. When the functions are sma
 >> ## Solution
 >> ~~~
 >> GRIDSIZE = 10
-
+>>
 >> u = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
 >> unew = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
 >> rho = np.zeros((GRIDSIZE+2, GRIDSIZE+2))
-
+>>
 >> # Find the number of x-slices calculated by each rank
 >> # The simple calculation here assumes that GRIDSIZE is divisible by n_ranks
 >> rank = MPI.COMM_WORLD.Get_rank()
 >> n_ranks = MPI.COMM_WORLD.Get_size()
 >> my_j_max = GRIDSIZE // n_ranks
-
+>>
 >> # Set up parameters
 >> h = 0.1
-
+>>
 >> # Run Setup
 >> hsq = h**2
-
+>>
 >> # Initialise the u and rho field to 0
 >> for j in range(my_j_max+2):
 >>     for i in range(GRIDSIZE+2):
 >>         u[j][i] = 0.0
 >>         rho[j][i] = 0.0
-
+>>
 >> # Start form a configuration with u=10 at x=1 and y=1
 >> # The actual x coordinate is my_j_max*rank + x
 >> # meaning that x=1 is on rank 0
 >> if rank == 0:
 >>     u[1][1] = 10
-
+>>
 >> # Run a single iteration first
 >> unorm = poisson_step(GRIDSIZE, u, unew, rho, hsq)
-
+>>
 >> if unorm == 112.5:
 >>     print("TEST SUCCEEDED after 1 iteration")
 >> else:
 >>     print("TEST FAILED after 1 iteration")
 >>     print("Norm", unorm)
-
+>>
 >> for i in range(1, 10):
 >>     unorm = poisson_step(GRIDSIZE, u, unew, rho, hsq)
-
+>>
 >> if abs(unorm - 0.208634816) < 1e-6:
 >>     print("TEST SUCCEEDED after 10 iteration")
 >> else:
