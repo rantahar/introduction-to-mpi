@@ -42,6 +42,7 @@ keypoints:
 > As an example, here is the
 > [code](../code/ising/ising2d4.c){: .show-c}
 > [code](../code/ising/ising2d4.F08){: .show-fortran}
+> [code](../code/ising/ising2d4.py){: .show-python}
 > for simulating the Ising model.
 >
 > The Ising model describes the behaviour of a ferromagnetic
