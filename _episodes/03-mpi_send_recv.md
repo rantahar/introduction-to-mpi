@@ -963,10 +963,11 @@ if rank == 1:
 >>       MPI_Recv(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD, &status);
 >>       
 >>       // Increment the counter and send the ball back
+>>       counter += 1;
 >>       MPI_Send(&ball, 1, MPI_INT, neighbour, 0, MPI_COMM_WORLD);
 >>
 >>       // Check if the rank is bored
->>       bored = counter < max_count;
+>>       bored = counter >= max_count;
 >>    }
 >>    printf("rank %d is bored and giving up \n", rank);
 >>
@@ -1024,7 +1025,7 @@ if rank == 1:
 >>        call MPI_Send( ball, 1, MPI_INTEGER, neighbour, 0, MPI_COMM_WORLD, ierr )
 >>
 >>        ! Check if the rank is bored
->>        bored = counter < max_count
+>>        bored = counter >= max_count
 >>    end do
 >>
 >>    write(6, *) "Rank ", rank, "is bored and giving up"
