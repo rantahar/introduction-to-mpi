@@ -414,7 +414,7 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >  return MPI_Finalize();
 >}
 > ~~~
-> {: .source .language-c}
+> {: .source .language-c .show-c}
 >
 >
 > ~~~
@@ -457,9 +457,8 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >    call MPI_Finalize(ierr)
 >end
 > ~~~
->{: .source .language-fortran}
+>{: .source .language-fortran .show-fortran}
 >
-> ## Solution
 > ~~~
 > from mpi4py import MPI
 >
@@ -479,7 +478,7 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >     if i < numbers:
 >         print("I'm rank {:d} and I'm printing the number {:d}.".format(rank, i))
 > ~~~
->{: .source .language-python}
+>{: .source .language-python .show-python}
 >> ## Solution
 >> ~~~
 >>#include <stdio.h>
@@ -595,8 +594,7 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >>
 >{: .solution .show-python}
 >
->
-{: .challenge }
+{: .challenge}
 
 In lesson 3 you will learn how to communicate between the ranks. From there, you can in principle write general parallel programs.
 The trick is in designing a working, fast and efficient parallel algorithm for your problem.
