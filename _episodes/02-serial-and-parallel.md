@@ -82,7 +82,7 @@ The important factor that determines whether steps can be run in parallel is dat
 In our sum example, every step depends on data from the previous step, the value of the sum variable.
 When attaching tires to a car, attaching one tire does not depend on attaching the others, so these steps can be done at the same time.
 
-However, attaching the front tires both require that the axle is there.
+However, attaching the front tires both require that the axis is there.
 This step must be completed first, but the two tires can then be attached at the same time.
 ![Input -> Task 1 -> Task 2 / Task 3 -> Output]({{ page.root }}{% link files/parallel_complicated_flow.png %})
 
@@ -168,8 +168,8 @@ But if we keep increasing the number of ranks, the time spent in communication g
 Message Passing based parallelization necessarily involves several "distributed" computing elements
 (CPUs or cores) which may operate on independent clocks. This can give wrong results, since the order
 of execution in an algorithm may not be the same as the corresponding serial execution performed by
-one CPU (or a core). This problem in parallelization is explained by L. Lamport in "How to make a
-Multiprocessor computer that correctly executes multiprocess programs".
+one CPU (or a core). This problem in parallelization is explained by L. Lamport in ["How to make a
+Multiprocessor computer that correctly executes multiprocess programs"](https://lamport.azurewebsites.net/pubs/lamport-how-to-make.pdf).
 
 Consider a part of a program such as:
 ~~~
