@@ -16,11 +16,15 @@ keypoints:
 
 Profilers help you find out where the program is spending its time
 and pinpoint places where optimising it makes sense.
-In this lesson we will use Scalasca, but many other profilers exist.
-Scalasca is specifically an MPI profiler; it will give you
+In this lesson we will use ARM Performance Reports, which is part of the 
+ARM Forge suite of programs, but many other profilers exist.
+ARM Forge is specifically for MPI applications; it will give you
 information on communication efficiency and bottlenecks.
 
-Scalasca is an open source application developed by three German research centers. For more information check the [project website](http://scalasca.org).
+ARM Forge (formerly known as Allinea Forge) is developed by the semiconductor 
+and software design company ARM
+For more information check the [project website](https://www.arm.com/products/development-tools/server-and-hpc/forge). Instructions for how to use ARM Forge at 
+PDC can be found [on the support pages](https://www.pdc.kth.se/software/software/allinea-forge/index_general.html).
 
 It is used together with the [Score-P](https://www.vi-hps.org/projects/score-p/) utility, the Cube library
 and the Cube viewer.
