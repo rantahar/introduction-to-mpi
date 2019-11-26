@@ -14,30 +14,59 @@ keypoints:
 
 ## Profiling
 
-Profilers help you find out where the program is spending its time
-and pinpoint places where optimising it makes sense.
-In this lesson we will use ARM Performance Reports, which is part of the 
-ARM Forge suite of programs, but many other profilers exist.
-ARM Forge is specifically for MPI applications; it will give you
-information on communication efficiency and bottlenecks.
+Profilers help you find out where a program is spending its time
+and pinpoint places where optimising it makes sense. Many different 
+types of profiling tools exist, but for MPI application we need 
+**parallel profilers**.
 
-ARM Forge (formerly known as Allinea Forge) is developed by the semiconductor 
-and software design company ARM
-For more information check the [project website](https://www.arm.com/products/development-tools/server-and-hpc/forge). Instructions for how to use ARM Forge at 
+Some examples of parallel profilers are:
+- [Scalasca](http://scalasca.org) - a free and open source parallel 
+  profiler developed by three German research centers.
+- [CrayPat](https://pubs.cray.com/content/S-2376/7.0.0/cray-performance-measurement-and-analysis-tools-user-guide/craypat) - performance analysis tool 
+  offered by Cray for the XC platform.
+- [TAU](https://www.cs.uoregon.edu/research/tau/home.php) - a portable 
+  profiling and tracing toolkit for performance analysis of parallel 
+  programs written in Fortran, C, C++, UPC, Java, Python.
+- [etc...](https://arc.leeds.ac.uk/using-the-systems/advanced-topics/debugging-and-profiling-tools/)
+
+In this lesson we will use a simple tool called ARM Performance
+Reports which gives us an overview of how much time is spent in
+compute, MPI calls and I/O. Performance Reports is part of the ARM
+Forge (formerly Allinea Forge) suite of tools for parallel
+applications and is developed by the semiconductor and software design
+company ARM.  
+
+The suite also comes with a debugger (ARM DDT) and a profiler (ARM
+MAP). ARM MAP is a more advanced tool which allows the user to see how
+much time each individual line of code takes, and why. ARM DDT
+supports a wide range of parallel architectures and models, including
+MPI, UPC, CUDA and OpenMP.
+
+Version 19 and higher of ARM Forge supports Python, in addition to
+Fortran and C/C++. PDC has a license for ARM MAP and ARM DDT and the
+most recent versions are installed, but the installed versions of
+Performance Reports only support Fortran and C/C++. To see which
+versions are available, type:
+
+~~~
+$ module avail allinea
+~~~
+{: .source .language-bash}
+
+### Understanding the performance report
+
+![A picture of the perf-report]({{ page.root }}{% link fig/perf_reports.png %})
+
+### Further information
+
+For more information on ARM Forge check the [product website](https://www.arm.com/products/development-tools/server-and-hpc/forge). Instructions for how to use ARM Forge at 
 PDC can be found [on the support pages](https://www.pdc.kth.se/software/software/allinea-forge/index_general.html).
 
-It is used together with the [Score-P](https://www.vi-hps.org/projects/score-p/) utility, the Cube library
-and the Cube viewer.
-Since it is open source, you can install it in your home directory on any HPC cluster
-that does not already have it.
-The process is as described in [setup](setup), but you need to add
-`--prefix=$HOME/scalasca/` to the `./configure` command to install in
-your home folder.
 
 ### Summary profile
 
 It is advisable to create a short version of you program, limiting the
-runtime to a few minutes.
+runtime to a few seconds or minutes.
 You may be able to reduce the problem size or required precision,
 as long as this does not change the algorithm itself.
 We will use the Poisson solver from the previous lesson as an example.
