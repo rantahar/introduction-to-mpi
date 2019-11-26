@@ -59,13 +59,15 @@ $ module avail allinea
 For more information on ARM Forge check the [product website](https://www.arm.com/products/development-tools/server-and-hpc/forge). Instructions for how to use ARM Forge at 
 PDC can be found [on the support pages](https://www.pdc.kth.se/software/software/allinea-forge/index_general.html).
 
+---
 
-### Summary profile
+## Performance reports
 
 It is advisable to create a short version of your program, limiting the
 runtime to a few seconds or minutes.
 You may be able to reduce the problem size or required precision,
 as long as this does not change the algorithm itself.
+
 We will use the Poisson solver from the previous lesson as an example.
 The example program used here (and at the end of the previous section)
 is
@@ -143,6 +145,63 @@ spent in the actual compute sections of the code.
 > - Increase the problem size, recompile, rerun and investigate the profile. What has 
 >   changed now?
 {: .challenge}
+
+---
+
+## ARM MAP
+
+After getting a general overview of the performance through 
+ARM Performance Reports, one can start digging deeper using 
+a full-fledged profiler like ARM MAP. We will not go into 
+any details on using MAP, but instead just 
+show how MAP can be used at PDC.
+
+### Installing the Remote Client
+
+First, it's useful to install the [ARM Forge Remote Client](https://developer.arm.com/tools-and-software/server-and-hpc/arm-architecture-tools/downloads/download-arm-forge), as this avoids running the GUI over a possibly slow or 
+unstable ssh connection. 
+The remote client runs on your local computer and can be used to connect to 
+running processes on the cluster.
+
+After downloading an installer for your operating system (link above),
+you need to set up the connection to PDC:
+
+- Click "Remote Launch", and select "Configure"
+- Click "Add", and for "hostname" write: <username>@tegner.pdc.kth.se. 
+  You can also give an optional Connection name.
+- For "Remote installation directory", enter 
+  `/pdc/vol/allinea-forge/19.1.3/amd64_co7/`
+- Click on "Test Remote Launch" to see if the Remote Client GUI 
+  can successfully connect to Tegner.
+
+If connecting fails, you may need to replace the default ssh used by
+Remote Client. First create the directory `~/.allinea`. In this
+directory create a file called `remote-exec`. In this file, write
+~~~
+#!/bin/sh /correct/path/to/ssh [correct flags] $*
+~~~
+{: .source .language-bash}
+
+- If you are on OSX with an ssh installed via MacPorts, 
+  the correct ssh would be `/opt/local/bin/ssh`
+- If you have not configured your `~/.ssh/config` file, you will need 
+  to add the flags `GSSAPIDelegateCredentials=yes -o GSSAPIKeyExchange=yes -o GSSAPIAuthentication=yes`
+
+
+> ## Profiling with MAP
+> 
+> - First install and configure the ARM Forge Client according 
+>   to the instructions above.
+> - Open the Remote Client, click ARM MAP from the left panel, and click 
+>   "Profile" in the main panel.
+> - In the window that pops up, select which Application you want to profile 
+>   and the number of MPI ranks. Tick "Submit to Queue", and click "Configure" 
+>   and make sure that the fields look correct. Under "Metrics", disable 
+>   Energy, I/O, Lustre.
+> - Now click "Submit", and see how a job is launched on Tegner.
+{: .challenge}
+
+
 
 
 ## Optimisation Workflow
