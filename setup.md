@@ -4,6 +4,18 @@ title: Setup
 
 ## Compilers and MPI
 
+In order to follow this workshop, you will need access to compilers 
+and MPI libraries. You can either use a cluster or set things up on 
+your own laptop, and instructions for both are provided below.
+
+One part of the workshop deals with profiling parallel code using ARM
+Forge, and access to a SNIC cluster is required for the exercises in
+this part.  It is convenient to install a local client to interact
+with the profiler running on the cluster, and instructions for setting
+this up are given below.
+
+### On your laptop
+
 These instructions are based on installing compilers and MPI via the
 conda package manager, as it provides a convenient way to install
 binary packages.
@@ -16,7 +28,9 @@ Subsystem for Linux (WSL), which is available for Windows 10 and later
 versions. Instructions can be found [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 
 (WSL is also a good way to log in to PDC, see the [PDC support pages](https://www.pdc.kth.se/support/documents/login/windows_login.html#wsl-approach))
 
-### Installing conda
+---
+
+#### Installing conda
 
 Begin by installing Miniconda:
 
@@ -39,9 +53,9 @@ conda activate mpi-intro
 ~~~
 {: .source .language-bash}
 
-### Python 
+---
 
-**On your laptop**
+#### Python 
 
 If you want to use Python for the exercises, you will need to install
 mpi4py. mpi4py can be installed either using pip or conda, but with
@@ -54,7 +68,34 @@ use conda:
 ~~~
 {: .source .language-bash}
 
-**On the cluster**
+---
+
+#### C/C++ and Fortran
+
+If you want to use C, C++ or Fortran for the exercises, you will need
+to install compilers and MPI libraries. This can also be done using
+conda:
+
+~~~
+(mpi-intro) $ conda install compilers
+(mpi-intro) $ conda install mpich
+~~~
+{: .source .language-bash}
+
+---
+
+### On the cluster
+
+To do the exercises at PDC, you will need:
+- a PDC account, see [these instructions](https://www.pdc.kth.se/support/documents/getting_access/get_access.html#applying-for-an-account)
+- set up your laptop for login, see [these instructions](https://www.pdc.kth.se/support/documents/login/login.html)
+
+Below you will find instructions for how to use the Tegner cluster 
+for either Python or C/C++/Fortran MPI applications.
+
+---
+
+#### Python
 
 Python is available through the Anaconda distribution at PDC. To 
 use mpi4py on Tegner, you need to load an Anaconda module and then switch to a 
@@ -72,22 +113,9 @@ mpirun -n 24 python example.py
 ~~~
 {: .source .language-bash}
 
+---
 
-### C/C++ and Fortran
-
-**On your laptop**
-
-If you want to use C, C++ or Fortran for the exercises, you will need
-to install compilers and MPI libraries. This can also be done using
-conda:
-
-~~~
-(mpi-intro) $ conda install compilers
-(mpi-intro) $ conda install mpich
-~~~
-{: .source .language-bash}
-
-**On the cluster**
+#### C/C++ and Fortran
 
 We suggest that you use the gcc compiler together with OpenMPI libraries:
 ~~~
@@ -104,6 +132,8 @@ mpifort -o example example.f90  # for Fortran code
 mpirun -n 12 ./example
 ~~~
 {: .source .language-bash}
+
+---
 
 ## ARM Forge
 
