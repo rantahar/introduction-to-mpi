@@ -24,10 +24,9 @@ Some examples of parallel profilers are:
   profiler developed by three German research centers.
 - [CrayPat](https://pubs.cray.com/content/S-2376/7.0.0/cray-performance-measurement-and-analysis-tools-user-guide/craypat) - performance analysis tool 
   offered by Cray for the XC platform.
-- [TAU](https://www.cs.uoregon.edu/research/tau/home.php) - a portable 
-  profiling and tracing toolkit for performance analysis of parallel 
-  programs written in Fortran, C, C++, UPC, Java, Python.
-- [etc...](https://arc.leeds.ac.uk/using-the-systems/advanced-topics/debugging-and-profiling-tools/)
+- [TAU](https://www.cs.uoregon.edu/research/tau/home.php)
+- [VAMPIR](https://vampir.eu/) 
+- [Paraver](https://tools.bsc.es/paraver)
 
 In this lesson we will use a simple tool called ARM Performance
 Reports which gives us an overview of how much time is spent in
