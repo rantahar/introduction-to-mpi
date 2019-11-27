@@ -110,8 +110,7 @@ from mpi4py import MPI
 {: .language-python .show-python}
 
 After MPI is initialized, you can find out the rank of the copy using the `MPI_Comm_rank` function
-in C and Fortran, or the `Get_rank` method in Python.
-:
+in C and Fortran, or the `Get_rank` method in Python:
 
 ~~~
 int rank;
@@ -210,7 +209,7 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
 > ## Compile and Run
 >
-> Compile the above C code with `mpicc`, or Fortran code with `mpiifort`.
+> Compile the above C code with `mpicc`, or Fortran code with `mpifort`.
 > Python code does not need compilation.
 > Run the code with `mpirun`.
 >
