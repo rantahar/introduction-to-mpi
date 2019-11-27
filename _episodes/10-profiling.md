@@ -155,6 +155,13 @@ spent in the actual compute sections of the code.
 >   changed now?
 {: .challenge}
 
+> ## Iterative Improvement
+>
+> In the Poisson code, try changing the location of the calls 
+> to `MPI_Send`. How does this affect performance?
+>
+{: .challenge}
+
 ---
 
 ## ARM MAP
@@ -215,7 +222,7 @@ directory create a file called `remote-exec`. In this file, write
 
 ## Optimisation Workflow
 
-The general workflow for optimising a code, wether parallel or serial
+The general workflow for optimising a code, whether parallel or serial
 is as follows:
 1. Profile.
 2. Optimise.
@@ -223,12 +230,5 @@ is as follows:
 4. Measure efficiency.
 5. Goto: 1.
 
-
-> ## Iterative Improvement
->
-> In the Poisson code,
-> try changing the location of the calls to `MPI_Send`. How does this affect performance?
->
-{: .challenge}
 
 {% include links.md %}
