@@ -2,133 +2,93 @@
 title: Setup
 ---
 
-## Install MPI
+## Compilers and MPI
 
-Make sure you can compile C or Fortran programs using a compiler or a development environment.
-You will need an implementation of the MPI (Message Passing Interface) library. Several implementations
-of MPI exist, but for example Open MPI will work on Linux and macOS, and the Microsoft Distribution of
-MPICH will work on Windows.
+These instructions are based on installing compilers and MPI via the
+conda package manager, as it provides a convenient way to install
+binary packages.
 
-#### Ubuntu / Linux
-Most Linux distributions will have an `openmpi` or `openmpi-dev` package.
-On Ubuntu, open a terminal and run:
-```
-sudo apt install openmpi-bin openmpi-dev openmpi-common openmpi-doc libopenmpi-dev
-```
-{: .source .language-bash}
+The instructions also focus on installation on MacOS or Linux
+computers. Installing compilers and MPI natively on Windows is
+possible through [Cygwin](https://www.cygwin.com/) and the 
+Microsoft Distribution of MPICH, but we recommend that you install the Windows
+Subsystem for Linux (WSL), which is available for Windows 10 and later
+versions. Instructions can be found [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 
+(WSL is also a good way to log in to PDC, see the [PDC support pages](https://www.pdc.kth.se/support/documents/login/windows_login.html#wsl-approach))
 
-Check that you Open MPI is properly installed by running:
-```
-mpicc --showme:version
-```
-{: .source .language-bash}
-The output should be similar to this:
-```
-mpicc: Open MPI 2.1.1 (Language: C)
-```
-{: .output}
+### Installing conda
 
-#### macOS
-On macOS you can install Open MPI for the command line using [homebrew](https://brew.sh).
-After installing Homebrew, open the Terminal in Applications/Utilities and run:
-```
-brew install open-mpi
-```
-{: .source .language-bash}
+Begin by installing Miniconda:
 
-To check the installation run:
-```
-mpicc --showme:version
-```
-{: .source .language-bash}
-The output should be similar to this:
-```
-mpicc: Open MPI 2.1.1 (Language: C)
-```
-{: .output}
+1. Download the 64-bit installer from [here](https://docs.conda.io/en/latest/miniconda.html) for your operating system
+   - for MacOS, choose the bash installer
+   - on Windows, open a Linux-WSL terminal and type: `wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh`. 
+     If wget is not a recognised command, type `sudo apt-get install wget` 
+     and provide the password you chose when installing WSL.
+2. In a terminal, run the installer with `bash Miniconda3-latest-<operating-system>-x86_64.sh` (replace with correct name of installer)
+3. Agree to the terms of conditions, specify the installation directory (the default is usually fine), and answer "yes" to the questions "Do you wish the installer to initialize Miniconda3 by running conda init?"
 
+You now have miniconda and conda installed. Make sure that it works by
+typing `which conda` and see that it points to where you installed
+miniconda (you may have to open a new terminal first).
 
-#### Windows
-On windows, the preferred option is to use the
-[Cygwin](https://www.cygwin.com/)
-terminal emulator or the Windows Subsystem for 
-Linux for Windows 10. 
-Both provide an interface that is
-similar to most HPC clusters.
-
-If you decide to use Cygwin, you need to install some
-packages using the Cygwin installer.
-If you already have Cygwin installed, you nevertheless
-should run the installer and make sure the following packages
-are selected:
- * `gcc-core` and `gcc-fortran`
- * `openmpi`, `libopenmpi40`, `libopenmpihf08_40`, `libopenmpiusef08_40`, `openmpi-devel` and `openmpi-devel`.
- * `zlib` and`zlib-devel`
- * `make` and `cmake`
- * `git`
- * `nano`, or your text editor of choice
-
-You can verify that it works by compiling any C or Fortran program using the `mpicc` or `mpifort` compiler.
-
-On Windows, if you use Visual Studio, you can install
-[Microsoft MPI](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi).
-The download includes two files, `msmpisetup.exe` and `msmpisdk.msi`. Download and run both installers.
-Follow [these instructions](https://blogs.technet.microsoft.com/windowshpc/2015/02/02/how-to-compile-and-run-a-simple-ms-mpi-program/)
-to create a project with the MPI compiler and library.
-
-
-## Installing Scalasca
-
-Scalasca is an open source application for profiling MPI programs.
-We use Scalasca in one of the afternoon lessons.
-Downloading and installing at least the CubeGUI is useful.
-If you have access to a cluster and Scalasca is installed, you don't
-need to install Scalasca itself on your laptop.
-
-Scalasca consists of four parts:
-* Score-P for compiling an instrumented binary.
-* Scalasca for profiling and analysing.
-* CubeGUI, a graphical viewer.
-* The Cubelib library, used by Scalasca and CubeGUI.
-
-CubeGUI can be used to view profiling information produced on different platforms.
-Binary packages are provided for Windows and macOS on the [Scalasca Downloads website](http://www.scalasca.org/software/cube-4.x/download.html).
-
-To install it on Linux, download the Cube Bundle on the same website.
-Compile and install with:
+We recommend that you create an isolated conda environment (this is good practice in software development):
 ~~~
-tar -xf CubeBundle-2.0.tar.gz
-cd CubeBundle-2.0
-./configure
-make
-sudo make install
-cd ..
+conda create --name mpi-intro python=3.7
+conda activate mpi-intro
+~~~
+{: .source .language-bash}
+
+### Python 
+
+If you want to use Python for the exercises, you will need to install mpi4py. mpi4py can be installed either using pip or conda, but with pip you will need to install MPI yourself first (e.g. OpenMPI or MPICH), while conda will install its own MPI binaries (mpich). If you don’t already have MPI installed on your laptop, it will be easiest to use conda:
+~~~
+(mpi-intro) $ conda install mpi4py
+~~~
+{: .source .language-bash}
+
+### C/C++ and Fortran
+
+If you want to use C, C++ or Fortran for the exercises, you will need to install compilers and MPI libraries. This can also be done using conda:
+~~~
+(mpi-intro) $ conda install compilers
+(mpi-intro) $ conda install mpich
 ~~~
 {: .source .language-bash}
 
 
-You may also wish to install Scalasca itself. This allows you to run the profiler on your laptop. You can use Scalasca to profile MPI programs on your local system.
+## ARM Forge
 
-Start with Score-P. Download it from [the scorep website](https://www.vi-hps.org/projects/score-p/) and run:
+The ARM Forge tools (Performance Reports, MAP and DDT) are installed
+on PDC clusters. These are graphical applications, and running them
+over an ssh connection can become sluggish or unstable.  We therefore
+recommend to install the ARM Forge Remote Client, which runs on your
+local computer and can be used to connect to running processes on the
+cluster.
+
+Begin by downloading the [Remote Client](https://developer.arm.com/tools-and-software/server-and-hpc/arm-architecture-tools/downloads/download-arm-forge), 
+and installing it.
+Next you need to set up the connection to PDC:
+
+- Open up the ARM Forge Client
+- Click "Remote Launch", and select "Configure"
+- Click "Add", and for "hostname" write: <username>@tegner.pdc.kth.se. 
+  You can also give an optional Connection name.
+- For "Remote installation directory", enter 
+  `/pdc/vol/allinea-forge/19.1.3/amd64_co7/`
+- Click on "Test Remote Launch" to see if the Remote Client GUI 
+  can successfully connect to Tegner.
+
+If connecting fails, you may need to replace the default ssh used by
+Remote Client. First create the directory `~/.allinea`. In this
+directory create a file called `remote-exec`. In this file, write
 ~~~
-tar -xf scorep-*.tar.gz
-cd scorep
-./configure
-make
-sudo make install
-cd ..
+#!/bin/sh /correct/path/to/ssh [correct flags] $*
 ~~~
 {: .source .language-bash}
 
+- If you are on OSX with an ssh installed via MacPorts, 
+  the correct ssh would be `/opt/local/bin/ssh`
+- If you have not configured your `~/.ssh/config` file, you will need 
+  to add the flags `GSSAPIDelegateCredentials=yes -o GSSAPIKeyExchange=yes -o GSSAPIAuthentication=yes`
 
-Finally install Scalasca itself. Download it from the [Scalasca Downloads page](http://www.scalasca.org/software/cube-4.x/download.html).
-Install in the same way:
-~~~
-tar -xf scalasca-*.tar.gz
-cd scalasca
-./configure
-make
-sudo make install
-cd ..
-~~~
-{: .source .language-bash}
