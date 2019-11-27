@@ -41,21 +41,69 @@ conda activate mpi-intro
 
 ### Python 
 
-If you want to use Python for the exercises, you will need to install mpi4py. mpi4py can be installed either using pip or conda, but with pip you will need to install MPI yourself first (e.g. OpenMPI or MPICH), while conda will install its own MPI binaries (mpich). If you don’t already have MPI installed on your laptop, it will be easiest to use conda:
+**On your laptop**
+
+If you want to use Python for the exercises, you will need to install
+mpi4py. mpi4py can be installed either using pip or conda, but with
+pip you will need to install MPI yourself first (e.g. OpenMPI or
+MPICH), while conda will install its own MPI binaries (mpich). If you
+don’t already have MPI installed on your laptop, it will be easiest to
+use conda:
 ~~~
 (mpi-intro) $ conda install mpi4py
 ~~~
 {: .source .language-bash}
 
+**On the cluster**
+
+Python is available through the Anaconda distribution at PDC. To 
+use mpi4py on Tegner, you need to load an Anaconda module and then switch to a 
+specific conda environment:
+~~~
+module load anaconda/py37/5.0.1
+source activate mpi4py
+~~~
+{: .source .language-bash}
+
+Loading the Anaconda module will also load the modules gcc/8.2.0 and 
+openmpi/4.0-gcc-8.2, so you will be able to run Python code with:
+~~~
+mpirun -n 24 python example.py
+~~~
+{: .source .language-bash}
+
+
 ### C/C++ and Fortran
 
-If you want to use C, C++ or Fortran for the exercises, you will need to install compilers and MPI libraries. This can also be done using conda:
+**On your laptop**
+
+If you want to use C, C++ or Fortran for the exercises, you will need
+to install compilers and MPI libraries. This can also be done using
+conda:
+
 ~~~
 (mpi-intro) $ conda install compilers
 (mpi-intro) $ conda install mpich
 ~~~
 {: .source .language-bash}
 
+**On the cluster**
+
+We suggest that you use the gcc compiler together with OpenMPI libraries:
+~~~
+module load gcc/8.2.0
+module load openmpi/4.0-gcc-8.2
+~~~
+{: .source .language-bash}
+
+You will then be able to compile and run MPI code with:
+~~~
+mpicc -o example example.c      # for C/C++ code
+mpifort -o example example.f90  # for Fortran code
+
+mpirun -n 12 ./example
+~~~
+{: .source .language-bash}
 
 ## ARM Forge
 
