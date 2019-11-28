@@ -22,6 +22,8 @@ They are also the basic communication tools in your MPI application.
 Since `MPI_Send` and `MPI_Recv` involve two ranks, they are called "point-to-point" communication
 (unlike "global" communication mentioned in lesson 2).
 
+![send-receive]({{ page.root }}{% link fig/02-send-recv.png %})
+
 The process of communicating data follows a standard pattern.
 Rank A decides to send data to rank B.
 It first packs the data into a buffer.

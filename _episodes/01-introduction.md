@@ -63,16 +63,6 @@ MPI stands for Message Passing Interface, and is a low level, minimal and extrem
 >
 {: .challenge}
 
-> ## Note for Cygwin users
->
-> If you use Cygwin, you may notice an error message saying
-> ```There are not enough slots available in the system```.
-> By default, Cygwin will prevent you from running more copies
-> than you have cores to run on. Add `--oversubscribe` after `mpirun`
-> to run more copies than you have cores.
->
-{: .callout}
-
 Just running a program with `mpirun` starts several copies of it.
 The number of copies is decided by the `-n` parameter.
 In the example above, the program does not know it was started by `mpirun`
@@ -120,8 +110,7 @@ from mpi4py import MPI
 {: .language-python .show-python}
 
 After MPI is initialized, you can find out the rank of the copy using the `MPI_Comm_rank` function
-in C and Fortran, or the `Get_rank` method in Python.
-:
+in C and Fortran, or the `Get_rank` method in Python:
 
 ~~~
 int rank;
@@ -220,7 +209,7 @@ recognised by the MPI wrapper are passed through to the non-MPI compiler.
 
 > ## Compile and Run
 >
-> Compile the above C code with `mpicc`, or Fortran code with `mpiifort`.
+> Compile the above C code with `mpicc`, or Fortran code with `mpifort`.
 > Python code does not need compilation.
 > Run the code with `mpirun`.
 >
@@ -327,6 +316,17 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >>{: .source .language-python}
 >{: .solution .show-python}
 >
+{: .challenge}
+
+> ## Using the ranks
+> 
+> Write an MPI program which defines two floating point variables `a` and `b`. 
+> Use the rank to:
+> - print `a-b` if the rank is 0
+> - print `a+b` if the rank is 1
+> - print `a*b` if the rank is 2 
+> 
+> Run the program on 3 cores and see that it works correctly.
 {: .challenge}
 
 

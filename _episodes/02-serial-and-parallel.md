@@ -135,62 +135,106 @@ The program can never run faster than the sum of the serial regions.
 >
 {: .challenge}
 
-## Factors to consider for parallel algorithm
+---
 
-### Amdahl's Law
+## Scalability
 
-Using $$N$$ CPUs (or cores) doesn't result in an $$N$$-times speedup. There is a theoretical limit in what parallelization can achieve, and it is encapsulated in "Amdahl's Law".
+The speedup when running a parallel program on multiple processors can
+be defined as
 
-The time it takes to execute the program is roughly:
+$$ \mathrm{speedup} = t_1 / t_N $$
 
-$$ T = T_{\textrm{serial}} + \frac{T_{\textrm{parallel}}}{N_{\textrm{ranks}}} + T_{\textrm{communication}}(N_{\textrm{ranks}}) $$
+where $t_1$ is the computational time for running the software using one
+processor, and $t_N$ is the computational time running the same software
+with N processors. Ideally, we would like software to have a linear
+speedup that is equal to the number of processors (speedup = N), as
+that would mean that every processor would be contributing 100% of its
+computational power. Unfortunately, this is a very challenging goal
+for real applications to attain.
 
-The $$ N_{\textrm{ranks}} $$ here is the number of ranks, and
-$$ T_{\textrm{communications}} $$ represents the time spent communicating between the ranks.
+### Amdahl's Law and strong scaling
 
-![A figure showing the result described above for MAX=512 and MAX=2048]({{ page.root }}{% link fig/poisson_scaling_plot.png %})
+There is a theoretical limit in what parallelization can achieve, and
+it is encapsulated in "Amdahl's Law":
+
+$$ \mathrm{speedup} = 1 / (s + p / N) $$
+
+where $s$ is the proportion of execution time spent on the serial
+part, $p$ is the proportion of execution time spent on the part that
+can be parallelized, and $N$ is the number of processors. Amdahl’s law
+states that, for a fixed problem, the upper limit of speedup is
+determined by the serial fraction of the code. This is called **strong
+scaling** and its consequences can be understood from the figure below.
+
+![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_amdahl.png %})
+
+
+> ## Amdahl's law in practice 
+> 
+> Consider a program that takes 20 hours
+> to run using one core. If a particular part of the
+> program, which takes one hour to execute, cannot be parallelized (s
+> = 1/20 = 0.05), and if the code that takes up the remaining 19 hours
+> of execution time can be parallelized (p = 1 − s = 0.95), then
+> regardless of how many processors are devoted to a parallelized
+> execution of this program, the minimum execution time cannot be less
+> than that critical one hour. Hence, the theoretical speedup is
+> limited to at most 20 times (when N = ∞, speedup = 1/s = 20). 
+{: .callout}
+
+Amdahl's law gives the upper limit of speedup for a problem of fixed
+size. This seems to be a bottleneck for parallel computing; if one
+would like to gain a 500 times speedup on 1000 processors, Amdahl’s
+law requires that the proportion of serial part cannot exceed 0.1%.
+However, in practice the sizes of problems scale with the amount of
+available resources, and we also need a measure for a relative speedup
+which takes into account increasing problem sizes.
+
+### Gustafson's law and weak scaling
+
+Gustafson’s law is based on the approximations that the parallel part
+scales linearly with the amount of resources, and that the serial part
+does not increase with respect to the size of the problem. It provides
+a formula for scaled speedup:
+
+$$ \mathrm{scaled\ speedup} = s + p × N $$
+
+where $s$, $p$ and $N$ have the same meaning as in Amdahl's law. With
+Gustafson's law the scaled speedup increases linearly with respect to
+the number of processors (with a slope smaller than one), and there is
+no upper limit for the scaled speedup. This is called **weak scaling**,
+where the scaled speedup is calculated based on the amount of work
+done for a scaled problem size (in contrast to Amdahl’s law which
+focuses on fixed problem size). 
+
+![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_gustafson.png %})
+
+> ## Gustafson's law in practice
+> If we apply Gustafson’s law to the previous example of s = 0.05 and p
+> = 0.95, the scaled speedup will become infinity when infinitely many
+> processors are used. Realistically, if we have N = 1000, the scaled
+> speedup will be 950.
+{: .callout}
+
+
+### Other considerations
 
 The other significant factors in the speed of a parallel program are
-communication speed, latency, and of course the number of parallel processes. In turn, the communication
-speed is determined by the amount of data one needs to send/receive, and the bandwidth of the underlying
-hardware for the communication. The latency consists of the software latency (how long the computer
-operating system needs in order to prepare for a communication), and the hardware latency (how long the
-hardware takes to send/receive even a small bit of data).
-For the same size problem, the time spent in communication is not significant when the number of ranks
-is small and the execution of parallel regions gets faster with the number of ranks.
-But if we keep increasing the number of ranks, the time spent in communication grows when multiple CPUs
-(or cores) are involved with communication (technically, this is called "global communication").
+communication speed and latency. 
 
-{% include links.md %}
+- Communication speed is determined by the
+  amount of data one needs to send/receive, and the bandwidth of the
+  underlying hardware for the communication. 
+- Latency consists of the software latency (how long the 
+  operating system needs in order to prepare for a communication), 
+  and the hardware latency (how long the hardware takes to 
+  send/receive even a small bit of data).
 
-### L. Lamport's Sequential Consistency
-
-Message Passing based parallelization necessarily involves several "distributed" computing elements
-(CPUs or cores) which may operate on independent clocks. This can give wrong results, since the order
-of execution in an algorithm may not be the same as the corresponding serial execution performed by
-one CPU (or a core). This problem in parallelization is explained by L. Lamport in ["How to make a
-Multiprocessor computer that correctly executes multiprocess programs"](https://lamport.azurewebsites.net/pubs/lamport-how-to-make.pdf).
-
-Consider a part of a program such as:
-~~~
-  y = 0;
-
-  x = 1;
-
-  y = 2;
-
-  if(y < x) then stop;
-  otherwise continue;
-~~~
-{: .source }
-
-In a one CPU situation, there is no problem executing this part of the program and the program runs without
-stopping since the `if` statement is always false. Now, what if there are multiple CPUs (or cores) and
-the variables `x` and `y` are shared among these CPUs (or cores)? If the `if` statement happens before
-`y = 2` in one of the CPUs (since `x` and `y` are shared, when one CPU updates `y`, the other CPU can't touch
-it and just proceeds to the next step), the second CPU will stop running the program since it thinks
-`y = 0` and `x = 1` and the `if` statement is true for that CPU. So, sharing data among CPUs (or cores) in
-parallelization should be "sequentially consistent".
+For a fixed-size problem, the time spent in communication is not
+significant when the number of ranks is small and the execution of
+parallel regions gets faster with the number of ranks.  But if we keep
+increasing the number of ranks, the time spent in communication grows
+when multiple cores are involved with communication
 
 ### Surface-to-Volume Ratio
 
@@ -206,3 +250,9 @@ Due to Amdahl's law, you want to minimize the number of communications for the s
 each communication takes finite amount of time to prepare (latency). This suggests that the surface data
 be exchanged in one communication if possible, not small parts of the surface data exchanged in multiple
 communications. Of course, sequential consistency should be obeyed when the surface data is exchanged.
+
+### Further reading
+
+- [Strong and weak scaling](https://www.kth.se/blogs/pdc/2018/11/scalability-strong-and-weak-scaling/)
+
+{% include links.md %}
