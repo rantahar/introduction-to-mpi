@@ -318,6 +318,17 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >
 {: .challenge}
 
+> ## Using the ranks
+> 
+> Write an MPI program which defines two floating point variables `a` and `b`. 
+> Use the rank to:
+> - print `a-b` if the rank is 0
+> - print `a+b` if the rank is 1
+> - print `a*b` if the rank is 2 
+> 
+> Run the program on 3 cores and see that it works correctly.
+{: .challenge}
+
 
 >## Parallel loop
 >
