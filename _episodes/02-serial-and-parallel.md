@@ -163,34 +163,6 @@ But if we keep increasing the number of ranks, the time spent in communication g
 
 {% include links.md %}
 
-### L. Lamport's Sequential Consistency
-
-Message Passing based parallelization necessarily involves several "distributed" computing elements
-(CPUs or cores) which may operate on independent clocks. This can give wrong results, since the order
-of execution in an algorithm may not be the same as the corresponding serial execution performed by
-one CPU (or a core). This problem in parallelization is explained by L. Lamport in ["How to make a
-Multiprocessor computer that correctly executes multiprocess programs"](https://lamport.azurewebsites.net/pubs/lamport-how-to-make.pdf).
-
-Consider a part of a program such as:
-~~~
-  y = 0;
-
-  x = 1;
-
-  y = 2;
-
-  if(y < x) then stop;
-  otherwise continue;
-~~~
-{: .source }
-
-In a one CPU situation, there is no problem executing this part of the program and the program runs without
-stopping since the `if` statement is always false. Now, what if there are multiple CPUs (or cores) and
-the variables `x` and `y` are shared among these CPUs (or cores)? If the `if` statement happens before
-`y = 2` in one of the CPUs (since `x` and `y` are shared, when one CPU updates `y`, the other CPU can't touch
-it and just proceeds to the next step), the second CPU will stop running the program since it thinks
-`y = 0` and `x = 1` and the `if` statement is true for that CPU. So, sharing data among CPUs (or cores) in
-parallelization should be "sequentially consistent".
 
 ### Surface-to-Volume Ratio
 
