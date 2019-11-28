@@ -162,50 +162,77 @@ part, $p$ is the proportion of execution time spent on the part that
 can be parallelized, and $N$ is the number of processors. Amdahl’s law
 states that, for a fixed problem, the upper limit of speedup is
 determined by the serial fraction of the code. This is called **strong
-scaling** and can be explained by the figure below.
+scaling** and its consequences can be understood from the figure below.
 
 ![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_amdahl.png %})
 
 
+> ## Amdahl's law in practice 
+> 
+> Consider a program that takes 20 hours
+> to run using one core. If a particular part of the
+> program, which takes one hour to execute, cannot be parallelized (s
+> = 1/20 = 0.05), and if the code that takes up the remaining 19 hours
+> of execution time can be parallelized (p = 1 − s = 0.95), then
+> regardless of how many processors are devoted to a parallelized
+> execution of this program, the minimum execution time cannot be less
+> than that critical one hour. Hence, the theoretical speedup is
+> limited to at most 20 times (when N = ∞, speedup = 1/s = 20). 
+{: .callout}
+
+Amdahl's law gives the upper limit of speedup for a problem of fixed
+size. This seems to be a bottleneck for parallel computing; if one
+would like to gain a 500 times speedup on 1000 processors, Amdahl’s
+law requires that the proportion of serial part cannot exceed 0.1%.
+However, in practice the sizes of problems scale with the amount of
+available resources, and we also need a measure for a relative speedup
+which takes into account increasing problem sizes.
+
 ### Gustafson's law and weak scaling
 
-Amdahl's law gives the upper limit of speedup for a problem of fixed size. This seems to be a bottleneck for parallel computing; if one would like to gain a 500 times speedup on 1000 processors, Amdahl’s law requires that the proportion of serial part cannot exceed 0.1%. However, as Gustafson pointed out [2], in practice the sizes of problems scale with the amount of available resources. If a problem only requires a small amount of resources, it is not beneficial to use a large amount of resources to carry out the computation. A more reasonable choice is to use small amounts of resources for small problems and larger quantities of resources for big problems.
+Gustafson’s law is based on the approximations that the parallel part
+scales linearly with the amount of resources, and that the serial part
+does not increase with respect to the size of the problem. It provides
+a formula for scaled speedup:
 
-Gustafson’s law [2] was proposed in 1988, and is based on the approximations that the parallel part scales linearly with the amount of resources, and that the serial part does not increase with respect to the size of the problem. It provides the formula for scaled speedup
+$$ \mathrm{scaled\ speedup} = s + p × N $$
 
-$$ \mathrm{scaled speedup} = s + p × N $$
-
-where s, p and N have the same meaning as in Amdahl’s law. With
-Gustafson’s law the scaled speedup increases linearly with respect to
+where $s$, $p$ and $N$ have the same meaning as in Amdahl's law. With
+Gustafson's law the scaled speedup increases linearly with respect to
 the number of processors (with a slope smaller than one), and there is
-no upper limit for the scaled speedup. This is called weak scaling,
+no upper limit for the scaled speedup. This is called **weak scaling**,
 where the scaled speedup is calculated based on the amount of work
 done for a scaled problem size (in contrast to Amdahl’s law which
-focuses on fixed problem size). If we apply Gustafson’s law to the
-previous example of s = 0.05 and p = 0.95, the scaled speedup will
-become infinity when infinitely many processors are
-used. Realistically, if we have N = 1000, the scaled speedup will be
-950.
+focuses on fixed problem size). 
 
 ![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_gustafson.png %})
 
+> ## Gustafson's law in practice
+> If we apply Gustafson’s law to the previous example of s = 0.05 and p
+> = 0.95, the scaled speedup will become infinity when infinitely many
+> processors are used. Realistically, if we have N = 1000, the scaled
+> speedup will be 950.
+{: .callout}
+
+
+### Other considerations
+
 The other significant factors in the speed of a parallel program are
-communication speed, latency, and of course the number of parallel
-processes. In turn, the communication speed is determined by the
-amount of data one needs to send/receive, and the bandwidth of the
-underlying hardware for the communication. The latency consists of the
-software latency (how long the computer operating system needs in
-order to prepare for a communication), and the hardware latency (how
-long the hardware takes to send/receive even a small bit of data).
-For the same size problem, the time spent in communication is not
+communication speed and latency. 
+
+- Communication speed is determined by the
+  amount of data one needs to send/receive, and the bandwidth of the
+  underlying hardware for the communication. 
+- Latency consists of the software latency (how long the 
+  operating system needs in order to prepare for a communication), 
+  and the hardware latency (how long the hardware takes to 
+  send/receive even a small bit of data).
+
+For a fixed-size problem, the time spent in communication is not
 significant when the number of ranks is small and the execution of
 parallel regions gets faster with the number of ranks.  But if we keep
 increasing the number of ranks, the time spent in communication grows
-when multiple CPUs (or cores) are involved with communication
-(technically, this is called "global communication").
-
-{% include links.md %}
-
+when multiple cores are involved with communication
 
 ### Surface-to-Volume Ratio
 
