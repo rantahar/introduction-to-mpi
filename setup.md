@@ -126,8 +126,8 @@ module load openmpi/4.0-gcc-8.2
 
 You will then be able to compile and run MPI code with:
 ~~~
-mpicc -o example example.c      # for C/C++ code
-mpifort -o example example.f90  # for Fortran code
+mpicc -o example example.c      
+mpifort -o example example.f90  
 
 mpirun -n 12 ./example
 ~~~
