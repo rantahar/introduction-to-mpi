@@ -135,31 +135,74 @@ The program can never run faster than the sum of the serial regions.
 >
 {: .challenge}
 
-## Factors to consider for parallel algorithm
+## Scalability
 
-### Amdahl's Law
+The speedup when running a parallel program on multiple processors can
+be defined as
 
-Using $$N$$ CPUs (or cores) doesn't result in an $$N$$-times speedup. There is a theoretical limit in what parallelization can achieve, and it is encapsulated in "Amdahl's Law".
+$$ \mathrm{speedup} = t_1 / t_N $$
 
-The time it takes to execute the program is roughly:
+where $t_1$ is the computational time for running the software using one
+processor, and $t_N$ is the computational time running the same software
+with N processors. Ideally, we would like software to have a linear
+speedup that is equal to the number of processors (speedup = N), as
+that would mean that every processor would be contributing 100% of its
+computational power. Unfortunately, this is a very challenging goal
+for real applications to attain.
 
-$$ T = T_{\textrm{serial}} + \frac{T_{\textrm{parallel}}}{N_{\textrm{ranks}}} + T_{\textrm{communication}}(N_{\textrm{ranks}}) $$
+### Amdahl's Law and strong scaling
 
-The $$ N_{\textrm{ranks}} $$ here is the number of ranks, and
-$$ T_{\textrm{communications}} $$ represents the time spent communicating between the ranks.
+There is a theoretical limit in what parallelization can achieve, and
+it is encapsulated in "Amdahl's Law":
 
-![A figure showing the result described above for MAX=512 and MAX=2048]({{ page.root }}{% link fig/poisson_scaling_plot.png %})
+$$ \mathrm{speedup} = 1 / (s + p / N) $$
+
+where $s$ is the proportion of execution time spent on the serial
+part, $p$ is the proportion of execution time spent on the part that
+can be parallelized, and $N$ is the number of processors. Amdahl’s law
+states that, for a fixed problem, the upper limit of speedup is
+determined by the serial fraction of the code. This is called **strong
+scaling** and can be explained by the figure below.
+
+![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_amdahl.png %})
+
+
+### Gustafson's law and weak scaling
+
+Amdahl's law gives the upper limit of speedup for a problem of fixed size. This seems to be a bottleneck for parallel computing; if one would like to gain a 500 times speedup on 1000 processors, Amdahl’s law requires that the proportion of serial part cannot exceed 0.1%. However, as Gustafson pointed out [2], in practice the sizes of problems scale with the amount of available resources. If a problem only requires a small amount of resources, it is not beneficial to use a large amount of resources to carry out the computation. A more reasonable choice is to use small amounts of resources for small problems and larger quantities of resources for big problems.
+
+Gustafson’s law [2] was proposed in 1988, and is based on the approximations that the parallel part scales linearly with the amount of resources, and that the serial part does not increase with respect to the size of the problem. It provides the formula for scaled speedup
+
+$$ \mathrm{scaled speedup} = s + p × N $$
+
+where s, p and N have the same meaning as in Amdahl’s law. With
+Gustafson’s law the scaled speedup increases linearly with respect to
+the number of processors (with a slope smaller than one), and there is
+no upper limit for the scaled speedup. This is called weak scaling,
+where the scaled speedup is calculated based on the amount of work
+done for a scaled problem size (in contrast to Amdahl’s law which
+focuses on fixed problem size). If we apply Gustafson’s law to the
+previous example of s = 0.05 and p = 0.95, the scaled speedup will
+become infinity when infinitely many processors are
+used. Realistically, if we have N = 1000, the scaled speedup will be
+950.
+
+![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_gustafson.png %})
 
 The other significant factors in the speed of a parallel program are
-communication speed, latency, and of course the number of parallel processes. In turn, the communication
-speed is determined by the amount of data one needs to send/receive, and the bandwidth of the underlying
-hardware for the communication. The latency consists of the software latency (how long the computer
-operating system needs in order to prepare for a communication), and the hardware latency (how long the
-hardware takes to send/receive even a small bit of data).
-For the same size problem, the time spent in communication is not significant when the number of ranks
-is small and the execution of parallel regions gets faster with the number of ranks.
-But if we keep increasing the number of ranks, the time spent in communication grows when multiple CPUs
-(or cores) are involved with communication (technically, this is called "global communication").
+communication speed, latency, and of course the number of parallel
+processes. In turn, the communication speed is determined by the
+amount of data one needs to send/receive, and the bandwidth of the
+underlying hardware for the communication. The latency consists of the
+software latency (how long the computer operating system needs in
+order to prepare for a communication), and the hardware latency (how
+long the hardware takes to send/receive even a small bit of data).
+For the same size problem, the time spent in communication is not
+significant when the number of ranks is small and the execution of
+parallel regions gets faster with the number of ranks.  But if we keep
+increasing the number of ranks, the time spent in communication grows
+when multiple CPUs (or cores) are involved with communication
+(technically, this is called "global communication").
 
 {% include links.md %}
 
