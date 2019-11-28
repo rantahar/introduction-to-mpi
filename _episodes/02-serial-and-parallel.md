@@ -135,6 +135,8 @@ The program can never run faster than the sum of the serial regions.
 >
 {: .challenge}
 
+---
+
 ## Scalability
 
 The speedup when running a parallel program on multiple processors can
@@ -248,3 +250,9 @@ Due to Amdahl's law, you want to minimize the number of communications for the s
 each communication takes finite amount of time to prepare (latency). This suggests that the surface data
 be exchanged in one communication if possible, not small parts of the surface data exchanged in multiple
 communications. Of course, sequential consistency should be obeyed when the surface data is exchanged.
+
+### Further reading
+
+- [Strong and weak scaling](https://www.kth.se/blogs/pdc/2018/11/scalability-strong-and-weak-scaling/)
+
+{% include links.md %}
