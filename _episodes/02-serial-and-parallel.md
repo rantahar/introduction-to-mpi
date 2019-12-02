@@ -16,58 +16,68 @@ keypoints:
 
 ## Serial and Parallel Execution
 
-An algorithm is a series of steps to solve a problem.
-Let us imagine these steps as a familiar scene in car manufacturing. Each step adds a component to an existing structure or adjusts a component (like tightening a bolt)
-to form a car as the conveyor belt moves the result of each steps. As a designer of these processes, you would carefully order the way you add components
-so that you don't have to disassemble already constructed parts.
-How long does it take to build a car in this way?
-Well, it will be the time it takes to do all the steps from the beginning to the end.
-Of course, each step may take a different amount of time to complete.
+An algorithm is a series of steps to solve a problem.  Let us imagine
+these steps as a familiar scene in car manufacturing:
+- Each step adds or adjusts a component to an existing structure
+  to form a car as the conveyor belt moves.
+- As a designer of these processes, you would carefully order the way 
+  you add components so that you don't have to disassemble
+  already constructed parts.  
+- How long does it take to build a car in this way?  
 
-Now, you would like to build cars faster since there are impatient customers waiting in line!
-What do you do? You build two lines of conveyor belts and hire twice number of people to do the work.
-Now you get two cars in the same amount of time!
-If you build three conveyor belts and hire thrice the number of people,
-you get three cars for the same amount of time.
+Now, you would like to build cars faster since there are impatient
+customers waiting in line!  What do you do? You build two lines of
+conveyor belts and hire twice number of people to do the work.  Now
+you get two cars in the same amount of time! 
 
-But what if you're a boutique car manufacturer, making only a handful of cars, and constructing a
-new assembly line would cost more time and money than it would save? How can you produce cars more
-quickly without constructing an extra line? The only way is to have multiple people work on the same
-car at the same time. To do this, you identify the steps which don't interfere with each other and can be
-executed at the same time (for example, the front part of the car can be constructed independently
-of the rear part of the car). If you find more steps which can be done without interfering with each other,
-these steps can be executed at the same time. Overall time is saved.
-More cars for the same amount of time!
+But what if you're a boutique car manufacturer, making only a handful
+of cars, and constructing a new assembly line would cost more time and
+money than it would save? How can you produce cars more quickly
+without constructing an extra line? The only way is to have multiple
+people work on the same car at the same time: 
+- You identify the steps which don't interfere with each other and can 
+  be executed at the same time (e.g., the front part of the car can be
+  constructed independently of the rear part of the car). 
+- If you find more steps which can be done without interfering with each other,
+  these steps can be executed at the same time. 
+- Overall time is saved. More cars for the same amount of time!
 
 If your problem can be solved like the first case, you are in luck.
-You just need more CPUs (or cores) to do the work.
-This is called an "Embarrassingly Parallel (EP)" problem.
-It is the easiest problem to parallelize.
-In the second case, the most important thing to consider is the independence of a step
-(that is, whether a step can be executed without interfering with other steps).
+You just need more CPUs (or cores) to do the work.  
+- This is called an "Embarrassingly Parallel (EP)" problem and is 
+  the easiest problem to parallelize.  
+
+In the second case, the most important thing to consider is the 
+independence of a step (that is, whether a step can be executed
+without interfering with other steps).  
 This independency is called "atomicity" of an operation.
 
-In the analogy with car manufacturing, the speed of conveyor belt is the "clock" of CPU, parts are "input",
-doing something is an "operation", and the car structure on the conveyor belt is "output".
-The algorithm is the set of operations that constructs a car from the parts.
-![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %})
-It consists of individual steps, adding parts or adjusting them.
-These could be done one after the other by a single worker.
+In the analogy with car manufacturing, the speed of conveyor belt is
+the "clock" of CPU, parts are "input", doing something is an
+"operation", and the car structure on the conveyor belt is "output".
+The algorithm is the set of operations that constructs a car from the
+parts.  
+![Input -> Algorithm -> Output]({{ page.root }}{% link files/serial_task_flow.png %}) It consists of individual steps, adding
+parts or adjusting them.  These could be done one after the other by a
+single worker.  
 ![Input -> Step 1 -> Step 2 -> Step 3 -> Output]({{ page.root }}{% link files/serial_multi_task_flow.png %})
 
-If we want to produce a car faster, maybe we can do some of the work in parallel.
-Let's say we can hire four workers to attach each of the tires at the same time.
-All of these steps have the same input, a car without tires,
-and they work together to create an output, a car with tires.
+If we want to produce a car faster, maybe we can do some of the work
+in parallel.  Let's say we can hire four workers to attach each of the
+tires at the same time.  All of these steps have the same input, a car
+without tires, and they work together to create an output, a car with
+tires.
 ![Input -> Step 1 / Step 2 / Step 3 -> Output]({{ page.root }}{% link files/parallel_simple_flow.png %})
-The crucial thing that allows us to add the tires in parallel is that they are independent.
-Adding one tire does not prevent you from adding another, or require that any of the other tires are added.
-The workers operate on different parts of the car.
+The crucial thing that allows us to add the tires in parallel is that
+they are independent.  Adding one tire does not prevent you from
+adding another, or require that any of the other tires are added.  The
+workers operate on different parts of the car.
 
 ### Data Dependency
-Another example, and a common operation in scientific computing, is calculating the sum of a set
-of numbers.
-A simple implementation might look like this:
+
+Another example, and a common operation in scientific computing, is
+calculating the sum of a set of numbers.  A simple implementation
+might look like this:
 ~~~
 sum = 0
 for number in numbers
@@ -78,18 +88,21 @@ This is a very bad parallel algorithm!
 Every step, or iteration of the for loop, uses the same sum variable.
 To execute a step, the program needs to know the sum from the previous step.
 
-The important factor that determines whether steps can be run in parallel is data dependencies.
-In our sum example, every step depends on data from the previous step, the value of the sum variable.
-When attaching tires to a car, attaching one tire does not depend on attaching the others, so these steps can be done at the same time.
+The important factor that determines whether steps can be run in
+parallel is data dependencies.  In our sum example, every step depends
+on data from the previous step, the value of the sum variable.  When
+attaching tires to a car, attaching one tire does not depend on
+attaching the others, so these steps can be done at the same time.
 
-However, attaching the front tires both require that the axis is there.
-This step must be completed first, but the two tires can then be attached at the same time.
+However, attaching the front tires both require that the axis is
+there.  This step must be completed first, but the two tires can then
+be attached at the same time.
 ![Input -> Task 1 -> Task 2 / Task 3 -> Output]({{ page.root }}{% link files/parallel_complicated_flow.png %})
 
-A part of the program that cannot be run in parallel is called a "serial region" and
-a part that can be run in parallel is called a "parallel region".
-Any program will have some serial regions.
-In a good parallel program, most of the time is spent in parallel regions.
+A part of the program that cannot be run in parallel is called a
+"serial region" and a part that can be run in parallel is called a
+"parallel region".  Any program will have some serial regions.  In a
+good parallel program, most of the time is spent in parallel regions.
 The program can never run faster than the sum of the serial regions.
 
 >## Serial and Parallel regions
@@ -144,13 +157,13 @@ be defined as
 
 $$ \mathrm{speedup} = t_1 / t_N $$
 
-where $t_1$ is the computational time for running the software using one
-processor, and $t_N$ is the computational time running the same software
-with N processors. Ideally, we would like software to have a linear
-speedup that is equal to the number of processors (speedup = N), as
-that would mean that every processor would be contributing 100% of its
-computational power. Unfortunately, this is a very challenging goal
-for real applications to attain.
+where $$t_1$$ is the computational time for running the software using
+one processor, and $$t_N$$ is the computational time running the same
+software with N processors. Ideally, we would like software to have a
+linear speedup that is equal to the number of processors (speedup =
+N), as that would mean that every processor would be contributing 100%
+of its computational power. Unfortunately, this is a very challenging
+goal for real applications to attain.
 
 ### Amdahl's Law and strong scaling
 
@@ -164,7 +177,8 @@ part, $p$ is the proportion of execution time spent on the part that
 can be parallelized, and $N$ is the number of processors. Amdahl’s law
 states that, for a fixed problem, the upper limit of speedup is
 determined by the serial fraction of the code. This is called **strong
-scaling** and its consequences can be understood from the figure below.
+scaling** and its consequences can be understood from the figure
+below.
 
 ![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_amdahl.png %})
 
@@ -238,18 +252,22 @@ when multiple cores are involved with communication
 
 ### Surface-to-Volume Ratio
 
-In a parallel algorithm, the data which is handled by a CPU (or core) can be considered in two parts:
-the part the CPU needs that other CPUs (or cores) control, and a part that the CPU (or core) controls itself
-and can compute. The whole data which a CPU or a core computes is the sum of
-the two. The data under the control of the other CPUs (or cores) is called "surface" and the whole data
-is called "volume".
+In a parallel algorithm, the data which is handled by a core
+can be considered in two parts: the part the CPU needs that other cores
+control, and a part that the core controls itself
+and can compute. The whole data which a CPU or a core computes is the
+sum of the two. The data under the control of the other cores 
+is called "surface" and the whole data is called "volume".
 
 The surface data requires communications.  The more surface there is, the more communications among CPUs/cores is needed, and the longer the program will take to finish.
 
-Due to Amdahl's law, you want to minimize the number of communications for the same surface since
-each communication takes finite amount of time to prepare (latency). This suggests that the surface data
-be exchanged in one communication if possible, not small parts of the surface data exchanged in multiple
-communications. Of course, sequential consistency should be obeyed when the surface data is exchanged.
+Due to Amdahl's law, you want to minimize the number of communications
+for the same surface since each communication takes finite amount of
+time to prepare (latency). This suggests that the surface data be
+exchanged in one communication if possible, not small parts of the
+surface data exchanged in multiple communications. Of course,
+sequential consistency should be obeyed when the surface data is
+exchanged.
 
 ### Further reading
 
