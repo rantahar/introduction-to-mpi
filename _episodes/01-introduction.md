@@ -80,18 +80,18 @@ set of commands for communicating between copies of a program.
 >
 {: .challenge}
 
-Just running a program with `mpirun` starts several copies of it.
-The number of copies is decided by the `-n` parameter.
-In the example above, the program does not know it was started by `mpirun`
-and each copy just works as if they were the only one.
+Just running a program with `mpirun` starts several copies of it:
+- The number of copies is decided by the `-n` parameter.
+- In the example above, the program does not know it was started by `mpirun`
+- Each copy just works as if they were the only one.
 
-For the copies to work together, they need to know about their role in the computation.
-This usually also requires knowing the total number of tasks running at the same time.
+For the copies to work together, they need to know about their role in
+the computation.  This usually also requires knowing the total number
+of tasks running at the same time.
 
-To achieve this, the program needs to call the
-`MPI_Init` function.
-This will set up the environment for MPI, and assign a number (called the _rank_) to each process.
-At the end, each process should also cleanup by calling `MPI_Finalize`.
+- The program needs to call the `MPI_Init` function.
+- `MPI_Init` sets up the environment for MPI, and assign a number (called the _rank_) to each process.
+- At the end, each process should also cleanup by calling `MPI_Finalize`.
 
 ~~~
 int MPI_Init(&argc, &argv);
@@ -214,15 +214,20 @@ print("My rank number is", rank)
 {: .callout .show-fortran}
 
 
-If you try to compile these examples with your usual C or Fortran compiler, then you
-will receive an error, since these do not link to the MPI libraries that provide the
-new functions that we have introduced. Since the set of compiler flags that would be
-necessary for this tends to be quite long, MPI libraries such as OpenMPI provide
-compiler wrappers, which set up the correct environment before invoking your compiler
-of choice. The wrapper for C compilers is usually called `mpicc`, while the wrapper
-for Fortran is usually called `mpifort`. These can be called in exactly the same way
-as your usual C compiler, e.g. `gcc` and `gfortran`, respectively. Any options not
-recognised by the MPI wrapper are passed through to the non-MPI compiler.
+If you try to compile these examples with your usual C or Fortran
+compiler, you will receive an error. 
+- Serial compilers do not link to the MPI libraries that provide 
+  the new functions that we have introduced. 
+- Specifying a set of compiler flags to link with necessary MPI 
+  libraries is possible but complicated.
+- MPI libraries such as OpenMPI provide *compiler wrappers*, which 
+  set up the correct environment before invoking your compiler of choice. 
+- The wrapper for C compilers is usually called `mpicc`, while the 
+  wrapper for Fortran is usually called `mpifort`. 
+- `mpicc`/`mpifort` can be called in exactly the same way as your
+  usual C compiler (e.g. `gcc` and `gfortran`). 
+- Any options not recognised by the MPI wrapper are passed through 
+  to the non-MPI compiler.
 
 > ## Compile and Run
 >
