@@ -4,6 +4,10 @@ root: .  # Is the only page that doesn't follow the pattern /:path/index.html
 permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
 ---
 
+### [Welcome and practicals](intro)
+
+### Background
+
 As processors develop, it's getting harder to increase the their clock
 speed. Instead, new processors tend to have more processing units.  To
 take advantage of the increased resources, programs need to be written
