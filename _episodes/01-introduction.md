@@ -246,11 +246,14 @@ compiler, you will receive an error.
 > the communicator you want them to operate on---for this lesson, this will always be `MPI_COMM_WORLD`.
 {: .callout}
 
-Notice that we are still only coding for a single copy of the program. This is always true when using
-MPI. Each copy runs the same code and only differs by its rank number.
-The best way to think about writing MPI code is to focus on what a single rank
-needs to be doing.
-When all ranks are doing their job, the algorithm will work correctly.
+---
+
+Notice that we are still only coding for a single copy of the program. 
+- This is always true when using MPI! 
+- Each copy runs the same code and only differs by its rank number.
+- The best way to think about writing MPI code is to focus on what a single rank
+  needs to be doing.
+- When all ranks are doing their job, the algorithm will work correctly.
 
 Usually the rank will need to know how many other ranks there are. You can find this out using
 the `MPI_Comm_size` function in C and Fortran, or the `Get_size` method in Python.
