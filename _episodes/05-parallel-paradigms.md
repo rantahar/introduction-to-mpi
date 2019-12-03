@@ -317,18 +317,22 @@ In MPI parallelization, several communication patterns occur.
 
 ### Gather / Scatter
 
-In gather type communication, all ranks send a piece of information to
+In **gather communication**, all ranks send a piece of information to
 one rank.  Gathers are typically used when printing out information or
 writing to disk.  For example, each could send the result of a
 measurement to rank 0 and rank 0 could print all of them. This is
 necessary if only one rank has access to the screen.  It also ensures
 that the information is printed in order.
 
-Similarly, in a scatter communication, one rank sends a piece of data
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/gather.png %})
+
+Similarly, in a **scatter communication**, one rank sends a piece of data
 to all the other ranks.  Scatters are useful for communicating
 parameters to all the ranks doing the computation.  The parameter
 could be read from disk but it could also be produced by a previous
 computation.
+
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/scatter.png %})
 
 Gather and scatter operations require more communication as the number
 of ranks increases.  The amount of messages sent usually increases
