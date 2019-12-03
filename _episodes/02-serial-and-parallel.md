@@ -30,6 +30,11 @@ customers waiting in line!  What do you do? You build two lines of
 conveyor belts and hire twice number of people to do the work.  Now
 you get two cars in the same amount of time! 
 
+- If your problem can be solved like this, you are in luck.
+  You just need more CPUs (or cores) to do the work.  
+- This is called an "Embarrassingly Parallel (EP)" problem and is 
+  the easiest problem to parallelize.  
+
 But what if you're a boutique car manufacturer, making only a handful
 of cars, and constructing a new assembly line would cost more time and
 money than it would save? How can you produce cars more quickly
@@ -42,15 +47,10 @@ people work on the same car at the same time:
   these steps can be executed at the same time. 
 - Overall time is saved. More cars for the same amount of time!
 
-If your problem can be solved like the first case, you are in luck.
-You just need more CPUs (or cores) to do the work.  
-- This is called an "Embarrassingly Parallel (EP)" problem and is 
-  the easiest problem to parallelize.  
-
-In the second case, the most important thing to consider is the 
+In this case, the most important thing to consider is the 
 independence of a step (that is, whether a step can be executed
-without interfering with other steps).  
-This independency is called "atomicity" of an operation.
+without interfering with other steps). This independency is 
+called "atomicity" of an operation.
 
 In the analogy with car manufacturing, the speed of conveyor belt is
 the "clock" of CPU, parts are "input", doing something is an
