@@ -172,9 +172,9 @@ it is encapsulated in "Amdahl's Law":
 
 $$ \mathrm{speedup} = 1 / (s + p / N) $$
 
-where $s$ is the proportion of execution time spent on the serial
-part, $p$ is the proportion of execution time spent on the part that
-can be parallelized, and $N$ is the number of processors. Amdahl’s law
+where $$s$$ is the proportion of execution time spent on the serial
+part, $$p$$ is the proportion of execution time spent on the part that
+can be parallelized, and $$N$$ is the number of processors. Amdahl’s law
 states that, for a fixed problem, the upper limit of speedup is
 determined by the serial fraction of the code. This is called **strong
 scaling** and its consequences can be understood from the figure
@@ -213,7 +213,7 @@ a formula for scaled speedup:
 
 $$ \mathrm{scaled\ speedup} = s + p × N $$
 
-where $s$, $p$ and $N$ have the same meaning as in Amdahl's law. With
+where $$s$$, $$p$$ and $$N$$ have the same meaning as in Amdahl's law. With
 Gustafson's law the scaled speedup increases linearly with respect to
 the number of processors (with a slope smaller than one), and there is
 no upper limit for the scaled speedup. This is called **weak scaling**,
