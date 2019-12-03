@@ -106,15 +106,17 @@ for(i=0; i<N; i++) {
 ~~~
 {: .language-c .show-c}
 
-Parallelization is achieved by just one additional line which is
-handled by the preprocessor in the compile stage. This is possible
-since the computer system architecture supports OpenMP and all the
-complicated mechanisms for parallelization are hidden. Actually, this
-means that the system architecture has a shared memory view of
-variables and each core can access all of the memory address. So, the
-compiler "calculates" the address off-set for each core and let each
-one compute on a part of the whole data. Here, the catch word is
-shared memory which allows all cores to access all the address space.
+- Parallelization achieved by just one additional line,
+  handled by the preprocessor in the compile stage. 
+- Possible since the computer system architecture supports OpenMP and all the
+  complicated mechanisms for parallelization are hidden. 
+- Means that the system architecture has a shared memory view of
+  variables and each core can access all of the memory address. 
+- The compiler "calculates" the address off-set for each core and let each
+  one compute on a part of the whole data. 
+
+Here, the catch word is *shared memory* which allows all cores to access
+all the address space.
 
 In Python, process-based parallelism is supported by the
 [multiprocessing](https://docs.python.org/dev/library/multiprocessing.html#module-multiprocessing)
@@ -152,22 +154,26 @@ for i in range(m):
 ~~~
 {: .language-python .show-python}
 
-Other than changing the number of loops from `N` to `m`, the code is
-exactly the same. Here, `m` is the reduced number of loops each core
-needs to do (if there are `N` cores, `m` is 1 (= `N`/`N`)).  But the
-parallelization by message passing is not complete yet. In the message
-passing paradigm, each core is independent from the other cores. We
-must make sure that each core has correct data to compute and write
-out the results in correct order. This part depends on the computer
-system. Let's assume that the system is a cluster computer. In a
-cluster computer, sometimes only one core has an access to the file
-system. In this case, this particular core reads in the whole data and
-sends the correct data to each core (including itself). MPI
-communications! After the computation, each core sends the result to
-that particular core. This particular core writes out the received
-data in a file in the correct order. If the cluster computer supports
-a parallel file system, each core reads the correct data from one
-file, computes and writes out the result to one file in correct order.
+- Other than changing the number of loops from `N` to `m`, the code is
+  exactly the same. 
+- `m` is the reduced number of loops each core needs to do (if there 
+  are `N` cores, `m` is 1 (= `N`/`N`)).  
+
+But the parallelization by message passing is not complete yet. In the
+message passing paradigm, each core is independent from the other
+cores. 
+- Must make sure that each core has correct data to compute
+  and write out the results in correct order. 
+- Depends on the computer system. 
+- For example in a cluster computer, sometimes only one core has an access
+  to the file system. This core reads in the whole data and sends the 
+  correct data to each core (including itself). MPI communications! 
+- After the computation, each core sends the result to that particular 
+  core, which core writes out the received data in a file in the 
+  correct order. 
+- If the cluster computer supports a parallel file system, each core 
+  reads the correct data from one file, computes and writes out the 
+  result to one file in correct order.
 
 In the end, both data parallel and message passing logically achieve
 the following:
