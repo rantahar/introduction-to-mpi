@@ -60,7 +60,7 @@ conda activate mpi-intro
 If you want to use Python for the exercises, you will need to install
 mpi4py. mpi4py can be installed either using pip or conda, but with
 pip you will need to install MPI yourself first (e.g. OpenMPI or
-MPICH), while conda will install its own MPI binaries (mpich). If you
+MPICH), while conda will install its own MPI libraries (mpich). If you
 don’t already have MPI installed on your laptop, it will be easiest to
 use conda:
 ~~~
