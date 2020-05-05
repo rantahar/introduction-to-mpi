@@ -14,6 +14,21 @@ title: Welcome
   Open terminal and type `mpirun --version`
 - Check the [installation instructions](setup) for a guide to install MPI 
   on your laptop.
+- We want everybody to be comfortable, please point out problems.
+- We will have both longer breaks and shorter breaks between lessons parts.
+- Presentation of instructors and helpers.
+
+#### For online workshops
+
+- Instructor gives a tour of Zoom.
+- Announce that Zoom chat can be used for questions but that the content will be deleted afterwards.
+- We will use a hackmd for questions/notes/links that we want to keep.
+- We will neither record the session, nor archive the chat.
+- Instructor gives a tour of hackmd which contains a list of participants' initials.
+- Ice-breaker: ask participants to use their real name on Zoom,
+  roll-call for participants to write their name in the hackmd, their
+  experience with HPC, instructor writes the first line to
+  show what we expect here and also explains how hackpads work.
 
 
 ### About PDC
@@ -28,7 +43,6 @@ title: Welcome
   [Tegner](https://www.pdc.kth.se/hpc-services/computing-systems/tegner-1.737437)
   used for pre- and post-processing, courses and smaller projects.
 - Further information on [https://www.pdc.kth.se/](https://www.pdc.kth.se/).
-- Presentation of instructors.
 
 ### Teaching style
 
@@ -41,13 +55,7 @@ title: Welcome
 - We follow The Carpentries Code of Conduct: 
   - [https://docs.carpentries.org/topic_folders/policies/code-of-conduct.html](https://docs.carpentries.org/topic_folders/policies/code-of-conduct.html)
 
-### Coffee breaks and other practicals
 
-- We want everybody to be comfortable, please point out problems
-- Electricity
-- Wireless
-- Longer breaks at 10-10:20 and 15-15:20, shorter breaks in between lesson parts.
-- Restrooms upstairs - you will need to use a guest access card.
-- Lunch options
+
 
 {% include links.md %}
