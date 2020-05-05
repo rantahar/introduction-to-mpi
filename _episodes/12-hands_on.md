@@ -1,5 +1,5 @@
 ---
-title: "Serial to Parallel"
+title: "(Optional) Do it yourself"
 teaching: 0
 exercises: 70
 questions:
