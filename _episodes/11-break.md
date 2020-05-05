@@ -1,6 +1,6 @@
 ---
-layout: (Optional) break
-title: "Coffee Break"
+layout: break
+title: "(Optional) Coffee Break"
 break: 0
 ---
 
