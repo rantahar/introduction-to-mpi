@@ -1,7 +1,7 @@
 ---
-layout: break
+layout: (Optional) break
 title: "Coffee Break"
-break: 20
+break: 0
 ---
 
 
