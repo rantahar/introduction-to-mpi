@@ -1,7 +1,7 @@
 ---
 title: "(Optional) Do it yourself"
 teaching: 0
-exercises: 70
+exercises: 0
 questions:
 - "What is the best way to write parallel code from serial?"
 objectives:
