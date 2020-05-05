@@ -1,5 +1,5 @@
 ---
-title: "Profiling Parallel Applications"
+title: "(Optional) Profiling Parallel Applications"
 teaching: 30
 exercises: 30
 questions:
