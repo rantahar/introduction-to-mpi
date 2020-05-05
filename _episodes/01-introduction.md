@@ -10,7 +10,7 @@ objectives:
 keypoints:
 - "Many problems can be distributed across several processors and solved faster."
 - "`mpirun` runs copies of the program."
-- "The copies are separated MPI rank."
+- "The copies are distinguished by MPI rank."
 ---
 
 ## Parallel Computing
