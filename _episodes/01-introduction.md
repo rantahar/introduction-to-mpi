@@ -644,6 +644,8 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 >
 {: .challenge}
 
+---
+
 In lesson 3 you will learn how to communicate between the ranks. From there, you can in principle write general parallel programs.
 The trick is in designing a working, fast and efficient parallel algorithm for your problem.
 
