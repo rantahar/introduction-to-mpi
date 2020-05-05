@@ -231,7 +231,7 @@ focuses on fixed problem size).
 {: .callout}
 
 
-### Other considerations
+### Communication considerations
 
 The other significant factors in the speed of a parallel program are
 communication speed and latency. 
@@ -259,7 +259,9 @@ and can compute. The whole data which a CPU or a core computes is the
 sum of the two. The data under the control of the other cores 
 is called "surface" and the whole data is called "volume".
 
-The surface data requires communications.  The more surface there is, the more communications among CPUs/cores is needed, and the longer the program will take to finish.
+The surface data requires communications.  The more surface there is,
+the more communications among CPUs/cores is needed, and the longer the
+program will take to finish.
 
 Due to Amdahl's law, you want to minimize the number of communications
 for the same surface since each communication takes finite amount of
@@ -268,6 +270,7 @@ exchanged in one communication if possible, not small parts of the
 surface data exchanged in multiple communications. Of course,
 sequential consistency should be obeyed when the surface data is
 exchanged.
+
 
 ### Further reading
 
