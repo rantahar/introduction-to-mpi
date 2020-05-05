@@ -14,13 +14,14 @@ keypoints:
 
 
 ## Communication
-In this section we will use two MPI library functions to send data from one rank to another.
-These are `MPI_Send` and `MPI_Recv`.
-They are the basic building blocks for essentially all of the more
-specialized MPI commands described later.
-They are also the basic communication tools in your MPI application.
-Since `MPI_Send` and `MPI_Recv` involve two ranks, they are called "point-to-point" communication
-(unlike "global" communication mentioned in lesson 2).
+
+In this section we will use two MPI library functions, `MPI_Send` and
+`MPI_Recv`, to send data from one rank to another.
+- `MPI_Send`/`MPI_Recv` are the basic building blocks for essentially all of the more
+  specialized MPI commands described later.
+- They are also the basic communication tools in your MPI application.
+- Since they involve two ranks, they are called "point-to-point" communication
+  (unlike "collective" communication which will be described later).
 
 ![send-receive]({{ page.root }}{% link fig/02-send-recv.png %})
 
