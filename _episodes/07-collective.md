@@ -161,6 +161,92 @@ Each rank sends the data in the `sendbuf` to rank `root`.
 The `root` collects the data into the `recvbuffer` in order of the rank
 numbers.
 
+---
+
+### Reduce
+
+~~~
+int MPI_Reduce(
+    void* sendbuf,
+    void* recvbuffer,
+    int count,
+    MPI_Datatype datatype,
+    MPI_Op op,
+    int root,
+    MPI_Comm communicator)
+~~~
+{: .language-c .show-c}
+
+~~~
+MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, COMM,
+        IERROR)
+    <type>    sendbuf(*), recvbuf(*)
+    INTEGER    count, datatype, op, root, COMM, IERROR
+~~~
+{: .language-fortran .show-fortran}
+
+~~~
+def reduce(self, sendobj, op=SUM, int root=0)
+~~~
+{: .language-python .show-python}
+
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/reduction.png %})
+
+Each rank sends a piece of data, which are combined on their way to rank `root` into a single piece of data.
+For example, the function can calculate the sum of numbers distributed across
+all the ranks.
+
+Possible operations include:
+* `MPI_SUM`: Calculate the sum of numbers sent by each rank.
+* `MPI_MAX`: Return the maximum value of numbers sent by each rank.
+* `MPI_MIN`: Return the minimum of numbers sent by each rank.
+* `MPI_PROD`: Calculate the product of numbers sent by each rank.
+* `MPI_MAXLOC`: Return the maximum value and the number of the rank that sent the maximum value.
+* `MPI_MINLOC`: Return the minimum value of the number of the rank that sent the minimum value.
+
+In Python, these operations are named ``MPI.SUM``, ``MPI.MAX``, ``MPI.MIN``, and so on.
+{: .show-python}
+
+The `MPI_Reduce` operation is usually faster than what you might write by hand.
+It can apply different algorithms depending on the system it's running on to reach the best
+possible performance.
+This is particularly the case on systems designed for high performance computing,
+where the `MPI_Reduce` operations
+can use the communication devices to perform reductions en route, without using any
+of the ranks to do the calculation.
+
+
+### Allreduce
+
+~~~
+int MPI_Allreduce(
+     void* sendbuf,
+     void* recvbuffer,
+     int count,
+     MPI_Datatype datatype,
+     MPI_Op op,
+     MPI_Comm communicator)
+~~~
+{: .language-c .show-c}
+
+~~~
+MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, COMM, IERROR)
+    <type>    sendbuf(*), recvbuf(*)
+    INTEGER    count, datatype, op, COMM, IERROR
+~~~
+{: .language-fortran .show-fortran}
+
+~~~
+def allreduce(self, sendobj, op=SUM)
+~~~
+{: .language-python .show-python}
+
+![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/allreduce.png %})
+
+`MPI_Allreduce` performs essentially the same operations as `MPI_Reduce`,
+but the result is sent to all the ranks.
+
+---
 
 > ## Sending and Receiving
 >
@@ -267,89 +353,6 @@ numbers.
 >
 {: .challenge}
 
-
-### Reduce
-
-~~~
-int MPI_Reduce(
-    void* sendbuf,
-    void* recvbuffer,
-    int count,
-    MPI_Datatype datatype,
-    MPI_Op op,
-    int root,
-    MPI_Comm communicator)
-~~~
-{: .language-c .show-c}
-
-~~~
-MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, COMM,
-        IERROR)
-    <type>    sendbuf(*), recvbuf(*)
-    INTEGER    count, datatype, op, root, COMM, IERROR
-~~~
-{: .language-fortran .show-fortran}
-
-~~~
-def reduce(self, sendobj, op=SUM, int root=0)
-~~~
-{: .language-python .show-python}
-
-![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/reduction.png %})
-
-Each rank sends a piece of data, which are combined on their way to rank `root` into a single piece of data.
-For example, the function can calculate the sum of numbers distributed across
-all the ranks.
-
-Possible operations include:
-* `MPI_SUM`: Calculate the sum of numbers sent by each rank.
-* `MPI_MAX`: Return the maximum value of numbers sent by each rank.
-* `MPI_MIN`: Return the minimum of numbers sent by each rank.
-* `MPI_PROD`: Calculate the product of numbers sent by each rank.
-* `MPI_MAXLOC`: Return the maximum value and the number of the rank that sent the maximum value.
-* `MPI_MINLOC`: Return the minimum value of the number of the rank that sent the minimum value.
-
-In Python, these operations are named ``MPI.SUM``, ``MPI.MAX``, ``MPI.MIN``, and so on.
-{: .show-python}
-
-The `MPI_Reduce` operation is usually faster than what you might write by hand.
-It can apply different algorithms depending on the system it's running on to reach the best
-possible performance.
-This is particularly the case on systems designed for high performance computing,
-where the `MPI_Reduce` operations
-can use the communication devices to perform reductions en route, without using any
-of the ranks to do the calculation.
-
-
-### Allreduce
-
-~~~
-int MPI_Allreduce(
-     void* sendbuf,
-     void* recvbuffer,
-     int count,
-     MPI_Datatype datatype,
-     MPI_Op op,
-     MPI_Comm communicator)
-~~~
-{: .language-c .show-c}
-
-~~~
-MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, COMM, IERROR)
-    <type>    sendbuf(*), recvbuf(*)
-    INTEGER    count, datatype, op, COMM, IERROR
-~~~
-{: .language-fortran .show-fortran}
-
-~~~
-def allreduce(self, sendobj, op=SUM)
-~~~
-{: .language-python .show-python}
-
-![Each rank sending a piece of data to root rank]({{ page.root }}{% link fig/allreduce.png %})
-
-`MPI_Allreduce` performs essentially the same operations as `MPI_Reduce`,
-but the result is sent to all the ranks.
 
 > ## Reductions
 >
