@@ -1,7 +1,7 @@
 ---
-title: "Serial to Parallel"
-teaching: 30
-exercises: 30
+title: "(Optional) Serial to Parallel"
+teaching: 0
+exercises: 0
 questions:
 - "What is the best way to write a parallel code?"
 - "How do I parallelise my serial code?"
@@ -110,7 +110,7 @@ This is really only a problem if done in a tight loop, many times per second.
 >>
 >> Parallelising the loops would actually be the same thing as splitting the physical volume.
 >> Each iteration of the loop accesses one element
->> in the `rho` and `uner` fields and four elements in
+>> in the `rho` and `unew` fields and four elements in
 >> the `u` field.
 >> The `u` field needs to be communicated if the value
 >> is stored on a different rank.
