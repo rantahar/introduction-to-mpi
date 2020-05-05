@@ -1,44 +1,40 @@
-/* a serial code for Poisson equation */
+/* A serial code for Poisson equation 
+ * This will apply the diffusion equation to an initial state
+ * untill an equilibrium state is reached. */
 
 /* contact seyong.kim81@gmail.com for comments and questions */
 
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #define GRIDSIZE 10
 
 
+/* Apply a single time step */
 double poisson_step( 
-     float u[GRIDSIZE+2][GRIDSIZE+2],
-     float unew[GRIDSIZE+2][GRIDSIZE+2],
-     float rho[GRIDSIZE+2][GRIDSIZE+2],
-     float hsq
+     float *u, float *unew, float *rho,
+     float hsq, int points
    ){
    double unorm;
  
    // Calculate one timestep
-   for( int j=1; j <= GRIDSIZE; j++){
-      for( int i=1; i <= GRIDSIZE; i++){
-         float difference = u[j][i-1] + u[j][i+1] + u[j-1][i] + u[j+1][i];
-         unew[j][i] = 0.25*( difference - hsq*rho[j][i] );
-      }
+   for( int i=1; i <= points; i++){
+      float difference = u[i-1] + u[i+1];
+      unew[i] = 0.5*( difference - hsq*rho[i] );
    }
  
    // Find the difference compared to the previous time step
    unorm = 0.0;
-   for( int j = 1;j <= GRIDSIZE; j++){
-      for( int i = 1;i <= GRIDSIZE; i++){
-         float diff = unew[j][i]-u[j][i];
-         unorm +=diff*diff;
-      }
+   for( int i = 1;i <= points; i++){
+      float diff = unew[i]-u[i];
+      unorm +=diff*diff;
    }
  
-   // Overwrite u with the new field
-   for( int j = 1;j <= GRIDSIZE;j++){
-      for( int i = 1;i <= GRIDSIZE;i++){
-         u[j][i] = unew[j][i];
-      }
+   // Overwrite u with the new value
+   for( int i = 1;i <= points;i++){
+      u[i] = unew[i];
    }
  
    return unorm;
@@ -48,34 +44,31 @@ double poisson_step(
 
 int main(int argc, char** argv) {
 
-   int i, j;
-   float u[GRIDSIZE+2][GRIDSIZE+2], unew[GRIDSIZE+2][GRIDSIZE+2], rho[GRIDSIZE+2][GRIDSIZE+2];
+   // The heat energy in each block
+   float u[GRIDSIZE+2], unew[GRIDSIZE+2], rho[GRIDSIZE+2];
+   int i;
    float h, hsq;
    double unorm, residual;
- 
+
    /* Set up parameters */
    h = 0.1;
    hsq = h*h;
    residual = 1e-5;
  
    // Initialise the u and rho field to 0 
-   for(j=0; j <= GRIDSIZE+1; j++){
-      for(i=0; i <= GRIDSIZE+1; i++) {
-         u[j][i] = 0.0;
-         rho[j][i] = 0.0;
-      }
+   for(i=0; i <= GRIDSIZE+1; i++) {
+      u[i] = 0.0;
+      rho[i] = 0.0;
    }
-   
-   // Create a start configuration with the field
-   // u=10 at x=0
-   for(j = 0;j <= GRIDSIZE+1; j++){
-      u[j][0] = 10.0;
-   }
+
+   // Create a start configuration with the heat energy
+   // u=10 at the x=0 boundary
+   u[0] = 10.0;
  
    // Run iterations until the field reaches an equilibrium
+   // and no longer changes
    for( i=0; i<10000; i++ ) {
-     
-     unorm = poisson_step( u, unew, rho, hsq );
+     unorm = poisson_step( u, unew, rho, hsq, GRIDSIZE );
      printf("Iteration %d: Residue %g\n", i, unorm);
      
      if( sqrt(unorm) < sqrt(residual) ){

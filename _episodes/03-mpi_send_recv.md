@@ -269,6 +269,13 @@ if rank == 1:
 >
 {: .challenge}
 
+> ## MPI Types
+> 
+> In the above example we send a string of characters and
+> therefore specify the type `MPI_CHAR`{: .show-c}`MPI_CHARACTER`{: .show-fortran}.
+> For a complete list of possibly types, see the [reference]({{ page.root }}{% link reference.md %}).
+>
+{: .callout}
 
 > ## Many Ranks
 >

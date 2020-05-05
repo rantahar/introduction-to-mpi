@@ -237,6 +237,21 @@ compiler, you will receive an error.
 >
 {: .challenge}
 
+
+> ## Compiling C++
+>
+> While the examples and exercises in these lessons 
+> are written in C, the MPI functions will work with
+> the same syntax in C++.
+> [The Boost library](https://www.boost.org/doc/libs/1_71_0/doc/html/mpi.html)
+> also provides a C++ interface to MPI. 
+> 
+> In order to compile C++ code with MPI, use `mpicxx`
+> instead of `mpicpp`.
+>
+{: .callout .show-fortran}
+
+
 > ## Communicators
 >
 > The `MPI_COMM_WORLD` parameter is an `MPI communicator`, which was created by `MPI_Init`.

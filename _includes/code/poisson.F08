@@ -1,15 +1,18 @@
-! a serial code for Poisson equation 
+! A serial code for Poisson equation 
+! This will apply the diffusion equation to an initial state
+! untill an equilibrium state is reached. 
+
 ! contact seyong.kim81@gmail.com for comments and questions 
       
 program poisson
 
    implicit none
 
-   integer, parameter :: GRIDSIZE=100
-   integer i,j
+   integer, parameter :: GRIDSIZE=10
+   integer i
 
-   real u(0:(GRIDSIZE+1),0:(GRIDSIZE+1)), unew(0:(GRIDSIZE+1),0:(GRIDSIZE+1))
-   real rho(0:(GRIDSIZE+1),0:(GRIDSIZE+1))
+   real u(0:(GRIDSIZE+1)), unew(0:(GRIDSIZE+1))
+   real rho(0:(GRIDSIZE+1))
    real h, hsq
    double precision unorm, residual
 
@@ -19,23 +22,21 @@ program poisson
    residual = 1e-5
 
    ! Initialise the u and rho field to 0 
-   do j = 0, GRIDSIZE+1
-      do i = 0, GRIDSIZE+1
-         u(i,j) = 0.0
-         rho(i,j) = 0.0
-      enddo
+   do i = 0, GRIDSIZE+1
+      u(i) = 0.0
+      rho(i) = 0.0
    enddo
 
    ! Create a start configuration with the field
-   ! u=10 at x=0
-   do j = 0, GRIDSIZE+1
-      u(0,j) = 10.0
-   enddo
+   ! u=10 at the x=0 boundary
+   u(0) = 10.0
 
-   ! Run iterations until the field reaches an equilibrium
+   ! Run iterations until the field reaches an equilibrium and
+   ! no longer changes
    do 
 
       call poisson_step(u, unew, rho, GRIDSIZE, hsq, unorm)
+      write(6,*) 'Iteration', i, ', residue', unorm
 
       if ( sqrt(unorm) <= sqrt(residual) ) then
          exit
@@ -47,35 +48,31 @@ program poisson
 
 end
 
+! Apply a single time step
 subroutine poisson_step(u, unew, rho, GRIDSIZE, hsq, unorm)
 
    implicit none
 
    integer, intent(in) :: GRIDSIZE
-   real, intent(inout), dimension (0:(GRIDSIZE+1),0:(GRIDSIZE+1)) :: u, unew
-   real, intent(in), dimension (0:(GRIDSIZE+1),0:(GRIDSIZE+1)) :: rho
+   real, intent(inout), dimension (0:(GRIDSIZE+1)) :: u, unew
+   real, intent(in), dimension (0:(GRIDSIZE+1)) :: rho
    real, intent(in) :: hsq
    double precision, intent(out) :: unorm
    integer i, j
    
    ! Calculate one timestep
-   do j = 1, GRIDSIZE
-      do i = 1, GRIDSIZE
-         unew(i,j) = 0.25*(u(i-1,j)+u(i+1,j)+u(i,j-1)+u(i,j+1)- hsq*rho(i,j))
-      enddo
+   do i = 1, GRIDSIZE
+      unew(i) = 0.25*(u(i-1)+u(i+1)- hsq*rho(i))
    enddo
 
    ! Find the difference compared to the previous time step
    unorm = 0.0
-   do j = 1, GRIDSIZE
-      do i = 1, GRIDSIZE
-         unorm = unorm + (unew(i,j)-u(i,j))*(unew(i,j)-u(i,j))
-      enddo
+   do i = 1, GRIDSIZE
+      unorm = unorm + (unew(i)-u(i))*(unew(i)-u(i))
    enddo
 
-   do j = 1, GRIDSIZE
-      do i = 1, GRIDSIZE
-         u(i,j) = unew(i,j)
-      enddo
+   ! Overwrtie u with the new value
+   do i = 1, GRIDSIZE
+      u(i) = unew(i)
    enddo
 end

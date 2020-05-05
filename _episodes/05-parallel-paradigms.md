@@ -17,9 +17,9 @@ keypoints:
 
 ## Parallel Paradigms
 
-How to achieve a parallel computation is roughly divided into two camps. 
+How to achieve a parallel computation is divided roughly into two paradigms. 
 - One is "data parallel" and the other is "message passing". 
-- MPI (Message Passing Interface) obviously belongs to the second camp. 
+- MPI (Message Passing Interface) clearly belongs to the second paradigm. 
 - "OpenMP" is based on "data parallelism"
 
 ##### Message passing vs data parallelism

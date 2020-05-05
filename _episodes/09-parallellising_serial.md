@@ -20,7 +20,14 @@ The examples used in the previous sections were perhaps not the most realistic.
 In this section we will look at a more complete code and take it from serial to
 parallel in a couple of steps.
 
-The exercises and solutions are based on the following code:
+The exercises and solutions are based on a code that solves the Poisson's equation using an iterative method.
+In this case the equation describes how heat diffuses in a metal stick.
+In the simulation the stick is split into small sections with a constant
+temperature.
+At one end the amount of heat is set to 10 and at the other to 0.
+The code applies steps that bring each point closer to a solution
+untill it reaches an equilibrium.
+
 
 ~~~
 {% include code/poisson.c %}
@@ -237,10 +244,18 @@ Here the habit of modular programming is very useful. When the functions are sma
 > each rank only initializes its own data.
 >
 >> ## Solution
+>>
 >> ~~~
 {% include code/poisson_test2.c %}
 >> ~~~
 >>{: .source .language-c}
+>>
+>> Notice that we now allocate space for the entire lattice
+>> on each node. Since we haven't touched the poisson_step
+>> function, it will still try to update all the points and
+>> access all the memory. Allocating only the part our rank
+>> needs would produce a segmentation fault.
+>> 
 >{: .solution .show-c }
 >
 >> ## Solution
