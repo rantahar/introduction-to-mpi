@@ -420,8 +420,9 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 > In the parallelized version below, the iterations of the loop 
 > are split among parallel processes, but some parts of the code are 
 > missing. Study the code and fill in the blanks so that each iteration is 
-> run by only one rank, and each rank has more or less the same amount of work.
->
+> run by only one rank, and each rank has more or less the same amount of work.  
+> Run the program using 2 ranks.
+> 
 > ~~~
 >#include <stdio.h>
 >#include <math.h>
