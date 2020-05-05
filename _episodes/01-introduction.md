@@ -47,6 +47,13 @@ write parallel programs using the MPI library.  MPI stands for Message
 Passing Interface, and is a low level, minimal and extremely flexible
 set of commands for communicating between copies of a program.
 
+#### Chose a programming language
+
+- You can choose to display code examples and exercises in C, Fortran and/or Python.
+- Simply toggle the "Display Language" buttons above.
+- C and Fortran programs need to be *compiled* with a compiler before being executed, 
+  while Python programs are executed directly by the Python interpreter.
+
 ## Using MPI
 
 > ## MPI on HPC
