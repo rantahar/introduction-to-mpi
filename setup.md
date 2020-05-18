@@ -8,6 +8,7 @@ In order to follow this workshop, you will need access to compilers
 and MPI libraries. You can either use a cluster or set things up on 
 your own laptop, and instructions for both are provided below.
 
+(*Optional, not covered in online workshops*) 
 One part of the workshop deals with profiling parallel code using ARM
 Forge, and access to a SNIC cluster is required for the exercises in
 this part.  It is convenient to install a local client to interact
@@ -17,16 +18,19 @@ this up are given below.
 ### On your laptop
 
 These instructions are based on installing compilers and MPI via the
-conda package manager, as it provides a convenient way to install
-binary packages.
+**conda package manager**, as it provides a convenient way to install
+binary packages in an isolated software environment.
 
-The instructions also focus on installation on MacOS or Linux
-computers. Installing compilers and MPI natively on Windows is
-possible through [Cygwin](https://www.cygwin.com/) and the 
-Microsoft Distribution of MPICH, but we recommend that you install the Windows
-Subsystem for Linux (WSL), which is available for Windows 10 and later
-versions. Instructions can be found [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 
-(WSL is also a good way to log in to PDC, see the [PDC support pages](https://www.pdc.kth.se/support/documents/login/windows_login.html#wsl-approach))
+- The instructions focus on installation on **MacOS** and **Linux**
+  computers, as well as **Windows computers using the Windows
+  Subsystem for Linux (WSL)**. 
+- Installing compilers and MPI natively on Windows is
+  possible through [Cygwin](https://www.cygwin.com/) and the 
+  Microsoft Distribution of MPICH, but we recommend that you instead use WSL 
+  which is available for Windows 10 and later versions.   
+  Instructions can be found [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 
+- WSL is also a good way to log in to PDC, see the 
+  [PDC support pages](https://www.pdc.kth.se/support/documents/login/windows_login.html#wsl-approach))
 
 ---
 
@@ -35,7 +39,7 @@ versions. Instructions can be found [here](https://docs.microsoft.com/en-us/wind
 Begin by installing Miniconda:
 
 1. Download the 64-bit installer from [here](https://docs.conda.io/en/latest/miniconda.html) for your operating system
-   - for MacOS, choose the bash installer
+   - for MacOS and Linux, choose the bash installer
    - on Windows, open a Linux-WSL terminal and type: `wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh`. 
      If wget is not a recognised command, type `sudo apt-get install wget` 
      and provide the password you chose when installing WSL.
@@ -84,7 +88,7 @@ conda:
 
 ---
 
-### On the cluster
+### On a PDC cluster
 
 To do the exercises at PDC, you will need:
 - a PDC account, see [these instructions](https://www.pdc.kth.se/support/documents/getting_access/get_access.html#applying-for-an-account)
@@ -135,7 +139,7 @@ mpirun -n 12 ./example
 
 ---
 
-## ARM Forge
+## (not in online workshops) ARM Forge
 
 The ARM Forge tools (Performance Reports, MAP and DDT) are installed
 on PDC clusters. These are graphical applications, and running them
