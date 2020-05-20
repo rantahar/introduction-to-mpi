@@ -24,14 +24,13 @@ binary packages in an isolated software environment.
 - The instructions focus on installation on **MacOS** and **Linux**
   computers, as well as **Windows computers using the Windows
   Subsystem for Linux (WSL)**. 
-- Installing compilers and MPI natively on Windows is
+- Instructions for installing WSL on Windows can be found 
+  [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 
+- Installing compilers and MPI natively on Windows is also
   possible through [Cygwin](https://www.cygwin.com/) and the 
   Microsoft Distribution of MPICH, but we recommend that you instead use WSL 
   which is available for Windows 10 and later versions.   
-  Instructions can be found [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 
-- WSL is also a good way to log in to PDC, see the 
-  [PDC support pages](https://www.pdc.kth.se/support/documents/login/windows_login.html#wsl-approach))
-
+  
 ---
 
 #### Installing conda
