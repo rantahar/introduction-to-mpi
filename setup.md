@@ -63,25 +63,48 @@ conda activate mpi-intro
 If you want to use Python for the exercises, you will need to install
 mpi4py. mpi4py can be installed either using pip or conda, but with
 pip you will need to install MPI yourself first (e.g. OpenMPI or
-MPICH), while conda will install its own MPI libraries (mpich). If you
+MPICH), while conda will install its own MPI libraries. If you
 don’t already have MPI installed on your laptop, it will be easiest to
 use conda:
 ~~~
-(mpi-intro) $ conda install mpi4py
+(mpi-intro) $ conda install -c conda-forge mpi4py
 ~~~
 {: .source .language-bash}
+
+**Please also verify the installation.** The following command should 
+not give an error message:
+~~~
+(mpi-intro) $ python -c "import mpi4py"
+~~~
+{: .source .language-bash}
+
+and the following command should give a version number:
+~~~
+(mpi-intro) $ mpirun --version
+~~~
+{: .source .language-bash}
+
 
 ---
 
 #### C/C++ and Fortran
 
 If you want to use C, C++ or Fortran for the exercises, you will need
-to install compilers and MPI libraries. This can also be done using
-conda:
+to install compilers and MPI libraries if you don't already have them 
+available. This can also be done using conda:
 
 ~~~
-(mpi-intro) $ conda install compilers
-(mpi-intro) $ conda install mpich
+(mpi-intro) $ conda install -c conda-forge compilers
+(mpi-intro) $ conda install -c conda-forge mpich
+~~~
+{: .source .language-bash}
+
+**Please also verify the installation.** The following commands should 
+give version numbers:
+~~~
+(mpi-intro) $ mpicc --version
+(mpi-intro) $ mpif90 --version
+(mpi-intro) $ mpirun --version
 ~~~
 {: .source .language-bash}
 
