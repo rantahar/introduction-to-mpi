@@ -74,7 +74,7 @@ use conda:
 **Please also verify the installation.** The following command should 
 not give an error message:
 ~~~
-(mpi-intro) $ python -c "import mpi4py"
+(mpi-intro) $ python -c "from mpi4py import MPI"
 ~~~
 {: .source .language-bash}
 
