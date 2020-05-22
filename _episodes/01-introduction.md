@@ -6,7 +6,7 @@ questions:
 - "How does MPI work?"
 objectives:
 - "Introduce parallel computing."
-- "Use `mpicc`/`mpifort` and `mpirun`."
+- "Use `mpicc`/`mpifort`/`mpi4py` and `mpirun`."
 keypoints:
 - "Many problems can be distributed across several processors and solved faster."
 - "`mpirun` runs copies of the program."
@@ -47,7 +47,9 @@ write parallel programs using the MPI library.  MPI stands for Message
 Passing Interface, and is a low level, minimal and extremely flexible
 set of commands for communicating between copies of a program.
 
-#### Chose a programming language
+---
+
+#### Choose a programming language
 
 - You can choose to display code examples and exercises in C, Fortran and/or Python.
 - Simply toggle the "Display Language" buttons above.
