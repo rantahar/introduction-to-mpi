@@ -103,7 +103,7 @@ available. This can also be done using conda:
 give version numbers:
 ~~~
 (mpi-intro) $ mpicc --version
-(mpi-intro) $ mpif90 --version
+(mpi-intro) $ mpifort --version
 (mpi-intro) $ mpirun --version
 ~~~
 {: .source .language-bash}
