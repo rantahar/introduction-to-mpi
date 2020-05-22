@@ -377,6 +377,113 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 > - print `a*b` if the rank is 2 
 > 
 > Run the program on 3 cores and see that it works correctly.
+> 
+>> ## Solution
+>>
+>> ~~~
+>> #include <stdio.h>
+>> #include <mpi.h>
+>> 
+>> int main(int argc, char** argv) {
+>>   int rank, n_ranks;
+>>   double a=5.0, b=2.0;
+>>  
+>>   MPI_Init(&argc, &argv);
+>>   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+>>   MPI_Comm_size(MPI_COMM_WORLD, &n_ranks);
+>>  
+>>   if (n_ranks != 3) {
+>>     printf("This program only works with 3 ranks\n");
+>>     return(1);
+>>   }
+>>
+>>   if (rank == 0) {
+>>     printf("a = %f, b = %f\n", a, b);
+>>     printf("a - b = %f\n", a-b);
+>>   }
+>>   if (rank == 1) {  
+>>     printf("a + b = %f\n", a+b);
+>>   }
+>>   if (rank == 2) {  
+>>     printf("a * b = %f\n", a*b);
+>>   }
+>>  
+>>   return MPI_Finalize();
+>> }
+>> ~~~
+>> {: .source .language-c}
+>> 
+>{: .solution .show-c}
+>
+>
+>> ## Solution
+>> ~~~
+>> program using_ranks
+>> 
+>>     implicit none
+>>     include "mpif.h"
+>> 
+>>     integer rank, n_ranks, ierr
+>>     real a, b
+>> 
+>>     a = 5.0
+>>     b = 2.0
+>> 
+>>     call MPI_Init(ierr)
+>>     call MPI_Comm_rank(MPI_COMM_WORLD,rank,ierr)
+>>     call MPI_Comm_size(MPI_COMM_WORLD,n_ranks,ierr)
+>> 
+>>     if (n_ranks .ne. 3) then
+>>        write(6,*) "This program only works with 3 ranks"
+>>        error stop
+>>     end if
+>> 
+>>     if (rank == 0) then
+>>        write(6,*) "a = ", a, "b = ", b
+>>        write(6,*) "a - b = ", a-b
+>>     end if
+>>     if (rank == 1) then
+>>        write(6,*) "a + b = ", a+b
+>>     end if
+>>     if (rank == 2) then
+>>        write(6,*) "a * b = ", a*b
+>>     end if
+>> 
+>>     call MPI_Finalize(ierr)
+>> 
+>> end
+>> ~~~
+>>{: .source .language-fortran}
+>>
+>{: .solution .show-fortran}
+>
+>> ## Solution
+>> ~~~
+>> from mpi4py import MPI
+>> import sys
+>> 
+>> a = 5.0
+>> b = 2.0
+>> 
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> n_ranks = MPI.COMM_WORLD.Get_size()
+>> 
+>> if n_ranks != 3:
+>>     print('This program only works with 3 ranks')
+>>     sys.exit(1)
+>> 
+>> if rank == 0:
+>>     print(f'a = {a}, b = {b}')
+>>     print(f'a - b = {a-b}')
+>> if rank == 1:
+>>     print(f'a + b = {a+b}')
+>> if rank == 2:
+>>     print(f'a * b = {a*b}')
+>> ~~~
+>>{: .source .language-python}
+>>
+>{: .solution .show-python}
+>
 {: .challenge}
 
 
