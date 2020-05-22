@@ -159,11 +159,12 @@ $$ \mathrm{speedup} = t_1 / t_N $$
 
 where $$t_1$$ is the computational time for running the software using
 one processor, and $$t_N$$ is the computational time running the same
-software with N processors. Ideally, we would like software to have a
-linear speedup that is equal to the number of processors (speedup =
-N), as that would mean that every processor would be contributing 100%
-of its computational power. Unfortunately, this is a very challenging
-goal for real applications to attain.
+software with N processors. 
+- Ideally, we would like software to have a
+  linear speedup that is equal to the number of processors (speedup =
+  N), as that would mean that every processor would be contributing 100%
+  of its computational power. 
+- Unfortunately, this is a very challenging goal for real applications to attain.
 
 ### Amdahl's Law and strong scaling
 
