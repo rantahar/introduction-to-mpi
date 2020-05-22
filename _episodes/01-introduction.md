@@ -100,7 +100,7 @@ the computation.  This usually also requires knowing the total number
 of tasks running at the same time.
 
 - The program needs to call the `MPI_Init` function.
-- `MPI_Init` sets up the environment for MPI, and assign a number (called the _rank_) to each process.
+- `MPI_Init` sets up the environment for MPI, and assigns a number (called the _rank_) to each process.
 - At the end, each process should also cleanup by calling `MPI_Finalize`.
 
 ~~~
@@ -257,7 +257,7 @@ compiler, you will receive an error.
 > also provides a C++ interface to MPI. 
 > 
 > In order to compile C++ code with MPI, use `mpicxx`
-> instead of `mpicpp`.
+> instead of `mpicc`.
 >
 {: .callout .show-fortran}
 
