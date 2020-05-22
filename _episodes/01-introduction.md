@@ -49,12 +49,13 @@ set of commands for communicating between copies of a program.
 
 ---
 
-#### Choose a programming language
-
-- You can choose to display code examples and exercises in C, Fortran and/or Python.
-- Simply toggle the "Display Language" buttons above.
-- C and Fortran programs need to be *compiled* with a compiler before being executed, 
-  while Python programs are executed directly by the Python interpreter.
+> ## Choose a programming language
+>
+> - You can choose to display code examples and exercises in C, Fortran and/or Python.
+> - Simply toggle the "Display Language" buttons above.
+> - C and Fortran programs need to be *compiled* with a compiler before being executed, 
+>   while Python programs are executed directly by the Python interpreter.
+{: .callout}
 
 ## Using MPI
 
