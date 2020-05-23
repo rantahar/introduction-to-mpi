@@ -301,7 +301,8 @@ n_ranks = MPI.COMM_WORLD.Get_size()
 {: .language-python .show-python}
 
 
-## Hello World!
+## Exercises
+
 > ## Hello World!
 >
 > Use the MPI library to write a "Hello World" program.
