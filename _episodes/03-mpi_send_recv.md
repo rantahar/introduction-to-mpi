@@ -600,8 +600,9 @@ if rank == 1:
 
 > ## Blocking
 >
-> * Try this code and see what happens.
-> * How would you change the code to fix the problem?
+> - Try this code and see what happens.
+> - (If you are using the MPICH library, this example might automagically work. With OpenMPI it shouldn't)
+> - How would you change the code to fix the problem?
 >
 >~~~
 > #include <stdio.h>
