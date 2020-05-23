@@ -143,16 +143,16 @@ even if `MPI_Send` has been called.
 >
 {: .callout .show-python}
 
-The number of arguments can make these commands look complicated,
-so don't worry if you need to refer back to the documentation regularly
-when working with them.
-The first four arguments specify what data needs to be sent or received
-and the destination or source of the message.
+The number of arguments can make these commands look complicated, so
+don't worry if you need to refer back to the documentation regularly
+when working with them. The most important arguments specify what
+data needs to be sent or received and the destination or source of the
+message.
 
-The message tag is used to differentiate messages, in case rank A has sent
-multiple pieces of data to rank B.
-When rank B requests for a message with the correct tag, the data buffer will
-be overwritten by that message.
+The message tag is used to differentiate messages, in case rank A has
+sent multiple pieces of data to rank B.  When rank B requests for a
+message with the correct tag, the data buffer will be overwritten by
+that message.
 
 The communicator is something we have seen before.
 It specifies information about the system and where each rank actually is.
