@@ -270,13 +270,21 @@ if rank == 1:
 >
 {: .challenge}
 
-> ## MPI Types
+> ## MPI Types in C
 > 
 > In the above example we send a string of characters and
-> therefore specify the type `MPI_CHAR`{: .show-c}`MPI_CHARACTER`{: .show-fortran}.
+> therefore specify the type `MPI_CHAR`{: .show-c}.
 > For a complete list of possibly types, see the [reference]({{ page.root }}{% link reference.md %}).
 >
-{: .callout}
+{: .callout .show-c}
+
+> ## MPI Types in Fortran
+> 
+> In the above example we send a string of characters and
+> therefore specify the type `MPI_CHARACTER`{: .show-fortran}.
+> For a complete list of possibly types, see the [reference]({{ page.root }}{% link reference.md %}).
+>
+{: .callout .show-fortran}
 
 > ## Communicating buffer-like objects in Python
 >
