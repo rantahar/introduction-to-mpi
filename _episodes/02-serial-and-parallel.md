@@ -197,11 +197,17 @@ below.
 > limited to at most 20 times (when N = ∞, speedup = 1/s = 20). 
 {: .callout}
 
-Amdahl's law gives the upper limit of speedup for a problem of fixed
-size. This seems to be a bottleneck for parallel computing; if one
-would like to gain a 500 times speedup on 1000 processors, Amdahl’s
-law requires that the proportion of serial part cannot exceed 0.1%.
-However, in practice the sizes of problems scale with the amount of
+#### Strong scaling
+
+- Defined as how the solution time varies with the number of
+  processors for a *fixed total problem size*.
+- Linear **strong** scaling if the speedup (work units completed per
+  unit time) is equal to the number of processing elements used.
+- Harder to achieve good strong-scaling at larger process counts since
+  communication overhead typically increases with the number of
+  processes used.
+
+In practice the sizes of problems scale with the amount of
 available resources, and we also need a measure for a relative speedup
 which takes into account increasing problem sizes.
 
@@ -224,12 +230,13 @@ focuses on fixed problem size).
 
 ![A figure showing strong scaling]({{ page.root }}{% link fig/scaling_gustafson.png %})
 
-> ## Gustafson's law in practice
-> If we apply Gustafson’s law to the previous example of s = 0.05 and p
-> = 0.95, the scaled speedup will become infinity when infinitely many
-> processors are used. Realistically, if we have N = 1000, the scaled
-> speedup will be 950.
-{: .callout}
+#### Weak scaling
+
+- Defined as how the solution time varies with the number of
+  processors for a *fixed problem size per processor*.
+- Linear **weak** scaling if the run time stays constant while the
+  workload is increased in direct proportion to the number of
+  processors.
 
 
 ### Communication considerations
