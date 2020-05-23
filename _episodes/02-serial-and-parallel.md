@@ -238,6 +238,7 @@ focuses on fixed problem size).
   workload is increased in direct proportion to the number of
   processors.
 
+---
 
 ### Communication considerations
 
@@ -257,6 +258,8 @@ significant when the number of ranks is small and the execution of
 parallel regions gets faster with the number of ranks.  But if we keep
 increasing the number of ranks, the time spent in communication grows
 when multiple cores are involved with communication
+
+---
 
 ### Surface-to-Volume Ratio
 
