@@ -278,6 +278,19 @@ if rank == 1:
 >
 {: .callout}
 
+> ## Communicating buffer-like objects in Python
+>
+> The lower-case methods `send` and `recv` are used to communicate
+> generic Python objects between MPI processes. It is also possible to
+> directly send buffer-like objects (e.g. NumPy arrays) which provides
+> faster communication and can be useful when working with large data,
+> but require the memory space to be allocated for the receiving buffer 
+> prior to communication.
+> These methods start with uppercase letters, e.g. `Send` and `Recv`.
+{: .callout .show-python}
+
+---
+
 > ## Many Ranks
 >
 > Change the above example so that it works with any number of ranks.
