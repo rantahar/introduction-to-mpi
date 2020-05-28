@@ -62,13 +62,21 @@ for(i=0; i<N; i++) {
 ~~~
 {: .language-c .show-c}
 
+~~~
+for i in range(N):
+    a[i] = b[i] + c[i]
+~~~
+{: .language-python .show-python}
+
 If we have $$N$$ CPUs (or cores), each element of the loop can be computed in just one step
 (for a factor of $$N$$ speed-up).
 
 ### Data Parallel
 
 One standard method for programming in data parallel fashion is called "OpenMP" (for "Open MultiProcessing").
+
 To understand what data parallel means, let's consider the following bit of OpenMP code which parallelizes the above loop:
+{: .show-fortran}
 
 ~~~
 !$omp parallel do
@@ -79,6 +87,9 @@ do i=1,N
 enddo
 ~~~
 {: .language-fortran .show-fortran}
+
+To understand what data parallel means, let's consider the following bit of OpenMP code which parallelizes the above loop:
+{: .show-c}
 
 ~~~
 #pragma omp parallel for
@@ -97,6 +108,10 @@ the system architecture has a shared memory view of variables and each CPU (or c
 memory address. So, the compiler "calculates" the address off-set for each CPU (or core) and let each one
 compute on a part of the whole data. Here, the catch word is shared memory which allows all CPUs (or cores)
 to access all the address space.
+
+In Python, process-based parallelism is supported by the
+[multiprocessing](https://docs.python.org/dev/library/multiprocessing.html#module-multiprocessing)
+module.
 
 ### Message Passing
 
@@ -121,6 +136,12 @@ for(i=0; i<m; i++) {
 }
 ~~~
 {: .language-c .show-c}
+
+~~~
+for i in range(m):
+    a[i] = b[i] + c[i]
+~~~
+{: .language-python .show-python}
 
 Other than changing the number of loops from `N` to `m`, the code is exactly the same. Here, `m`
 is the reduced number of loops each CPU (or core) needs to do (if there are `N` CPUs (or cores), `m` is 1 (= `N`/`N`)).

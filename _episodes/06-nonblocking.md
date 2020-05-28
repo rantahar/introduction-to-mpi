@@ -114,6 +114,29 @@ is complete using the `MPI_Wait` and `MPI_Test` functions.
 >
 {: .callout .show-fortran}
 
+> ## `MPI.Comm.isend`
+>
+>~~~
+> def isend(self, obj, int dest, int tag=0)
+>~~~
+>
+> | `obj`:          | The Python object being sent |
+> | `dest`:         | The rank number of the rank the data will be sent to |
+> | `tag`:          | A message tag (integer) |
+>
+{: .callout .show-python}
+
+> ## `MPI.Comm.irecv`
+>~~~
+> def irecv(self, buf=None, int source=ANY_SOURCE, int tag=ANY_TAG)
+>~~~
+>
+> | `buf`:          | The buffer object to where the received data should be written |
+> | `source`:       | The rank number of the rank sending the data |
+> | `tag`:          | A message tag (integer) |
+>
+{: .callout .show-python}
+
 There's one new parameter here, a request.
 This is used to keep track of each separate transfer started by the program.
 You can use it to check the status of a transfer using the `MPI_Test` function,
@@ -177,6 +200,25 @@ The request can be created by either `MPI_Isend` or `MPI_Irecv`.
 > | `IERROR`:   | Error status |
 >
 {: .callout .show-fortran}
+
+> ## `MPI.Request.test`
+>
+>~~~
+> def test(self, Status status=None)
+>~~~
+>
+> | `status`:       | A pointer for writing the exit status of the MPI command |
+>
+{: .callout .show-python}
+
+> ## `MPI.Request.wait`
+>~~~
+> def wait(self, Status status=None)
+>~~~
+>
+> | `status`:       | A pointer for writing the exit status of the MPI command |
+>
+{: .callout .show-python}
 
 
 ### Examples
@@ -269,6 +311,31 @@ end
 ~~~
 {: .source .language-fortran .show-fortran}
 
+~~~
+from mpi4py import MPI
+import sys
+
+numbers = 10;
+
+# Check that there are at least two ranks
+n_ranks = MPI.COMM_WORLD.Get_size()
+if n_ranks < 2:
+    print("This example requires at least two ranks")
+    sys.exit(1)
+
+# Get my rank
+rank = MPI.COMM_WORLD.Get_rank()
+
+if rank == 0:
+    message = "Hello, world!"
+    req = MPI.COMM_WORLD.isend(message, dest=1, tag=0)
+
+if rank == 1:
+    req = MPI.COMM_WORLD.irecv(source=0, tag=0)
+    message = req.wait()
+    print(message)
+~~~
+{: .source .language-python .show-python}
 
 
 > ## Non-Blocking Communication
@@ -389,6 +456,41 @@ end
 >~~~
 >{: .source .language-fortran .show-fortran}
 >
+> ~~~
+> from mpi4py import MPI
+> import sys
+>
+> n_numbers = 10000
+>
+> # Get my rank and the number of ranks
+> rank = MPI.COMM_WORLD.Get_rank()
+> n_ranks = MPI.COMM_WORLD.Get_size()
+>
+> # Check that there are exactly two ranks
+> if n_ranks != 2:
+>     print("This example requires exactly two ranks")
+>     sys.exit(1)
+>
+> # Call the other rank the neighbour
+> if rank == 0:
+>     neighbour = 1
+> else:
+>     neighbour = 0
+>
+> # Generate numbers to send
+> send_message = []
+> for i in range(n_numbers):
+>     send_message.append(i)
+>
+> # Send the message to other rank
+> MPI.COMM_WORLD.send(send_message, dest=neighbour, tag=0)
+>
+> # Receive the message from the other rank
+> recv_message = MPI.COMM_WORLD.recv(source=neighbour, tag=0)
+> print("Message received by rank", rank)
+> ~~~
+>{: .source .language-python .show-python}
+>
 >
 >> ## Solution
 >>
@@ -503,6 +605,45 @@ end
 >>{: .source .language-fortran}
 >{: .solution .show-fortran}
 >
+>
+>> ## Solution
+>>
+>> ~~~
+>> from mpi4py import MPI
+>> import sys
+>>
+>> n_numbers = 10000
+>>
+>> # Get my rank and the number of ranks
+>> rank = MPI.COMM_WORLD.Get_rank()
+>> n_ranks = MPI.COMM_WORLD.Get_size()
+>>
+>> # Check that there are exactly two ranks
+>> if n_ranks != 2:
+>>     print("This example requires exactly two ranks")
+>>     sys.exit(1)
+>>
+>> # Call the other rank the neighbour
+>> if rank == 0:
+>>     neighbour = 1
+>> else:
+>>     neighbour = 0
+>>
+>> # Generate numbers to send
+>> send_message = []
+>> for i in range(n_numbers):
+>>     send_message.append(i)
+>>
+>> # Send the message to other rank
+>> req = MPI.COMM_WORLD.isend(send_message, dest=neighbour, tag=0)
+>>
+>> # Receive the message from the other rank
+>> req = MPI.COMM_WORLD.irecv(source=neighbour, tag=0)
+>> recv_message = req.wait()
+>> print("Message received by rank", rank)
+>> ~~~
+>>{: .source .language-python}
+>{: .solution .show-python}
 >
 {: .challenge}
 
