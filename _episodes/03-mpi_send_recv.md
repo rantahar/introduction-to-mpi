@@ -919,7 +919,7 @@ if rank == 1:
 
 > ## Ping Pong
 >
-> Write a simplified simplified simulation of pingpong according to the
+> Write a simplified simulation of pingpong according to the
 > following rules:
 > * Ranks 0 and 1 participate
 > * Rank 0 starts with the ball
